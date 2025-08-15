@@ -201,6 +201,10 @@
 		"slip0010": {
 			"invalidSeed": "The seed is invalid \"{seed}\""
 		},
+		"rsa": {
+			"noPrivateKey": "Private key is required for this operation",
+			"invalidKeySize": "Invalid RSA key size"
+		},
 		"baseRestClient": {
 			"missingRouteProp": "Missing route parameter in data \"{routeProp}\" for route \"{route}\"",
 			"decodingFailed": "Decoding JSON failed for route \"{route}\"",
@@ -607,7 +611,7 @@
 			"updatingFailed": "Updating the verifiable item failed",
 			"gettingFailed": "Getting the verifiable item failed",
 			"removingFailed": "Removing the verifiable item failed",
-			"packageIdNotFound": "The package ID \"{id}\" was not found",
+			"packageIdNotFound": "Package ID not found for network \"{network}\"",
 			"storingTransactionFailed": "The transaction to store the data failed",
 			"removingTransactionFailed": "The transaction to remove the data failed",
 			"objectNotFound": "The object was not found",
@@ -619,7 +623,10 @@
 			"invalidGasBudget": "The gas budget must be greater than 0",
 			"notInAllowList": "The user is not in the allow list",
 			"notCreator": "Only the creator can remove the verifiable item",
-			"allowListTooBig": "The number of items in the allow list is larger than the maximum allowed"
+			"allowListTooBig": "The number of items in the allow list is larger than the maximum allowed",
+			"contractDataNotFound": "Contract data not found for network \"{network}\". Available networks: {availableNetworks}",
+			"deployedPackageIdRequired": "deployedPackageId is required for network operations on \"{network}\".",
+			"packageNotFoundOnNetwork": "Package \"{deployedPackageId}\" not found on \"{network}\" network"
 		},
 		"iotaVerifiableStorageUtils": {
 			"invalidVerifiableStorageIdFormat": "The verifiable storage ID \"{id}\" has an invalid format"
@@ -651,7 +658,11 @@
 			"deployTransactionFailed": "Deploying the contract failed with error: \"{error}\"",
 			"connectorNotStarted": "Please call start() before using this connector. Package ID: \"{packageId}\" is missing.",
 			"invalidImmutableMetadata": "The immutable metadata for NFT \"{nftId}\" is invalid",
-			"invalidMetadata": "The metadata for NFT \"{nftId}\" is invalid"
+			"invalidMetadata": "The metadata for NFT \"{nftId}\" is invalid",
+			"contractDataNotFound": "Contract data not found for network \"{network}\". Available networks: {availableNetworks}",
+			"packageNotFoundOnNetwork": "Package \"{deployedPackageId}\" not found on \"{network}\" network",
+			"deployedPackageIdRequired": "deployedPackageId is required for network operations on \"{network}\".",
+			"packageIdNotFound": "Package ID not found for network \"{network}\""
 		},
 		"iotaNftUtils": {
 			"invalidNftIdFormat": "The NFT ID \"{id}\" has an invalid format"
@@ -688,7 +699,7 @@
 			"removeSecretFailed": "Failed to remove secret \"{name}\"",
 			"getSecretVersionsFailed": "Failed to get secret versions \"{name}\"",
 			"hashicorpVaultConnectionFailed": "Failed to connect to Hashicorp Vault",
-			"createdKeyFailed": "Failed to create key \"{name, type}\"",
+			"createKeyFailed": "Failed to create key \"{name, type}\"",
 			"unsupportedKeyType": "Unsupported key type \"{type}\"",
 			"exportPublicKeyFailed": "Failed to export public key \"{name}\"",
 			"publicKeyNotFound": "Public key \"{name}\" not found",
@@ -698,6 +709,7 @@
 			"backupKeyNotFound": "Backup key \"{name}\" not found",
 			"backupKeyFailed": "Failed to backup key \"{name}\"",
 			"restoreKeyFailed": "Failed to restore key \"{name}\"",
+			"importKeyFailed": "Failed to restore key \"{name}\"",
 			"exportKeyFailed": "Failed to export key \"{name}\" with keyPath \"{keyPath}\"",
 			"exportKeyNotFound": "Export key with name \"{name}\" not found",
 			"getKeyFailed": "Failed to get key \"{name}\"",
@@ -708,6 +720,7 @@
 			"encryptDataFailed": "Failed to encrypt data \"{name, encryptionType}\"",
 			"unsupportedEncryptionType": "Unsupported encryption type \"{encryptionType}\"",
 			"decryptDataFailed": "Failed to decrypt data \"{name, encryptionType}\"",
+			"invalidDecryptResponse": "Invalid decrypt response \"{name, encryptionType}\"",
 			"invalidEncryptResponse": "Invalid encrypt response \"{name, encryptionType}\"",
 			"keyAlreadyExists": "Key \"{existingId}\" already exists",
 			"invalidReadKeyResponse": "Invalid read key response \"{name}\"",
@@ -826,12 +839,14 @@
 		"iotaVerifiableStorageConnector": {
 			"contractAlreadyDeployed": "Contract already deployed",
 			"contractDeploymentStarted": "Contract deployment started",
-			"contractDeploymentCompleted": "Contract deployment completed"
+			"contractDeploymentCompleted": "Contract deployment completed",
+			"contractReady": "Contract ready for use"
 		},
 		"iotaNftConnector": {
 			"contractAlreadyDeployed": "Contract already deployed",
 			"contractDeploymentStarted": "Contract deployment started",
-			"contractDeploymentCompleted": "Contract deployment completed"
+			"contractDeploymentCompleted": "Contract deployment completed",
+			"contractReady": "Contract ready for use"
 		},
 		"entityStorageTelemetryConnector": {
 			"metricCreated": "The metric was created \"{id}\" with type \"type\" and label \"{label}\"",
