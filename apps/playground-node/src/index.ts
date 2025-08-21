@@ -19,6 +19,7 @@ await run({
 	envPrefix: "PLAYGROUND_",
 	localesDirectory: path.resolve("dist/locales"),
 	openApiSpecFile: path.resolve("docs/open-api/spec.json"),
+	favIconFile: path.resolve("static/favicon.ico"),
 	extendConfig
 });
 

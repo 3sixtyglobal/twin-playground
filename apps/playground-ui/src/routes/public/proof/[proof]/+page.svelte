@@ -5,4 +5,4 @@
 	import ProofView from '$components/proof/proofView.svelte';
 </script>
 
-<ProofView proof={$page.params.proof} />
+<ProofView proof={$page.params.proof ?? ''} />

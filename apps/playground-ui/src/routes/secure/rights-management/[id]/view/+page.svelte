@@ -7,5 +7,5 @@
 
 <RightsManagementView
 	returnUrl={$page.url.searchParams.get('returnUrl') ?? '/secure/rights-management'}
-	itemId={$page.params.id}
+	itemId={$page.params.id ?? ''}
 />

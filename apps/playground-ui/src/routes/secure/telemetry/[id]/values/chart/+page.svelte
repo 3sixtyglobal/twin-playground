@@ -5,4 +5,4 @@
 	import TelemetryMetricValueChart from '$components/telemetry/telemetryMetricValueChart.svelte';
 </script>
 
-<TelemetryMetricValueChart itemId={$page.params.id} />
+<TelemetryMetricValueChart itemId={$page.params.id ?? ''} />

@@ -5,4 +5,4 @@
 	import AuditableItemStreamEntriesList from '$components/auditableItemStream/auditableItemStreamEntriesList.svelte';
 </script>
 
-<AuditableItemStreamEntriesList streamId={$page.params.id} />
+<AuditableItemStreamEntriesList streamId={$page.params.id ?? ''} />

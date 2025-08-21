@@ -7,5 +7,5 @@
 
 <ImmutableProofView
 	returnUrl={$page.url.searchParams.get('returnUrl') ?? '/secure/immutable-proof'}
-	itemId={$page.params.id}
+	itemId={$page.params.id ?? ''}
 />

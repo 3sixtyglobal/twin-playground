@@ -5,4 +5,4 @@
 	import DataProcessingExtractView from '$components/data-processing/dataProcessingExtractView.svelte';
 </script>
 
-<DataProcessingExtractView returnUrl="/secure/data-processing" itemId={$page.params.id} />
+<DataProcessingExtractView returnUrl="/secure/data-processing" itemId={$page.params.id ?? ''} />

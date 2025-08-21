@@ -5,4 +5,4 @@
 	import AttestationView from '$components/attestation/attestationView.svelte';
 </script>
 
-<AttestationView itemId={$page.params.id} />
+<AttestationView itemId={$page.params.id ?? ''} />

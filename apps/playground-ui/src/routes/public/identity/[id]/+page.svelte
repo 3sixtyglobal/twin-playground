@@ -5,4 +5,4 @@
 	import IdentityProfileView from '$components/identityProfile/identityProfileView.svelte';
 </script>
 
-<IdentityProfileView itemId={$page.params.id} />
+<IdentityProfileView itemId={$page.params.id ?? ''} />

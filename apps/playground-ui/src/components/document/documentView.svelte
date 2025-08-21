@@ -182,9 +182,12 @@
 		}
 
 		const a = globalThis.document.createElement('a');
-		const blob = new Blob([Converter.base64ToBytes(document.blobStorageEntry.blob)], {
-			type: document.blobStorageEntry.encodingFormat ?? 'application/octet-stream'
-		});
+		const blob = new Blob(
+			[new Uint8Array(Converter.base64ToBytes(document.blobStorageEntry.blob))],
+			{
+				type: document.blobStorageEntry.encodingFormat ?? 'application/octet-stream'
+			}
+		);
 		const url = URL.createObjectURL(blob);
 		a.href = url;
 		const encodingFormat = document.blobStorageEntry.encodingFormat ?? '';

@@ -17,6 +17,7 @@
 		"typedoc.json",
 		".eslintrc.cjs",
 		"**/wordlists/**",
+		"changelog.md",
 		"apps/playground-ui/static/locales/**"
 	],
 	"words": [

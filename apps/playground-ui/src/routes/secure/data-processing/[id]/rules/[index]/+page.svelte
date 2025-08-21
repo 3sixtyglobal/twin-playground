@@ -8,6 +8,6 @@
 
 <DataProcessingRuleGroupRuleProperties
 	returnUrl={`/secure/data-processing/${$page.params.id}/rules`}
-	itemId={$page.params.id}
+	itemId={$page.params.id ?? ''}
 	ruleIndex={Coerce.number($page.params.index)}
 />

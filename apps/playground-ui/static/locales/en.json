@@ -467,13 +467,14 @@
 		},
 		"entityStorageIdentityConnector": {
 			"createDocumentFailed": "Creating the document failed",
+			"removeDocumentFailed": "Removing the document failed",
 			"signatureVerificationFailed": "The document integrity check failed",
 			"missingDid": "The full id including DID is required",
 			"addVerificationMethodFailed": "Adding the verification method failed",
 			"removeVerificationMethodFailed": "Removing the verification method failed",
 			"addServiceFailed": "Adding the service failed",
 			"removeServiceFailed": "Removing the service failed",
-			"documentNotFound": "The document could not be found",
+			"documentNotFound": "The document could not be found \"{notFoundId}\"",
 			"documentPrivateKeyNotFound": "The private key for document could not be found in the vault",
 			"verificationMethodNotFound": "The verification method could not be found",
 			"verificationPrivateKeyNotFound": "The private key for the verification method could not be found in the vault",
@@ -509,6 +510,7 @@
 		},
 		"iotaIdentityConnector": {
 			"createDocumentFailed": "Creating the document failed",
+			"removeDocumentFailed": "Removing the document failed",
 			"missingDid": "The full id including DID is required",
 			"addVerificationMethodFailed": "Adding the verification method failed",
 			"removeVerificationMethodFailed": "Removing the verification method failed",
@@ -555,6 +557,7 @@
 			"connectorNotFound": "There is no connector with the namespace \"{namespace}\" registered with the identity factory",
 			"jwtDecodeFailed": "Decoding the JWT failed",
 			"identityCreateFailed": "Creating the identity failed",
+			"identityRemoveFailed": "Removing the identity failed \"{identity}\"",
 			"verificationMethodCreateFailed": "Creating the verification method failed for identity \"{identity}\"",
 			"verificationMethodRemoveFailed": "Removing the verification method failed \"{verificationMethodId}\"",
 			"serviceCreateFailed": "Creating the service failed for identity \"{identity}\", service \"{serviceId}\"",
@@ -1600,6 +1603,11 @@
 		"postProcessorError": "There was a failure after in a post processor for route \"{route}\""
 	},
 	"auditableItemGraphService": {},
+	"warn": {
+		"common": {
+			"devOnlyTool": "This tool is intended to be used for development purposes, it is not recommended for use in production scenarios."
+		}
+	},
 	"cli": {
 		"progress": {
 			"done": "Done.",

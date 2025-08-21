@@ -59,23 +59,22 @@
 		"schema-dts": "1.1.5"
 	},
 	"devDependencies": {
-		"@playwright/test": "1.54.1",
-		"@sveltejs/adapter-auto": "6.0.1",
-		"@sveltejs/kit": "2.25.1",
-		"svelte": "5.36.12",
-		"@sveltejs/vite-plugin-svelte": "6.1.0",
+		"@playwright/test": "1.55.0",
+		"@sveltejs/adapter-auto": "6.1.0",
+		"@sveltejs/kit": "2.36.1",
+		"svelte": "5.38.2",
+		"@sveltejs/vite-plugin-svelte": "6.1.3",
 		"@twin.org/merge-locales": "next",
 		"@types/d3": "7.4.3",
 		"autoprefixer": "10.4.21",
 		"globals": "16.3.0",
 		"postcss": "8.5.6",
 		"rollup-plugin-copy": "3.5.0",
-		"svelte-check": "4.3.0",
+		"svelte-check": "4.3.1",
 		"tailwindcss": "3.4.17",
-		"typescript": "5.8.3",
-		"vite": "7.0.5",
-		"vitest": "3.2.4",
-		"vite-plugin-node-polyfills": "0.24.0"
+		"typescript": "5.9.2",
+		"vite": "7.1.3",
+		"vitest": "3.2.4"
 	},
 	"type": "module"
 }

@@ -5,4 +5,4 @@
 	import AuditableItemStreamView from '$components/auditableItemStream/auditableItemStreamView.svelte';
 </script>
 
-<AuditableItemStreamView itemId={$page.params.id} returnUrl="/secure/auditable-item-stream" />
+<AuditableItemStreamView itemId={$page.params.id ?? ''} returnUrl="/secure/auditable-item-stream" />

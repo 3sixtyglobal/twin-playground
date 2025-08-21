@@ -5,4 +5,7 @@
 	import DataProcessingRuleGroupRuleList from '$components/data-processing/dataProcessingRuleGroupRuleList.svelte';
 </script>
 
-<DataProcessingRuleGroupRuleList itemId={$page.params.id} returnUrl="/secure/data-processing/" />
+<DataProcessingRuleGroupRuleList
+	itemId={$page.params.id ?? ''}
+	returnUrl="/secure/data-processing/"
+/>

@@ -5,4 +5,4 @@
 	import NftView from '$components/nft/nftView.svelte';
 </script>
 
-<NftView itemId={$page.params.id} />
+<NftView itemId={$page.params.id ?? ''} />

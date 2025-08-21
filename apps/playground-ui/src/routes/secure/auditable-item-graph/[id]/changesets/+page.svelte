@@ -5,4 +5,7 @@
 	import AuditableItemGraphChangesets from '$components/auditableItemGraph/auditableItemGraphChangesets.svelte';
 </script>
 
-<AuditableItemGraphChangesets itemId={$page.params.id} returnUrl="/secure/auditable-item-graph" />
+<AuditableItemGraphChangesets
+	itemId={$page.params.id ?? ''}
+	returnUrl="/secure/auditable-item-graph"
+/>
