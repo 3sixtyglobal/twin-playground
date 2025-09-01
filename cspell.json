@@ -15,7 +15,7 @@
 		"vitest.config.*",
 		"tsconfig.json",
 		"typedoc.json",
-		".eslintrc.cjs",
+		"eslint.config*",
 		"**/wordlists/**",
 		"changelog.md",
 		"apps/playground-ui/static/locales/**"

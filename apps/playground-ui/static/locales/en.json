@@ -248,6 +248,8 @@
 			"publicKeyMultibaseMissingHeader": "Public key multibase \"{publicKeyMultibase}\" is missing the multi codec header",
 			"secretKeyMultibaseMissingHeader": "Secret key multibase \"{secretKeyMultibase}\" is missing the multi codec header"
 		},
+		"socketConnect": "Failure during socket connect",
+		"callback": "Error when calling local callback",
 		"verificationHelper": {
 			"jwtDecodeFailed": "Decoding the JWT failed",
 			"proofTypeNotSupported": "The proof type \"{proofType}\" is not supported",
