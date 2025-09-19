@@ -292,6 +292,14 @@
 		"jpegEncoder": {
 			"invalidQuality": "Quality must be between 1 and 100, it is \"{value}\""
 		},
+		"rightsManagementTokenHelper": {
+			"tokenFailed": "Failed to verify token",
+			"tokenMissingIssuanceDate": "The token is missing the 'issuanceDate' field for assignee \"{assignee}\"",
+			"tokenNoIssuer": "The token does not contain an issuer",
+			"tokenExpired": "The token has expired for assignee \"{assignee}\"",
+			"tokenItemMismatch": "The canonical item does not match the expected item for property \"{property}\"",
+			"tokenNoCredential": "The token does not contain a credential"
+		},
 		"nftAttestationConnector": {
 			"attestingFailed": "Attesting the data failed",
 			"verificationFailed": "Verifying the attestation failed",
@@ -657,17 +665,25 @@
 			"updateFailed": "Updating the NFT failed",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the IOTA NFT connector \"{namespace}\"",
 			"failedToGetNftId": "Failed to get NFT ID from mint response",
-			"nftNotFound": "The NFT \"{nftId}\" was not found",
+			"nftNotFound": "The NFT \"{notFoundId}\" was not found",
 			"nftOwnerNftFound": "The owner for NFT \"{nftId}\" was not found",
 			"startFailed": "Failed to start the IOTA NFT connector",
-			"deployTransactionFailed": "Deploying the contract failed with error: \"{error}\"",
-			"connectorNotStarted": "Please call start() before using this connector. Package ID: \"{packageId}\" is missing.",
+			"packageIdNotInitialised": "The package id has not been initialised.",
 			"invalidImmutableMetadata": "The immutable metadata for NFT \"{nftId}\" is invalid",
 			"invalidMetadata": "The metadata for NFT \"{nftId}\" is invalid",
 			"contractDataNotFound": "Contract data not found for network \"{network}\". Available networks: {availableNetworks}",
 			"packageNotFoundOnNetwork": "Package \"{deployedPackageId}\" not found on \"{network}\" network",
 			"deployedPackageIdRequired": "deployedPackageId is required for network operations on \"{network}\".",
-			"packageIdNotFound": "Package ID not found for network \"{network}\""
+			"packageIdNotFound": "Package ID not found for network \"{network}\"",
+			"invalidGasBudget": "Invalid gas budget: {gasBudget}",
+			"migrateNftFailed": "Failed to migrate NFT \"{nftId}\" to version {version}",
+			"enableMigrationFailed": "Failed to enable migration on the blockchain",
+			"disableMigrationFailed": "Failed to disable migration on the blockchain",
+			"isMigrationActiveFailed": "Failed to check migration status from the blockchain",
+			"validateNftVersionFailed": "Failed to validate NFT version compatibility",
+			"nftContractVersionNotFound": "Contract version field not found for NFT \"{nftId}\"",
+			"getNftContractVersionFailed": "Failed to retrieve contract version for NFT \"{nftId}\"",
+			"getCurrentContractVersionFailed": "Failed to retrieve current contract version from blockchain"
 		},
 		"iotaNftUtils": {
 			"invalidNftIdFormat": "The NFT ID \"{id}\" has an invalid format"
@@ -1670,7 +1686,7 @@
 		"verifiable-storage": "Verifiable Storage",
 		"immutable-proof": "Immutable Proof",
 		"data-processing": "Data Processing",
-		"rights-management": "Rights Management"
+		"rights-management-pap": "Rights Management PAP"
 	},
 	"common": {
 		"labels": {

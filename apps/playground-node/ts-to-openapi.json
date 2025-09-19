@@ -68,6 +68,12 @@
 		},
 		{
 			"package": "@twin.org/federated-catalogue-service"
+		},
+		{
+			"package": "@twin.org/data-space-connector-service"
+		},
+		{
+			"package": "@twin.org/rights-management-service"
 		}
 	],
 	"authMethods": ["jwtBearer"],
@@ -108,6 +114,8 @@
 		"IParticipant": "https://schema.twindev.org/gaia-x/Participant",
 		"IRegistrationNumber": "https://schema.twindev.org/gaia-x/RegistrationNumber",
 		"IServiceOffering": "https://schema.twindev.org/gaia-x/ServiceOffering",
-		"Unece(.*)": "https://schema.twindev.org/unece/Unece$1"
+		"Unece(.*)": "https://schema.twindev.org/unece/Unece$1",
+		"DataAccess(.*)": "https://schema.twindev.org/rights-management/DataAccessQuery$1",
+		"IdsContract(.*)": "https://schema.twindev.org/ids-contract-negotiation/IdsContract$1"
 	}
 }

@@ -22,7 +22,7 @@ import { init as initIota } from "./iota";
 import { init as initLogging } from "./logging";
 import { init as initNft } from "./nft";
 import { init as initNfts } from "./nfts";
-import { init as initRightsManagement } from "./rightsManagement";
+import { init as initRightsManagementPap } from "./rightsManagementPap";
 import { init as initTelemetry } from "./telemetry";
 import { init as initVerifiableStorage } from "./verifiableStorage";
 import { init as initVerifiableStorages } from "./verifiableStorages";
@@ -79,7 +79,7 @@ export async function init(options: {
 	await initDataProcessing(options.apiUrl);
 	await initDocument(options.apiUrl);
 	await initDocuments(options.apiUrl);
-	await initRightsManagement(options.apiUrl);
+	await initRightsManagementPap(options.apiUrl);
 }
 
 /**

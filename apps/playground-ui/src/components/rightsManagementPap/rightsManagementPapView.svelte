@@ -16,7 +16,7 @@
 		i18n
 	} from '@twin.org/ui-components-svelte';
 	import { onMount } from 'svelte';
-	import { policyGet } from '$stores/rightsManagement';
+	import { policyGet } from '$stores/rightsManagementPap';
 
 	export let itemId: string;
 	export let returnUrl: string;

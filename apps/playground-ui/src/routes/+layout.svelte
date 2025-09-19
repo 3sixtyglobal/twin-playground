@@ -76,9 +76,9 @@
 			route: '/secure/data-processing'
 		},
 		{
-			label: $i18n('navigation.rights-management'),
+			label: $i18n('navigation.rights-management-pap'),
 			icon: Icons.LockSolid,
-			route: '/secure/rights-management'
+			route: '/secure/rights-management-pap'
 		},
 		{
 			label: $i18n('navigation.logout'),

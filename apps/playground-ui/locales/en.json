@@ -17,7 +17,7 @@
 		"verifiable-storage": "Verifiable Storage",
 		"immutable-proof": "Immutable Proof",
 		"data-processing": "Data Processing",
-		"rights-management": "Rights Management"
+		"rights-management-pap": "Rights Management PAP"
 	},
 	"components": {
 		"blobViewer": {

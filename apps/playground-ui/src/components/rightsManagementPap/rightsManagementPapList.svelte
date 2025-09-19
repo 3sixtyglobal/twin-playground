@@ -26,7 +26,7 @@
 		TableHeadCell
 	} from '@twin.org/ui-components-svelte';
 	import { onMount } from 'svelte';
-	import { policyRemove, policyQuery } from '$stores/rightsManagement';
+	import { policyRemove, policyQuery } from '$stores/rightsManagementPap';
 	import { CursorStackHandler } from '$utils/shared/cursorStackHandler';
 
 	const cursorHandler = new CursorStackHandler();
@@ -158,7 +158,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/rights-management/create')} disabled={busy}
+		<Button on:click={() => goto('/secure/rights-management-pap/create')} disabled={busy}
 			>{$i18n('pages.rightsManagement.createPolicy')}</Button
 		>
 	</div>
@@ -185,14 +185,15 @@
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/rights-management/${encodeURIComponent(item.uid)}`)}
+								on:click={() =>
+									goto(`/secure/rights-management-pap/${encodeURIComponent(item.uid)}`)}
 								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
 								on:click={() =>
-									goto(`/secure/rights-management/${encodeURIComponent(item.uid)}/view`)}
+									goto(`/secure/rights-management-pap/${encodeURIComponent(item.uid)}/view`)}
 							>
 								<Icons.EyeOutline />
 							</Button>

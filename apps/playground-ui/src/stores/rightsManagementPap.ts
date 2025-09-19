@@ -2,17 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { EntityCondition } from "@twin.org/entity";
-import { RightsManagementClient } from "@twin.org/rights-management-rest-client";
+import { PolicyAdministrationPointClient } from "@twin.org/rights-management-rest-client";
 import type { IOdrlPolicy } from "@twin.org/standards-w3c-odrl";
 
-let rightsManagementClient: RightsManagementClient | undefined;
+let rightsManagementPapClient: PolicyAdministrationPointClient | undefined;
 
 /**
- * Initialise the rights management client.
+ * Initialise the rights management PAP client.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	rightsManagementClient = new RightsManagementClient({
+	rightsManagementPapClient = new PolicyAdministrationPointClient({
 		endpoint: apiUrl
 	});
 }
@@ -29,9 +29,9 @@ export async function policyGet(proofId: string): Promise<
 	  }
 	| undefined
 > {
-	if (Is.object(rightsManagementClient)) {
+	if (Is.object(rightsManagementPapClient)) {
 		try {
-			const result = await rightsManagementClient.papRetrieve(proofId);
+			const result = await rightsManagementPapClient.get(proofId);
 			return {
 				item: result
 			};
@@ -55,9 +55,9 @@ export async function policyCreate(policyObject: IOdrlPolicy): Promise<
 	  }
 	| undefined
 > {
-	if (Is.object(rightsManagementClient)) {
+	if (Is.object(rightsManagementPapClient)) {
 		try {
-			const result = await rightsManagementClient.papCreate(policyObject);
+			const result = await rightsManagementPapClient.create(policyObject);
 
 			return { uid: result };
 		} catch (err) {
@@ -79,9 +79,9 @@ export async function policyUpdate(policyObject: IOdrlPolicy): Promise<
 	  }
 	| undefined
 > {
-	if (Is.object(rightsManagementClient)) {
+	if (Is.object(rightsManagementPapClient)) {
 		try {
-			await rightsManagementClient.papUpdate(policyObject);
+			await rightsManagementPapClient.update(policyObject);
 			return undefined;
 		} catch (err) {
 			return {
@@ -97,9 +97,9 @@ export async function policyUpdate(policyObject: IOdrlPolicy): Promise<
  * @returns Nothing or an error if one occurred.
  */
 export async function policyRemove(policyId: string): Promise<undefined | { error: string }> {
-	if (Is.object(rightsManagementClient)) {
+	if (Is.object(rightsManagementPapClient)) {
 		try {
-			await rightsManagementClient.papRemove(policyId);
+			await rightsManagementPapClient.remove(policyId);
 			return undefined;
 		} catch (err) {
 			return {
@@ -121,9 +121,9 @@ export async function policyQuery(
 	cursor?: string,
 	pageSize?: number
 ): Promise<undefined | { error?: string; cursor?: string; policies?: IOdrlPolicy[] }> {
-	if (Is.object(rightsManagementClient)) {
+	if (Is.object(rightsManagementPapClient)) {
 		try {
-			const result = await rightsManagementClient.papQuery(conditions, cursor, pageSize);
+			const result = await rightsManagementPapClient.query(conditions, cursor, pageSize);
 			return {
 				cursor: result.cursor,
 				policies: result.policies

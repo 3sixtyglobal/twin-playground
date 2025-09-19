@@ -20,7 +20,7 @@
 		Textarea
 	} from '@twin.org/ui-components-svelte';
 	import { onMount } from 'svelte';
-	import { policyGet, policyCreate, policyUpdate } from '$stores/rightsManagement';
+	import { policyGet, policyCreate, policyUpdate } from '$stores/rightsManagementPap';
 
 	export let itemId: string | undefined = undefined;
 	export let returnUrl: string;
@@ -37,15 +37,13 @@
 	let selectedType = '';
 	let textAreaValue = '';
 	let userSelectedType = false;
-	const policyObjectExamples: IOdrlPolicy[] = [
+	const policyObjectExamples: Partial<IOdrlPolicy>[] = [
 		{
-			uid: '',
 			'@type': 'Set',
 			'@context': 'https://www.w3.org/ns/odrl/2/',
 			permission: [{ target: 'http://example.com/asset/1', action: 'use' }]
 		},
 		{
-			uid: '',
 			'@type': 'Offer',
 			'@context': 'https://www.w3.org/ns/odrl/2/',
 			permission: [
@@ -63,7 +61,6 @@
 			]
 		},
 		{
-			uid: '',
 			'@type': 'Agreement',
 			'@context': 'https://www.w3.org/ns/odrl/2/',
 			permission: [
@@ -87,10 +84,10 @@
 		if (userSelectedType && selectedType) {
 			const example = policyObjectExamples.find(ex => ex['@type'] === selectedType);
 			if (example) {
-				const uid = isUpdate && Is.stringValue(itemId) ? itemId : '';
+				const uid = isUpdate && Is.stringValue(itemId) ? itemId : undefined;
 
 				example.uid = uid;
-				policyObject = ObjectHelper.clone(example);
+				policyObject = ObjectHelper.clone(example) as IOdrlPolicy;
 				textAreaValue = JSON.stringify(policyObject, null, 2);
 				userSelectedType = false;
 			}
