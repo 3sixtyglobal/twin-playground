@@ -8929,6 +8929,15 @@
 						}
 					},
 					{
+						"name": "idExact",
+						"description": "Find only exact matches, default to false meaning partial matching.",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
 						"name": "resourceTypes",
 						"description": "Include vertices with specific resource types, comma separated.",
 						"in": "query",
@@ -11649,6 +11658,27 @@
 				"tags": [
 					"Synchronised Storage"
 				],
+				"parameters": [
+					{
+						"name": "accept",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"style": "simple"
+					},
+					{
+						"name": "authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"style": "simple",
+						"example": "z3Vcuh2BP9ShC.z3Vcuh2BP9ShC.z3Vcuh2BP9ShC"
+					}
+				],
 				"requestBody": {
 					"description": "Request a trusted node to perform a sync request for a changeset.",
 					"required": true,
@@ -11660,6 +11690,8 @@
 							"examples": {
 								"synchronisedStorageSyncChangeSetRequestExample": {
 									"value": {
+										"@context": "https://schema.twindev.org/synchronised-storage",
+										"type": "ChangeSet",
 										"id": "0909090909090909090909090909090909090909090909090909090909090909",
 										"dateCreated": "2025-05-29T01:00:00.000Z",
 										"dateModified": "2025-05-29T01:00:00.000Z",
@@ -11673,15 +11705,6 @@
 												"operation": "set"
 											}
 										],
-										"proof": {
-											"@context": "https://www.w3.org/ns/credentials/v2",
-											"created": "2025-05-29T01:00:00.000Z",
-											"cryptosuite": "eddsa-jcs-2022",
-											"proofPurpose": "assertionMethod",
-											"proofValue": "z5efBErQs3YBLZoH7jgKMQaRc9YjAxA5XSYKmW3FmTBDw9WionT2NS2x1SMvcRyBvw53cSSoaCT1xQH9tkWngGCX3",
-											"type": "DataIntegrityProof",
-											"verificationMethod": "did:entity-storage:0xd0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0#synchronised-storage-assertion"
-										},
 										"storageKey": "test-type"
 									}
 								}
@@ -11749,22 +11772,6 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/SyncChangeSet"
-							},
-							"examples": {
-								"synchronisedStorageSyncGetDecryptionKeyRequestExample": {
-									"value": {
-										"nodeIdentity": "did:entity-storage:0xd2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2",
-										"proof": {
-											"@context": "https://www.w3.org/ns/credentials/v2",
-											"created": "2025-05-29T01:00:00.000Z",
-											"cryptosuite": "eddsa-jcs-2022",
-											"proofPurpose": "assertionMethod",
-											"proofValue": "z5efBErQs3YBLZoH7jgKMQaRc9YjAxA5XSYKmW3FmTBDw9WionT2NS2x1SMvcRyBvw53cSSoaCT1xQH9tkWngGCX3",
-											"type": "DataIntegrityProof",
-											"verificationMethod": "did:entity-storage:0xd0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0#synchronised-storage-assertion"
-										}
-									}
-								}
 							}
 						}
 					}
@@ -16858,35 +16865,150 @@
 					{
 						"type": "string",
 						"const": "Activity",
-						"description": "Activity base class"
+						"description": "Activity"
 					},
 					{
 						"type": "string",
-						"const": "Create",
-						"description": "Activity Create"
+						"const": "Accept",
+						"description": "Accept"
 					},
 					{
 						"type": "string",
 						"const": "Add",
-						"description": "Activity Add"
+						"description": "Add"
 					},
 					{
 						"type": "string",
-						"const": "Update",
-						"description": "Activity Update"
+						"const": "Announce",
+						"description": "Announce"
 					},
 					{
 						"type": "string",
-						"const": "Remove",
-						"description": "Activity Remove"
+						"const": "Arrive",
+						"description": "Arrive"
+					},
+					{
+						"type": "string",
+						"const": "Block",
+						"description": "Block"
+					},
+					{
+						"type": "string",
+						"const": "Create",
+						"description": "Create"
 					},
 					{
 						"type": "string",
 						"const": "Delete",
-						"description": "Activity Delete"
+						"description": "Delete"
+					},
+					{
+						"type": "string",
+						"const": "Dislike",
+						"description": "Dislike"
+					},
+					{
+						"type": "string",
+						"const": "Flag",
+						"description": "Flag"
+					},
+					{
+						"type": "string",
+						"const": "Follow",
+						"description": "Follow"
+					},
+					{
+						"type": "string",
+						"const": "Ignore",
+						"description": "Ignore"
+					},
+					{
+						"type": "string",
+						"const": "Invite",
+						"description": "Invite"
+					},
+					{
+						"type": "string",
+						"const": "Join",
+						"description": "Join"
+					},
+					{
+						"type": "string",
+						"const": "Leave",
+						"description": "Leave"
+					},
+					{
+						"type": "string",
+						"const": "Like",
+						"description": "Like"
+					},
+					{
+						"type": "string",
+						"const": "Listen",
+						"description": "Listen"
+					},
+					{
+						"type": "string",
+						"const": "Move",
+						"description": "Move"
+					},
+					{
+						"type": "string",
+						"const": "Offer",
+						"description": "Offer"
+					},
+					{
+						"type": "string",
+						"const": "Question",
+						"description": "Question"
+					},
+					{
+						"type": "string",
+						"const": "Reject",
+						"description": "Reject"
+					},
+					{
+						"type": "string",
+						"const": "Read",
+						"description": "Read"
+					},
+					{
+						"type": "string",
+						"const": "Remove",
+						"description": "Remove"
+					},
+					{
+						"type": "string",
+						"const": "TentativeReject",
+						"description": "TentativeReject"
+					},
+					{
+						"type": "string",
+						"const": "TentativeAccept",
+						"description": "TentativeAccept"
+					},
+					{
+						"type": "string",
+						"const": "Travel",
+						"description": "Travel"
+					},
+					{
+						"type": "string",
+						"const": "Undo",
+						"description": "Undo"
+					},
+					{
+						"type": "string",
+						"const": "Update",
+						"description": "Update"
+					},
+					{
+						"type": "string",
+						"const": "View",
+						"description": "View"
 					}
 				],
-				"description": "The types concerning Activity Streams.   The types concerning Activity."
+				"description": "The types concerning Activity Streams. Section 3.1 Activity Types: https://www.w3.org/TR/activitystreams-vocabulary/#activity-types   The types concerning Activity. Section 3.1 Activity Types: https://www.w3.org/TR/activitystreams-vocabulary/#activity-types"
 			},
 			"AttestationCreateRequest": {
 				"type": "object",
@@ -19052,7 +19174,7 @@
 				],
 				"description": "The sort directions."
 			},
-			"SyncChange<SynchronisedEntity>": {
+			"SyncChange": {
 				"type": "object",
 				"properties": {
 					"operation": {
@@ -19063,7 +19185,7 @@
 						"description": "The item id."
 					},
 					"entity": {
-						"$ref": "#/components/schemas/SynchronisedEntity"
+						"$ref": "#/components/schemas/SynchronisedEntityCore"
 					}
 				},
 				"required": [
@@ -19091,6 +19213,16 @@
 			"SyncChangeSet": {
 				"type": "object",
 				"properties": {
+					"@context": {
+						"type": "string",
+						"const": "https://schema.twindev.org/synchronised-storage",
+						"description": "The LD Context for the change set."
+					},
+					"type": {
+						"type": "string",
+						"const": "ChangeSet",
+						"description": "The LD Type for the change set."
+					},
 					"id": {
 						"type": "string",
 						"description": "The id of the change set."
@@ -19107,31 +19239,30 @@
 						"type": "string",
 						"description": "The date the change set was last modified."
 					},
+					"nodeIdentity": {
+						"type": "string",
+						"description": "The identity of the node that created the change set."
+					},
 					"changes": {
 						"type": "array",
 						"items": false,
 						"description": "The changes to apply after a snapshot.",
 						"prefixItems": [
 							{
-								"$ref": "#/components/schemas/SyncChange<SynchronisedEntity>"
+								"$ref": "#/components/schemas/SyncChange"
 							}
 						]
-					},
-					"nodeIdentity": {
-						"type": "string",
-						"description": "The identity of the node that created the change set."
-					},
-					"proof": {
-						"$ref": "https://schema.twindev.org/w3c-did/Proof"
 					}
 				},
 				"required": [
+					"@context",
+					"type",
 					"id",
 					"storageKey",
 					"dateCreated",
 					"dateModified",
-					"changes",
-					"nodeIdentity"
+					"nodeIdentity",
+					"changes"
 				],
 				"additionalProperties": false,
 				"description": "The object definition for a sync change set."
@@ -19150,18 +19281,19 @@
 				"additionalProperties": false,
 				"description": "The body of the response."
 			},
-			"SynchronisedEntity": {
+			"SynchronisedEntityCore": {
 				"type": "object",
 				"properties": {
 					"dateModified": {
 						"type": "string",
-						"description": "The date the entry was modified"
+						"description": "The date the entry was modified."
 					}
 				},
 				"required": [
 					"dateModified"
 				],
-				"additionalProperties": false
+				"additionalProperties": false,
+				"description": "The base definition for synchronised entries."
 			},
 			"TaskApp": {
 				"type": "object",

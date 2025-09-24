@@ -292,13 +292,22 @@
 		"jpegEncoder": {
 			"invalidQuality": "Quality must be between 1 and 100, it is \"{value}\""
 		},
-		"rightsManagementTokenHelper": {
+		"dataAccessPointClient": {
+			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		},
+		"policyNegotiationPointClient": {
+			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		},
+		"verifiableCredentialAuthenticationGenerator": {
+			"missingNodeIdentity": "The authenticator can not generate a token without a node identity"
+		},
+		"verifiableCredentialAuthenticationProcessor": {
 			"tokenFailed": "Failed to verify token",
-			"tokenMissingIssuanceDate": "The token is missing the 'issuanceDate' field for assignee \"{assignee}\"",
+			"tokenNoCredential": "The token does not contain a verifiable credential",
 			"tokenNoIssuer": "The token does not contain an issuer",
-			"tokenExpired": "The token has expired for assignee \"{assignee}\"",
-			"tokenItemMismatch": "The canonical item does not match the expected item for property \"{property}\"",
-			"tokenNoCredential": "The token does not contain a credential"
+			"tokenMissingIssuanceDate": "The token is missing the 'issuanceDate' field for issuer \"{issuer}\"",
+			"tokenExpired": "The token has expired for issuer \"{issuer}\"",
+			"tokenMissingSubject": "The token is missing the 'credentialSubject' field for issuer \"{issuer}\""
 		},
 		"nftAttestationConnector": {
 			"attestingFailed": "Attesting the data failed",
@@ -360,7 +369,8 @@
 			"queryingFailed": "Querying the Auditable Item Graph failed",
 			"removeVerifiableFailed": "Removing the verifiable data the Auditable Item Graph vertex failed",
 			"vertexNotFound": "The vertex with the Id \"{notFoundId}\" was not found",
-			"resourceIdMissing": "You must provide either the id, or the resourceObject must contain an id property for index \"{index}\""
+			"resourceIdMissing": "You must provide either the id, or the resourceObject must contain an id property for index \"{index}\"",
+			"aliasNotUnique": "The alias id \"{aliasId}\" is already in use on another vertex and the unique flag was set"
 		},
 		"auditableItemStreamService": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the Auditable Item Stream service \"{namespace}\"",
@@ -683,7 +693,8 @@
 			"validateNftVersionFailed": "Failed to validate NFT version compatibility",
 			"nftContractVersionNotFound": "Contract version field not found for NFT \"{nftId}\"",
 			"getNftContractVersionFailed": "Failed to retrieve contract version for NFT \"{nftId}\"",
-			"getCurrentContractVersionFailed": "Failed to retrieve current contract version from blockchain"
+			"getCurrentContractVersionFailed": "Failed to retrieve current contract version from blockchain",
+			"noWalletConfigured": "For write operations a wallet must be configured in the connector options"
 		},
 		"iotaNftUtils": {
 			"invalidNftIdFormat": "The NFT ID \"{id}\" has an invalid format"
