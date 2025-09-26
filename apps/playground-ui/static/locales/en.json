@@ -259,6 +259,9 @@
 			"verificationMethodNotFound": "The verification method \"{methodName}\" of type \"{methodType}\" could not be found",
 			"verificationMethodJwkNotFound": "The verification method \"{methodName}\" of type \"{methodType}\" is missing the JWK"
 		},
+		"idHelper": {
+			"invalidDocumentId": "The document id \"{id}\" is invalid"
+		},
 		"qr": {
 			"typeNumberRange": "The typeNumber parameter should be a number >= 0 and <= 40, it is {typeNumber}",
 			"dataOverflow": "There is not enough space in the QR code to store the data, {lengthInBits} > {totalDataCount}, try increasing the typeNumber from {typeNumber}, or use 0 for auto detect",
