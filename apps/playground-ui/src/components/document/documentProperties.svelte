@@ -470,7 +470,8 @@
 
 			let auditableItemGraphEdges:
 				| {
-						id: string;
+						id?: string;
+						targetId: string;
 						addAlias?: boolean;
 						aliasAnnotationObject?: IJsonLdNodeObject;
 				  }[]
@@ -483,7 +484,7 @@
 
 				auditableItemGraphEdges = [
 					{
-						id: vertexId,
+						targetId: vertexId,
 						addAlias: vertexAddAlias,
 						aliasAnnotationObject: edgeAliasAnnotationObject
 					}
