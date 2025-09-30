@@ -38,6 +38,7 @@
 	let progress: string | undefined;
 	let selectedItem: Omit<IAuditableItemGraphEdge, '@context' | 'type'> | undefined;
 	let edgeId: string | undefined;
+	let edgeTargetId: string | undefined;
 	let edgeRelationships: string | undefined;
 	let validationErrors: {
 		[field in 'edgeId' | 'edgeRelationships' | 'annotationObject']?:
@@ -73,10 +74,10 @@
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.stringValue(
-			'edgeId',
-			edgeId,
+			'edgeTargetId',
+			edgeTargetId,
 			validationFailures,
-			$i18n('pages.auditableItemGraphEdgeList.edgeId')
+			$i18n('pages.auditableItemGraphEdgeList.edgeTargetId')
 		);
 
 		Validation.stringValue(
@@ -117,11 +118,13 @@
 		if (index >= 0) {
 			selectedItem = items[index];
 			edgeId = selectedItem.id;
+			edgeTargetId = selectedItem.targetId;
 			edgeRelationships = selectedItem.edgeRelationships.join(',');
 			annotationObjectText = JSON.stringify(selectedItem.annotationObject, null, 2);
 		} else {
 			selectedItem = undefined;
 			edgeId = undefined;
+			edgeTargetId = undefined;
 			edgeRelationships = undefined;
 			annotationObjectText = '';
 		}
@@ -131,11 +134,13 @@
 		showModal = false;
 		if (Is.object(selectedItem)) {
 			selectedItem.id = edgeId ?? selectedItem.id;
+			selectedItem.targetId = edgeTargetId ?? selectedItem.targetId;
 			selectedItem.edgeRelationships = edgeRelationships?.split(',') ?? [];
 			selectedItem.annotationObject = Coerce.object(annotationObjectText);
-		} else if (Is.stringValue(edgeId)) {
+		} else if (Is.stringValue(edgeTargetId)) {
 			items.push({
 				id: edgeId,
+				targetId: edgeTargetId,
 				edgeRelationships: edgeRelationships?.split(',') ?? [],
 				annotationObject: Coerce.object(annotationObjectText)
 			});
@@ -244,7 +249,7 @@
 				<Select
 					name="edgeId"
 					color={Is.arrayValue(validationErrors.edgeId) ? 'error' : 'default'}
-					bind:value={edgeId}
+					bind:value={edgeTargetId}
 					disabled={busy}
 				>
 					{#each availableVertices as itemOption}

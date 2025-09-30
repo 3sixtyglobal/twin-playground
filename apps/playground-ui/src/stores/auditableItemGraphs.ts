@@ -42,7 +42,7 @@ export async function auditableItemGraphCreate(
 		resourceObject?: IJsonLdNodeObject;
 	}[],
 	edges?: {
-		id: string;
+		targetId: string;
 		edgeRelationships: string[];
 		annotationObject?: IJsonLdNodeObject;
 	}[]
@@ -94,7 +94,8 @@ export async function auditableItemGraphUpdate(
 		resourceObject?: IJsonLdNodeObject;
 	}[],
 	edges?: {
-		id: string;
+		id?: string;
+		targetId: string;
 		edgeRelationships: string[];
 		annotationObject?: IJsonLdNodeObject;
 	}[]

@@ -41,7 +41,7 @@ export async function documentCreate(
 	blob: Uint8Array,
 	annotationObject?: IJsonLdNodeObject,
 	auditableItemGraphEdges?: {
-		id: string;
+		targetId: string;
 		addAlias?: boolean;
 		aliasAnnotationObject?: IJsonLdNodeObject;
 	}[],
@@ -84,7 +84,8 @@ export async function documentUpdate(
 	blob?: Uint8Array,
 	annotationObject?: IJsonLdNodeObject,
 	auditableItemGraphEdges?: {
-		id: string;
+		id?: string;
+		targetId: string;
 		addAlias?: boolean;
 		aliasAnnotationObject?: IJsonLdNodeObject;
 	}[]
