@@ -56,7 +56,7 @@
 				"coordinatesLongitudeRange": "The longitude value must be between -180 and 180"
 			},
 			"auditableItemGraphService": {
-				"edgeIdSameAsVertexId": "The edge id \"{id}\"can not point to the vertex it belongs to"
+				"edgeIdSameAsVertexId": "The edge with target id \"{targetId}\" can not point to the vertex it belongs to"
 			}
 		},
 		"guard": {
@@ -373,7 +373,8 @@
 			"removeVerifiableFailed": "Removing the verifiable data the Auditable Item Graph vertex failed",
 			"vertexNotFound": "The vertex with the Id \"{notFoundId}\" was not found",
 			"resourceIdMissing": "You must provide either the id, or the resourceObject must contain an id property for index \"{index}\"",
-			"aliasNotUnique": "The alias id \"{aliasId}\" is already in use on another vertex and the unique flag was set"
+			"aliasNotUnique": "The alias id \"{aliasId}\" is already in use on another vertex and the unique flag was set",
+			"invalidEdgeId": "The edge id \"{edgeId}\" is not valid"
 		},
 		"auditableItemStreamService": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the Auditable Item Stream service \"{namespace}\"",
@@ -689,14 +690,6 @@
 			"deployedPackageIdRequired": "deployedPackageId is required for network operations on \"{network}\".",
 			"packageIdNotFound": "Package ID not found for network \"{network}\"",
 			"invalidGasBudget": "Invalid gas budget: {gasBudget}",
-			"migrateNftFailed": "Failed to migrate NFT \"{nftId}\" to version {version}",
-			"enableMigrationFailed": "Failed to enable migration on the blockchain",
-			"disableMigrationFailed": "Failed to disable migration on the blockchain",
-			"isMigrationActiveFailed": "Failed to check migration status from the blockchain",
-			"validateNftVersionFailed": "Failed to validate NFT version compatibility",
-			"nftContractVersionNotFound": "Contract version field not found for NFT \"{nftId}\"",
-			"getNftContractVersionFailed": "Failed to retrieve contract version for NFT \"{nftId}\"",
-			"getCurrentContractVersionFailed": "Failed to retrieve current contract version from blockchain",
 			"noWalletConfigured": "For write operations a wallet must be configured in the connector options"
 		},
 		"iotaNftUtils": {

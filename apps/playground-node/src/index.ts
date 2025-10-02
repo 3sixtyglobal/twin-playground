@@ -6,7 +6,7 @@ import { EngineConfigHelper } from "@twin.org/engine";
 import type { IEngineConfig } from "@twin.org/engine-types";
 import { EntitySchemaHelper } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
-import { run } from "@twin.org/node-core";
+import { type INodeEnvironmentVariables, run } from "@twin.org/node-core";
 import { UserAttestationEntry } from "./entities/userAttestationEntry.js";
 import { UserDocumentEntry } from "./entities/userDocumentEntry.js";
 import { UserImmutableProofEntry } from "./entities/userImmutableProofEntry.js";
@@ -25,9 +25,13 @@ await run({
 
 /**
  * Extends the engine config with types specific to playground.
+ * @param envVars The environment variables.
  * @param engineConfig The engine configuration.
  */
-export async function extendConfig(engineConfig: IEngineConfig): Promise<void> {
+export async function extendConfig(
+	envVars: INodeEnvironmentVariables,
+	engineConfig: IEngineConfig
+): Promise<void> {
 	// Add a custom entity storage type for the users attestations,
 	// but only if the attestation connectors are available.
 	if (Is.arrayValue(engineConfig.types.attestationConnector)) {
