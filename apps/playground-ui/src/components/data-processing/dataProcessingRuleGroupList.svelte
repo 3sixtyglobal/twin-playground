@@ -32,7 +32,7 @@
 	let entities: IRuleGroup[] | undefined;
 	let busy = false;
 	let status = '';
-	let pageSize = 50;
+	let limit = 50;
 	let isError = false;
 	let confirmationId: string = '';
 	let modalIsBusy = false;
@@ -44,7 +44,7 @@
 		status = $i18n('pages.dataProcessingRuleGroupList.loading');
 		busy = true;
 		isError = false;
-		const result = await ruleGroupQuery(cursorHandler.getCurrentCursor(), pageSize);
+		const result = await ruleGroupQuery(cursorHandler.getCurrentCursor(), limit);
 
 		if (Is.stringValue(result?.error)) {
 			isError = true;
@@ -112,12 +112,12 @@
 	>
 		<div class="flex flex-col gap-4 lg:flex-row">
 			<Label>
-				{$i18n('pages.dataProcessingRuleGroupList.pageSize')}
+				{$i18n('pages.dataProcessingRuleGroupList.limit')}
 				<Input
-					name="pageSize"
-					placeholder={$i18n('pages.dataProcessingRuleGroupList.pageSize')}
+					name="limit"
+					placeholder={$i18n('pages.dataProcessingRuleGroupList.limit')}
 					color="default"
-					bind:value={pageSize}
+					bind:value={limit}
 					disabled={busy}
 					type="number"
 				></Input>

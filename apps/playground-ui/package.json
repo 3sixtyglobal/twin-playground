@@ -79,5 +79,9 @@
 		"vite": "7.1.7",
 		"vitest": "3.2.4"
 	},
-	"type": "module"
+	"type": "module",
+	"bugs": {
+		"url": "git+https://github.com/twinfoundation/playground/issues"
+	},
+	"homepage": "https://twindev.org"
 }

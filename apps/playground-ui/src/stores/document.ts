@@ -4,17 +4,17 @@ import type { IAuditableItemGraphVertexList } from "@twin.org/auditable-item-gra
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { IDocument, IDocumentList } from "@twin.org/document-management-models";
-import { DocumentManagementClient } from "@twin.org/document-management-rest-client";
+import { DocumentManagementRestClient } from "@twin.org/document-management-rest-client";
 import type { UneceDocumentCodes } from "@twin.org/standards-unece";
 
-let documentClient: DocumentManagementClient | undefined;
+let documentClient: DocumentManagementRestClient | undefined;
 
 /**
  * Initialise the document management.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	documentClient = new DocumentManagementClient({
+	documentClient = new DocumentManagementRestClient({
 		endpoint: apiUrl,
 		pathPrefix: "documents"
 	});
@@ -116,7 +116,7 @@ export async function documentUpdate(
  * @param options.includeAttestation Flag to include the attestation information for the document.
  * @param options.includeRemoved Flag to include deleted documents.
  * @param cursor The cursor to get the next chunk of revisions.
- * @param pageSize Page size of items to return.
+ * @param limit Limit the number of items to return.
  * @returns The document list and its properties or an error if one occurred.
  */
 export async function documentGet(
@@ -128,16 +128,11 @@ export async function documentGet(
 		includeRemoved?: boolean;
 	},
 	cursor?: string,
-	pageSize?: number
+	limit?: number
 ): Promise<{ error?: string; item?: IDocumentList } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
-			const result = await documentClient.get(
-				auditableItemGraphDocumentId,
-				options,
-				cursor,
-				pageSize
-			);
+			const result = await documentClient.get(auditableItemGraphDocumentId, options, cursor, limit);
 			return { item: result };
 		} catch (err) {
 			return {
@@ -173,17 +168,17 @@ export async function documentRemoveRevision(
  * Query for documents with a specific id.
  * @param documentId The document id to find in the graph.
  * @param cursor The cursor to get the next chunk of documents.
- * @param pageSize The page size to get the next chunk of documents.
+ * @param limit The limit to get the next chunk of documents.
  * @returns The graph vertices list or an error if one occurred.
  */
 export async function documentQuery(
 	documentId: string,
 	cursor?: string,
-	pageSize?: number
+	limit?: number
 ): Promise<{ error?: string; item?: IAuditableItemGraphVertexList } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
-			const result = await documentClient.query(documentId, cursor, pageSize);
+			const result = await documentClient.query(documentId, cursor, limit);
 			return { item: result };
 		} catch (err) {
 			return {

@@ -39,7 +39,7 @@
 	let confirmationId: string = '';
 	let modalIsBusy = false;
 	let policyType: string | undefined = undefined;
-	let pageSize = 10;
+	let limit = 10;
 
 	$: canGoBackwards = cursorHandler.canGoBackwards();
 	$: canGoForwards = cursorHandler.canGoForwards();
@@ -57,7 +57,7 @@
 			};
 		}
 
-		const result = await policyQuery(conditions, cursorHandler.getCurrentCursor(), pageSize);
+		const result = await policyQuery(conditions, cursorHandler.getCurrentCursor(), limit);
 
 		if (Is.stringValue(result?.error)) {
 			isError = true;
@@ -127,12 +127,12 @@
 	<Card class="w-full max-w-full rounded-lg border border-gray-300 p-4">
 		<div class="block flex-row gap-2 lg:flex">
 			<Label>
-				{$i18n('pages.rightsManagement.pageSize')}
+				{$i18n('pages.rightsManagement.limit')}
 				<Input
-					name="pageSize"
-					placeholder={$i18n('pages.rightsManagement.pageSize')}
+					name="limit"
+					placeholder={$i18n('pages.rightsManagement.limit')}
 					color="default"
-					bind:value={pageSize}
+					bind:value={limit}
 					disabled={busy}
 					type="number"
 				></Input>

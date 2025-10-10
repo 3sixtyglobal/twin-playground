@@ -39,17 +39,18 @@
 			"beUrl": "{fieldName} must be a correctly formatted url",
 			"beJSON": "{fieldName} must be correctly formatted JSON",
 			"beEmail": "{fieldName} must be a correctly formatted e-mail address",
-			"failed": "Validation failed",
-			"failedObject": "Validation of \"{objectName}\" failed",
-			"properties": {
-				"keyAlreadyExists": "The key already exists"
-			},
+			"minLengthRequired": "The value length should be at least {minLength}, it is {actualLength}",
+			"maxLengthRequired": "The value length should be at most {maxLength}, it is {actualLength}",
+			"repeatedCharacters": "The value should not contain repeated characters in sequence",
+			"atLeastOneLowerCase": "The value should contain at least one lowercase character",
+			"atLeastOneUpperCase": "The value should contain at least one uppercase character",
+			"atLeastOneNumber": "The value should contain at least one number",
+			"atLeastOneSpecialChar": "The value should contain at least one symbol",
 			"schema": {
 				"failedValidation": "The JSON schema failed validation, {message}",
 				"missingType": "Failed to validate as there is no handler for type \"{dataType}\""
 			},
 			"geo": {
-				"coordinatesNotObject": "The geo coordinates must be an object",
 				"coordinatesLatitudeNumber": "The latitude value must be a number",
 				"coordinatesLatitudeRange": "The latitude value must be between -90 and 90",
 				"coordinatesLongitudeNumber": "The longitude value must be a number",
@@ -90,9 +91,7 @@
 			"url": "Property \"{property}\" must be a Url formatted string, it is \"{value}\"",
 			"email": "Property \"{property}\" must be string in e-mail format, it is \"{value}\"",
 			"length32Multiple": "Property \"{property}\" should be a multiple of 32, it is {value}",
-			"lengthEntropy": "Property \"{property}\" should be a multiple of 4, >=16 and <= 32, it is {value}",
-			"length3Multiple": "Property \"{property}\" should be a multiple of 3, it is {value}",
-			"greaterThan0": "Property \"{property}\" must be greater than zero, it is {value}"
+			"lengthEntropy": "Property \"{property}\" should be a multiple of 4, >=16 and <= 32, it is {value}"
 		},
 		"objectHelper": {
 			"failedBytesToJSON": "Failed converting bytes to JSON",
@@ -108,7 +107,7 @@
 			"noGet": "The requested {typeName} \"{name}\" does not exist in the factory"
 		},
 		"bitString": {
-			"outOfRange": "The index should be >= 0 and less than the length of the bit string"
+			"outOfRange": "The index should be >= 0 and less than the length of the bit string, the index is \"{index}\" and the number of bit is \"{numberBits}\""
 		},
 		"base32": {
 			"invalidCharacter": "Data contains a character \"{invalidCharacter}\" which is not in the charset"
@@ -123,11 +122,12 @@
 			"failedPatch": "Failed to patch the JSON object, patch index \"{index}\" failed"
 		},
 		"fetchHelper": {
-			"decodingJSON": "Decoding JSON failed for route \"{route}\"",
+			"decodingJSON": "Decoding JSON failed for route \"{url}\"",
 			"failureStatusText": "The request to the API failed: \"{statusText}\"",
 			"connectivity": "The request failed, the API could be offline, or there are other connectivity issues",
 			"timeout": "The request timed out",
-			"general": "A general failure occurred during the request"
+			"general": "A general failure occurred during the request",
+			"retryLimitExceeded": "The retry limit was exceeded for route \"{url}\""
 		},
 		"jwt": {
 			"noKeyOrSigner": "No key or signer was provided for JWT creation",
@@ -143,10 +143,6 @@
 			"createFailed": "Failed to create JWS",
 			"verifyFailed": "Failed to verify JWS"
 		},
-		"bip39": {
-			"missingMnemonicWord": "The mnemonic contains a word not in the wordlist, \"{value}\"",
-			"checksumMismatch": "The checksum does not match \"{newChecksum}\" != \"{checksumBits}\""
-		},
 		"ed25519": {
 			"privateKeyLength": "The private key length is incorrect, it should be \"{requiredSize}\" but is \"{actualSize}\"",
 			"publicKeyLength": "The public key length is incorrect, it should be \"{requiredSize}\" but is \"{actualSize}\""
@@ -154,13 +150,6 @@
 		"secp256k1": {
 			"privateKeyLength": "The private key length is incorrect, it should be \"{requiredSize}\" but is \"{actualSize}\"",
 			"publicKeyLength": "The public key length is incorrect, it should be \"{requiredSize}\" but is \"{actualSize}\""
-		},
-		"x25519": {
-			"invalidPublicKey": "Invalid Ed25519 Public Key"
-		},
-		"blake2b": {
-			"outputLength64": "The output length should be between 1 and 64, it is \"{outputLength}\"",
-			"keyLength64": "The key length should be between 1 and 64, it is \"{keyLength}\""
 		},
 		"sha512": {
 			"bitSize": "Only 224, 256, 384 or 512 bits are supported, it is \"{bitSize}\""
@@ -184,26 +173,11 @@
 			"lowerUpper": "The address my use either lowercase or uppercase, \"{bech32}\"",
 			"dataTooShort": "The address does not contain enough data to decode, \"{bech32}\""
 		},
-		"pbkdf2": {
-			"keyTooLong": "The requested key length \"{keyLength}\" is too long, based on the \"{macLength}\""
-		},
-		"chaCha20Poly1305": {
-			"noAadWithData": "You can not set the aad when there is already data",
-			"noAuthTag": "Can not finalise when the auth tag is not set",
-			"authenticationFailed": "The data could not be authenticated",
-			"authTagDecrypting": "Can not get the auth tag when decrypting",
-			"authTagEncrypting": "Can not set the auth tag when encrypting",
-			"noAuthTagSet": "The auth tag has not been set"
-		},
 		"bip44": {
 			"unsupportedKeyType": "The key type \"{keyType}\" is not supported"
 		},
 		"slip0010": {
 			"invalidSeed": "The seed is invalid \"{seed}\""
-		},
-		"rsa": {
-			"noPrivateKey": "Private key is required for this operation",
-			"invalidKeySize": "Invalid RSA key size"
 		},
 		"baseRestClient": {
 			"missingRouteProp": "Missing route parameter in data \"{routeProp}\" for route \"{route}\"",
@@ -226,19 +200,15 @@
 			"jsonLdError": "The JSON-LD processing failed due to the following error: \"{code}\""
 		},
 		"proofHelper": {
-			"unsupportedProofType": "Proof type \"{proofType}\" not supported.",
-			"proofMissing": "Proof is missing."
+			"unsupportedProofType": "Proof type \"{proofType}\" not supported."
 		},
 		"jsonWebSignature2020SignerVerifier": {
-			"missingPrivateKey": "Private key is missing.",
-			"missingPublicKey": "Public key is missing.",
-			"missingProofValue": "Proof value is missing."
+			"missingJws": "JWS is missing from proof."
 		},
 		"dataIntegrityProofSignerVerifier": {
-			"cryptosuiteNotSupported": "Cryptosuite \"{cryptosuite}\" is not supported.",
+			"cryptosuiteNotSupported": "Cryptosuite \"{cryptoSuite}\" is not supported.",
 			"missingPrivateKey": "Private key is missing.",
-			"missingPublicKey": "Public key is missing.",
-			"missingProofValue": "Proof value is missing."
+			"missingPublicKey": "Public key is missing."
 		},
 		"multikeyHelper": {
 			"invalidPublicKeyMultibase": "Public key multibase \"{publicKeyMultibase}\" is invalid.",
@@ -248,11 +218,19 @@
 			"publicKeyMultibaseMissingHeader": "Public key multibase \"{publicKeyMultibase}\" is missing the multi codec header",
 			"secretKeyMultibaseMissingHeader": "Secret key multibase \"{secretKeyMultibase}\" is missing the multi codec header"
 		},
-		"socketConnect": "Failure during socket connect",
-		"callback": "Error when calling local callback",
+		"auditableItemGraphRestClient": {
+			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		},
+		"auditableItemStreamRestClient": {
+			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		},
+		"eventBusSocketClient": {
+			"socketConnect": "Failure during socket connect",
+			"callback": "Error when calling local callback",
+			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		},
 		"verificationHelper": {
 			"jwtDecodeFailed": "Decoding the JWT failed",
-			"proofTypeNotSupported": "The proof type \"{proofType}\" is not supported",
 			"proofMissingVerificationMethod": "The proof is missing the verification method"
 		},
 		"documentHelper": {
@@ -262,7 +240,10 @@
 		"idHelper": {
 			"invalidDocumentId": "The document id \"{id}\" is invalid"
 		},
-		"qr": {
+		"immutableProofRestClient": {
+			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		},
+		"qR": {
 			"typeNumberRange": "The typeNumber parameter should be a number >= 0 and <= 40, it is {typeNumber}",
 			"dataOverflow": "There is not enough space in the QR code to store the data, {lengthInBits} > {totalDataCount}, try increasing the typeNumber from {typeNumber}, or use 0 for auto detect",
 			"typeNumberOverflow": "There is not enough space in the QR code to store the data, {lengthInBits} > {totalDataCount}, typeNumber cannot be greater than 40"
@@ -272,21 +253,21 @@
 			"marginSizeZero": "The marginSize must be a number >= 0, it is \"{marginSize}\""
 		},
 		"qRAlphaNumeric": {
-			"illegalCharacter ": "Illegal character in string \"{value}\""
+			"illegalCharacter": "Illegal character in string \"{value}\""
 		},
 		"qRNumber": {
-			"illegalCharacter ": "Illegal character in string \"{value}\""
+			"illegalCharacter": "Illegal character in string \"{value}\""
 		},
 		"mathHelper": {
-			"lessThanOne ": "The value can not be less than 1, it is \"{value}\""
+			"lessThanOne": "The value can not be less than 1, it is \"{value}\""
 		},
-		"qrHelper": {
-			"correctionLevelRange ": "The errorCorrectLevel parameter should be one of the following: \"L\", \"M\", \"Q\", \"H\", it is \"{errorCorrectLevel}\"",
-			"modeRange ": "The mode parameter should be one of the following: \"Byte\", \"Numeric\", \"Alphanumeric\", it is \"{mode}\"",
-			"maskPatternRange ": "The maskPattern parameter should be a number >= 0 and <= 7, it is \"{maskPattern}\""
+		"qRHelper": {
+			"correctionLevelRange": "The errorCorrectLevel parameter should be one of the following: \"L\", \"M\", \"Q\", \"H\", it is \"{errorCorrectLevel}\"",
+			"modeRange": "The mode parameter should be one of the following: \"Byte\", \"Numeric\", \"Alphanumeric\", it is \"{mode}\"",
+			"maskPatternRange": "The maskPattern parameter should be a number >= 0 and <= 7, it is \"{maskPattern}\""
 		},
 		"rSBlock": {
-			"correctionLevelRange ": "The errorCorrectLevel parameter should be one of the following: \"L\", \"M\", \"Q\", \"H\", it is \"{errorCorrectLevel}\""
+			"correctionLevelRange": "The errorCorrectLevel parameter should be one of the following: \"L\", \"M\", \"Q\", \"H\", it is \"{errorCorrectLevel}\""
 		},
 		"qRDataBase": {
 			"invalidMode": "Invalid mode {mode} for typeNumber {typeNumber}",
@@ -295,10 +276,14 @@
 		"jpegEncoder": {
 			"invalidQuality": "Quality must be between 1 and 100, it is \"{value}\""
 		},
-		"dataAccessPointClient": {
+		"color": {
+			"range": "Value must be between 0 and 355, it is \"{value}\"",
+			"hex": "Value must be a valid hex color in one of the forms #RGB/#ARGB/#RRGGBB/#AARRGGBB, it is \"{hex}\""
+		},
+		"dataAccessPointRestClient": {
 			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
 		},
-		"policyNegotiationPointClient": {
+		"policyNegotiationPointRestClient": {
 			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
 		},
 		"verifiableCredentialAuthenticationGenerator": {
@@ -311,6 +296,9 @@
 			"tokenMissingIssuanceDate": "The token is missing the 'issuanceDate' field for issuer \"{issuer}\"",
 			"tokenExpired": "The token has expired for issuer \"{issuer}\"",
 			"tokenMissingSubject": "The token is missing the 'credentialSubject' field for issuer \"{issuer}\""
+		},
+		"silentTelemetryConnector": {
+			"notSupported": "The method \"{methodName}\" is not supported on silent telemetry connector."
 		},
 		"nftAttestationConnector": {
 			"attestingFailed": "Attesting the data failed",
@@ -329,21 +317,17 @@
 		},
 		"entityStorageAuthenticationService": {
 			"loginFailed": "Login failed",
-			"refreshFailed": "Refresh failed",
 			"userNotFound": "The user with the specified e-mail could not be found",
 			"passwordMismatch": "The password does not match the user's password"
 		},
 		"entityStorageAuthenticationAdminService": {
 			"userExists": "The user with the specified e-mail already exists",
-			"createFailed": "Creating the user failed",
-			"removeFailed": "Removing the user failed",
+			"createUserFailed": "Creating the user failed",
+			"removeUserFailed": "Removing the user failed",
 			"updatePasswordFailed": "Updating the user's password failed",
 			"passwordTooShort": "The password is too short, it must be at least {minLength} characters long",
 			"userNotFound": "The user with the specified e-mail could not be found \"{notFoundId}\"",
 			"currentPasswordMismatch": "The current password is incorrect"
-		},
-		"entityStorageAuthenticationProcessor": {
-			"initializeFailed": "The JSON Web token authentication processor could not be initialized"
 		},
 		"tokenHelper": {
 			"missing": "The JSON Web token could not be found in the authorization header",
@@ -356,13 +340,15 @@
 		"socketRouteProcessor": {
 			"routeNotFound": "The web server could not find the socket route \"{notFoundId}\""
 		},
-		"jwtIdentityProcessor": {
-			"jwtMissing": "The JSON Web token could not be found in the authorization header or a cookie",
-			"jwtSignatureInvalid": "The JSON Web token signature could not be validated",
-			"jwtExpired": "The JSON Web token has expired"
-		},
 		"jsonLdMimeTypeProcessor": {
 			"invalidJsonLd": "The JSON-LD content is invalid or missing '@context'."
+		},
+		"fastifyWebServer": {
+			"startFailed": "The Web Server failed to start",
+			"badRequest": "The web server could not handle the request",
+			"noRestProcessors": "You must configure at least one REST processor",
+			"noSocketProcessors": "You must configure at least one socket processor",
+			"postProcessorError": "There was a failure after in a post processor for route \"{route}\""
 		},
 		"auditableItemGraphService": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the Auditable Item Graph service \"{namespace}\"",
@@ -390,10 +376,9 @@
 			"removingEntryFailed": "Removing entry from the Auditable Item Stream failed",
 			"gettingEntriesFailed": "Getting entries from the Auditable Item Stream failed",
 			"gettingEntryObjectsFailed": "Getting entry objects from the Auditable Item Stream failed",
-			"removeImmutableFailed": "Removing immutable entry from the Auditable Item Stream failed",
+			"removeVerifiableFailed": "Removing verifiable storage from the Auditable Item Stream failed",
 			"streamNotFound": "The stream with the Id \"{notFoundId}\" was not found",
-			"streamEntryNotFound": "The stream entry with the Id \"{notFoundId}\" was not found",
-			"streamMismatch": "The stream Id in the entry Id \"{streamEntryNamespaceId}\" does not match the stream Id \"{streamNamespaceId}\""
+			"streamEntryNotFound": "The stream entry with the Id \"{notFoundId}\" was not found"
 		},
 		"s3BlobStorageConnector": {
 			"bucketCreateFailed": "Creating bucket \"{bucket}\" failed",
@@ -440,7 +425,9 @@
 			"updateFailed": "There was a problem updating the blob",
 			"removeFailed": "There was a problem removing the blob",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage service \"{namespace}\"",
-			"vaultConnectorNotConfigured": "The vault connector is not configured, but encryption/decryption was requested."
+			"vaultConnectorNotConfigured": "The vault connector is not configured, but encryption/decryption was requested.",
+			"blobNotFound": "The blob with id \"{notFoundId}\" was not found",
+			"entityNotFound": "The entity with id \"{notFoundId}\" was not found"
 		},
 		"commands": {
 			"common": {
@@ -448,7 +435,6 @@
 				"optionInvalidHex": "The \"{option}\" does not appear to be hex. \"{value}\"",
 				"optionInvalidBase64": "The \"{option}\" does not appear to be base64. \"{value}\"",
 				"optionInvalidHexBase64": "The \"{option}\" does not appear to be hex or base64. \"{value}\"",
-				"optionInvalidBech32": "The \"{option}\" does not appear to be bech32. \"{value}\"",
 				"optionMinValue": "The \"{option}\" option must be greater than or equal to {minValue}, it is {value}.",
 				"optionMaxValue": "The \"{option}\" option must be less than or equal to {maxValue}, it is {value}."
 			}
@@ -469,21 +455,31 @@
 			"comparisonNotSupported": "Comparison operator \"{comparison}\" is not supported",
 			"conditionalNotSupported": "Conditional operator \"{operator}\" is not supported",
 			"sortSingle": "You can only sort by a single property",
-			"sortNotIndexed": "The property \"{property}\" is not indexed and cannot be used for sorting"
+			"sortNotIndexed": "The property \"{property}\" is not indexed and cannot be used for sorting",
+			"propertyNotFound": "The property \"{property}\" was not found on the entity schema"
 		},
 		"fileEntityStorageConnector": {
 			"directoryCreateFailed": "Creating directory \"{directory}\" failed"
 		},
 		"scyllaDBTableConnector": {
 			"tableCreateFailed": "Creating table \"{table}\" failed",
-			"getFailed": "Getting item with \"{id}\" failed",
 			"dropTableFailed": " \"{table}\" cannot be dropped",
 			"truncateTableFailed": " \"{table}\" cannot be dropped",
 			"removeFailed": "Removing item with \"{id}\" failed",
-			"findFailed": "Error while querying data on  \"{table}\""
+			"itemTypeNotDefined": "The item type is not defined",
+			"setFailed": "Setting item with \"{id}\" failed"
+		},
+		"scyllaDBViewConnector": {
+			"viewCreateFailed": "Creating view \"{view}\" failed",
+			"notSupported": "The operation is not supported \"{methodName}\""
+		},
+		"abstractScyllaDBConnector": {
+			"getFailed": "Getting item with \"{id}\" failed",
+			"findFailed": "Error while querying data on  \"{table}\"",
+			"parseJSONFailed": "Parsing JSON failed for field \"{name}\" with value \"{value}\""
 		},
 		"entityStorageService": {
-			"entityNotFound": "Could not find entity with id \"{id}\""
+			"entityNotFound": "Could not find entity with id \"{notFoundId}\""
 		},
 		"entityStorageIdentityResolverConnector": {
 			"documentNotFound": "The document could not be found",
@@ -499,9 +495,7 @@
 			"addServiceFailed": "Adding the service failed",
 			"removeServiceFailed": "Removing the service failed",
 			"documentNotFound": "The document could not be found \"{notFoundId}\"",
-			"documentPrivateKeyNotFound": "The private key for document could not be found in the vault",
 			"verificationMethodNotFound": "The verification method could not be found",
-			"verificationPrivateKeyNotFound": "The private key for the verification method could not be found in the vault",
 			"serviceNotFound": "The service could not be found",
 			"publicKeyJwkMissing": "The verification method contains no publicKeyJwk in method \"{method}\"",
 			"jwkSignatureFailed": "The signature on the JWK failed verification",
@@ -509,20 +503,17 @@
 			"checkingVerifiableCredentialFailed": "Checking the verifiable credential failed",
 			"createVerifiablePresentationFailed": "Creating the verifiable presentation failed",
 			"checkingVerifiablePresentationFailed": "Checking the verifiable presentation failed",
-			"expectingJwtCredential": "Expecting JWT credential in the presentation",
-			"keyIndexOutOfRange": "The supplied keyIndex is not in the range of the key list",
 			"createProofFailed": "Creating the signature for the data failed",
 			"methodMissing": "The verification method specified does not exist \"{method}\"",
 			"verifyProofFailed": "Verifying the signature for the data failed",
 			"revokeVerifiableCredentialsFailed": "Revoking verifiable credentials failed",
-			"unrevokeVerifiableCredentialsFailed": "Unrevoking verifiable credentials failed",
-			"proofType": "The proof type must be DataIntegrityProof, it is currently {proofType}",
-			"cryptosuite": "The proof cryptosuite must be eddsa-jcs-2022, it is currently {cryptosuite}"
+			"unrevokeVerifiableCredentialsFailed": "Unrevoking verifiable credentials failed"
 		},
 		"entityStorageIdentityProfileConnector": {
 			"alreadyExists": "The identity profile already exists for the identity \"{existingId}\"",
 			"createFailed": "Creating the identity profile failed \"{identity}\"",
-			"getFailed": "Getting the identity profile failed \"{notFoundId}\"",
+			"identityNotFound": "The identity profile could not be found \"{notFoundId}\"",
+			"getFailed": "Getting the identity profile failed \"{identity}\"",
 			"updateFailed": "Updating the identity profile failed \"{identity}\"",
 			"notFound": "The identity profile failed \"{notFoundId}\"",
 			"removeFailed": "Removing the identity profile failed \"{identity}\"",
@@ -556,24 +547,14 @@
 			"verifyProofFailed": "Verifying the signature for the data failed",
 			"revokeVerifiableCredentialsFailed": "Revoking verifiable credentials failed",
 			"unrevokeVerifiableCredentialsFailed": "Unrevoking verifiable credentials failed",
-			"proofType": "The proof type must be DataIntegrityProof, it is currently {proofType}",
-			"integerNegative": "The value must be a positive integer, it is currently {value}",
-			"invalidDocumentIdFormat": "The document ID format is invalid, it is currently {documentId}",
 			"invalidSubjectId": "The subject id format is invalid it must be a Url or Urn, it is \"{subjectId}\"",
 			"missingControllerToken": "The controller token is missing",
-			"unexpectedExecutionResult": "Could not extract DID from transaction result",
-			"objectIdNotFound": "The object ID was not found in the created object",
-			"gasStationError": "Gas station transaction execution failed",
-			"gasStationTransactionBuildFailed": "Gas station transaction build failed",
-			"gasStationTransactionFailed": "Gas station transaction failed",
-			"gasStationDocumentUpdateFailed": "Gas station document update failed",
-			"didExtractionFailed": "Failed to extract DID from transaction execution result",
-			"transactionConfirmationTimeout": "Transaction confirmation timed out",
-			"transactionBuildFailed": "Transaction build failed - unexpected build result format",
-			"didResolutionFailed": "DID resolution failed",
-			"didResolutionFailedAllRetries": "DID resolution failed after all retries",
-			"invalidMaxRetries": "The maximum number of retries must be a positive integer, it is currently {maxRetries}",
-			"invalidBaseDelay": "The base delay must be a positive integer, it is currently {baseDelay}"
+			"identityNotFound": "The identity could not be found \"{notFoundId}\"",
+			"revocationServiceNotFound": "The revocation service could not be found in the document",
+			"didExtractionFailed": "Extracting the DID from the document id failed",
+			"transactionConfirmationTimeout": "The transaction was not confirmed in the expected time",
+			"transactionBuildFailed": "Building the transaction failed",
+			"gasStationTransactionBuildFailed": "Building the gas station transaction failed"
 		},
 		"identityService": {
 			"noConnectors": "There are no connectors registered with the identity factory",
@@ -602,8 +583,6 @@
 			"identityResolveFailed": "Resolving the identity failed \"{identity}\""
 		},
 		"identityProfileService": {
-			"noConnectors": "There are no connectors registered with the identity profile factory",
-			"alreadyExists": "The identity profile already exists for the identity \"{existingId}\"",
 			"createFailed": "Creating the identity profile failed \"{identity}\"",
 			"getFailed": "Getting the identity profile failed",
 			"getPublicFailed": "Getting the public identity profile failed",
@@ -622,7 +601,6 @@
 		},
 		"entityStorageVerifiableStorageConnector": {
 			"verifiableStorageNotFound": "The verifiable item with the Id \"{notFoundId}\" was not found",
-			"signatureFailed": "The signature verification failed",
 			"creatingFailed": "Creating the item failed",
 			"updatingFailed": "Updating the item failed",
 			"gettingFailed": "Getting the item failed",
@@ -638,14 +616,13 @@
 			"updatingFailed": "Updating the verifiable item failed",
 			"gettingFailed": "Getting the verifiable item failed",
 			"removingFailed": "Removing the verifiable item failed",
+			"updateFailed": "Updating the verifiable item failed",
 			"packageIdNotFound": "Package ID not found for network \"{network}\"",
 			"storingTransactionFailed": "The transaction to store the data failed",
 			"removingTransactionFailed": "The transaction to remove the data failed",
 			"objectNotFound": "The object was not found",
-			"notAuthorized": "The controller address \"{controllerAddress}\" does not match the creator \"{creator}\" of the object",
-			"invalidIdFormat": "The verifiable storage URN \"{id}\" has an invalid format",
+			"objectIdNotFound": "The object ID was not found in the verifiable item for namespace \"{namespace}\"",
 			"connectorNotStarted": "Please call start() before using this connector. Package ID: \"{packageId}\" is missing.",
-			"deployTransactionFailed": "Deploying the contract failed with error: \"{error}\"",
 			"startFailed": "Failed to start the IOTA Verifiable Storage connector.",
 			"invalidGasBudget": "The gas budget must be greater than 0",
 			"notInAllowList": "The user is not in the allow list",
@@ -663,12 +640,11 @@
 			"notControllerTransfer": "The NFT can only be transferred by the controller",
 			"notControllerBurn": "The NFT can only be burned by the controller",
 			"notControllerUpdate": "The NFT can only be updated by the controller",
-			"signatureFailed": "The signature verification failed",
 			"mintingFailed": "Minting the NFT failed",
 			"resolvingFailed": "Resolving the NFT failed",
 			"burningFailed": "Burning the NFT failed",
 			"transferFailed": "Transferring the NFT failed",
-			"updatingFailed": "Updating the NFT failed",
+			"updateFailed": "Updating the NFT failed",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the IOTA NFT connector \"{namespace}\""
 		},
 		"iotaNftConnector": {
@@ -707,7 +683,6 @@
 		"entityStorageTelemetryConnector": {
 			"metricNotFound": "The metric could not be found \"{notFoundId}\"",
 			"metricAlreadyExists": "The metric already exists \"{existingId}\"",
-			"metricValueNotFound": "The metric value could not be found \"{notFoundId}\"",
 			"counterIncOnly": "A counter metric can only be incremented, or added to with an integer",
 			"upDownCounterIncOrDecOnly": "An up/down counter metric can only be incremented, decremented or adjusted with an integer",
 			"gaugeNoIncDec": "A gauge can not be incremented or decremented"
@@ -729,24 +704,24 @@
 			"hashicorpVaultConnectionFailed": "Failed to connect to Hashicorp Vault",
 			"createKeyFailed": "Failed to create key \"{name, type}\"",
 			"unsupportedKeyType": "Unsupported key type \"{type}\"",
-			"exportPublicKeyFailed": "Failed to export public key \"{name}\"",
-			"publicKeyNotFound": "Public key \"{name}\" not found",
 			"removeKeyFailed": "Failed to remove key \"{name}\"",
 			"updateKeyConfigFailed": "Failed to update key config \"{name}\"",
 			"addKeyFailed": "Failed to add key \"{name, type}\"",
-			"backupKeyNotFound": "Backup key \"{name}\" not found",
+			"backupKeyNotFound": "Backup key \"{notFoundId}\" not found",
 			"backupKeyFailed": "Failed to backup key \"{name}\"",
 			"restoreKeyFailed": "Failed to restore key \"{name}\"",
 			"importKeyFailed": "Failed to restore key \"{name}\"",
 			"exportKeyFailed": "Failed to export key \"{name}\" with keyPath \"{keyPath}\"",
-			"exportKeyNotFound": "Export key with name \"{name}\" not found",
+			"getKeyDeleteConfigurationFailed": "Failed to get key delete configuration \"{name}\"",
+			"exportKeyNotFound": "Export key with name \"{notFoundId}\" not found",
+			"versionsNotFound": "Versions for key \"{notFoundId}\" not found",
+			"keyNotFound": "The key \"{notFoundId}\" was not found in the vault",
+			"secretNotFound": "The secret \"{notFoundId}\" was not found in the vault",
 			"getKeyFailed": "Failed to get key \"{name}\"",
 			"signDataFailed": "Failed to sign data \"{name}\"",
 			"invalidSignResponse": "Invalid sign response \"{name}\"",
 			"verifyDataFailed": "Failed to verify data \"{name}\"",
-			"invalidSignature": "Invalid signature \"{name}\"",
 			"encryptDataFailed": "Failed to encrypt data \"{name, encryptionType}\"",
-			"unsupportedEncryptionType": "Unsupported encryption type \"{encryptionType}\"",
 			"decryptDataFailed": "Failed to decrypt data \"{name, encryptionType}\"",
 			"invalidDecryptResponse": "Invalid decrypt response \"{name, encryptionType}\"",
 			"invalidEncryptResponse": "Invalid encrypt response \"{name, encryptionType}\"",
@@ -780,7 +755,8 @@
 		"alreadyExistsError": "Already Exists",
 		"notImplementedError": "Not Implemented",
 		"validationError": "Validation",
-		"unprocessableError": "Unprocessable"
+		"unprocessableError": "Unprocessable",
+		"unauthorizedError": "Unauthorized"
 	},
 	"validation": {
 		"defaultFieldName": "The field"
@@ -788,37 +764,18 @@
 	"errorMessages": {
 		"fetch": "Fetch"
 	},
-	"data-type-names": {
-		"https://schema.org/Text": "Text",
-		"https://schema.org/URL": "Url",
-		"https://schema.org/Integer": "Integer",
-		"https://schema.org/Float": "Float",
-		"https://schema.org/Boolean": "Boolean",
-		"https://schema.org/Date": "ISO Date",
-		"https://schema.org/DateTime": "ISO Date Time",
-		"https://schema.org/Time": "ISO Time",
-		"https://schema.org/image": "Image",
-		"https://schema.org/GeoCoordinates": "Geo Coordinates",
-		"https://schema.org/StructuredValue": "Structured Value",
-		"https://schema": {
-			"org/Text": "Text",
-			"org/URL": "Url",
-			"org/Integer": "Integer",
-			"org/Float": "Float",
-			"org/Boolean": "Boolean",
-			"org/Date": "ISO Date",
-			"org/DateTime": "ISO Date Time",
-			"org/Time": "ISO Time",
-			"org/image": "Image",
-			"org/GeoCoordinates": "Geo Coordinates",
-			"org/StructuredValue": "Structured Value"
-		}
-	},
 	"info": {
 		"eventBusSocketClient": {
 			"subscribe": "Subscription created for topic \"{topic}\" with id \"{subscriptionId}\"",
-			"unsubscribe": "Subscription removed for topic \"{topic}\" with id \"{subscriptionId}\"",
-			"publish": "Event publish for topic \"{topic}\" with id \"{eventId}\", with \"{subscriptionCount}\" subscriptions"
+			"unsubscribe": "Subscription removed for topic \"{topic}\" with id \"{subscriptionId}\""
+		},
+		"fastifyWebServer": {
+			"building": "Building Web Server",
+			"starting": "Starting Web Server at address \"{host}\" on port \"{port}\"",
+			"started": "The Web Server started on {addresses}",
+			"stopped": "The Web Server was stopped",
+			"restRouteAdded": "Added REST route \"{route}\" \"{method}\"",
+			"socketRouteAdded": "Added socket route: handshake path \"{handshakePath}\", namespace \"{namespace}\", event name \"{eventName}\""
 		},
 		"s3BlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
@@ -860,20 +817,15 @@
 		"scyllaDBViewConnector": {
 			"viewCreating": "Creating view \"{view}\"",
 			"viewCreated": "Created view \"{view}\"",
-			"viewExists": "Skipping create view \"{view}\" as it already exists",
-			"typeCreated": "Created type \"{typeName}\"",
+			"viewExists": "Skipping create view \"{view}\" as it already exists"
+		},
+		"abstractScyllaDBConnector": {
 			"sql": "SQL: \"{sql}\""
 		},
 		"iotaVerifiableStorageConnector": {
-			"contractAlreadyDeployed": "Contract already deployed",
-			"contractDeploymentStarted": "Contract deployment started",
-			"contractDeploymentCompleted": "Contract deployment completed",
 			"contractReady": "Contract ready for use"
 		},
 		"iotaNftConnector": {
-			"contractAlreadyDeployed": "Contract already deployed",
-			"contractDeploymentStarted": "Contract deployment started",
-			"contractDeploymentCompleted": "Contract deployment completed",
 			"contractReady": "Contract ready for use"
 		},
 		"entityStorageTelemetryConnector": {
@@ -885,12 +837,6 @@
 		"hashicorpVaultConnector": {
 			"hashicorpVaultConnected": "Connected to Hashicorp Vault"
 		}
-	},
-	"verifiableCredentialStates": {
-		"pendingVerification": "Pending Verification",
-		"rejected": "Rejected",
-		"issued": "Issued",
-		"revoked": "Revoked"
 	},
 	"pages": {
 		"error": {
@@ -1224,7 +1170,7 @@
 			"error": "Error",
 			"ts": "Timestamp",
 			"data": "Data",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"timeStart": "From Date",
 			"timeEnd": "To Date"
 		},
@@ -1239,7 +1185,7 @@
 			"progress": "Searching...",
 			"deleteTitle": "Delete Telemetry Metric",
 			"deleteMessage": "Are you sure you want to delete this metric?",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"timeStart": "From Date",
 			"id": "Id",
 			"label": "Label",
@@ -1283,7 +1229,7 @@
 		},
 		"telemetryMetricValueList": {
 			"title": "Telemetry Metric Values",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"timeStart": "From Date",
 			"timeEnd": "To Date",
 			"createMetricValue": "Create Metric Value",
@@ -1318,7 +1264,7 @@
 			"deleteTitle": "Delete Rule Group",
 			"deleteMessage": "Are you sure you want to delete this rule group?",
 			"error": "Error",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"id": "Id",
 			"label": "Label"
 		},
@@ -1328,7 +1274,7 @@
 			"label": "Label",
 			"message": "Message",
 			"error": "Error",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"actionCreate": "Create",
 			"actionUpdate": "Update",
 			"actionSuccess": "Rule group added correctly",
@@ -1471,7 +1417,7 @@
 			"createPolicy": "Create Policy",
 			"deleteTitle": "Delete Policy",
 			"deleteMessage": "Are you sure you want to delete this policy?",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"policyType": "Policy Type",
 			"search": "Search"
 		},
@@ -1613,19 +1559,6 @@
 			"proofFailed": "The proof of the attestation could not be verified",
 			"revoked": "The proof of the attestation has been revoked"
 		}
-	},
-	"fastifyWebServer": {
-		"building": "Building Web Server",
-		"starting": "Starting Web Server at address \"{host}\" on port \"{port}\"",
-		"startFailed": "The Web Server failed to start",
-		"started": "The Web Server started on {addresses}",
-		"stopped": "The Web Server was stopped",
-		"badRequest": "The web server could not handle the request",
-		"restRouteAdded": "Added REST route \"{route}\" \"{method}\"",
-		"socketRouteAdded": "Added socket route: handshake path \"{handshakePath}\", namespace \"{namespace}\", event name \"{eventName}\"",
-		"noRestProcessors": "You must configure at least one REST processor",
-		"noSocketProcessors": "You must configure at least one socket processor",
-		"postProcessorError": "There was a failure after in a post processor for route \"{route}\""
 	},
 	"auditableItemGraphService": {},
 	"warn": {

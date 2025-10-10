@@ -38,7 +38,7 @@
 	let source: string | undefined = undefined;
 	let timeStart: string | undefined = undefined;
 	let timeEnd: string | undefined = undefined;
-	let pageSize = 50;
+	let limit = 50;
 	let isError = false;
 
 	$: canGoBackwards = cursorHandler.canGoBackwards();
@@ -57,7 +57,7 @@
 			validTimeStart,
 			validTimeEnd,
 			cursorHandler.getCurrentCursor(),
-			pageSize
+			limit
 		);
 
 		if (Is.stringValue(result?.error)) {
@@ -95,8 +95,8 @@
 		if (source === '') {
 			source = undefined;
 		}
-		if (!Is.number(pageSize) || pageSize < 1) {
-			pageSize = 50;
+		if (!Is.number(limit) || limit < 1) {
+			limit = 50;
 		}
 		if (timeStart === '') {
 			timeStart = undefined;
@@ -133,12 +133,12 @@
 	<Card class="w-full max-w-full rounded-lg border border-gray-300 p-4">
 		<div class="block flex-row gap-2 lg:flex">
 			<Label>
-				{$i18n('pages.loggingProperties.pageSize')}
+				{$i18n('pages.loggingProperties.limit')}
 				<Input
-					name="pageSize"
-					placeholder={$i18n('pages.loggingProperties.pageSize')}
+					name="limit"
+					placeholder={$i18n('pages.loggingProperties.limit')}
 					color="default"
-					bind:value={pageSize}
+					bind:value={limit}
 					disabled={busy}
 					type="number"
 				></Input>

@@ -4,18 +4,18 @@ import type {
 	IAuditableItemStream,
 	IAuditableItemStreamEntry
 } from "@twin.org/auditable-item-stream-models";
-import { AuditableItemStreamClient } from "@twin.org/auditable-item-stream-rest-client";
+import { AuditableItemStreamRestClient } from "@twin.org/auditable-item-stream-rest-client";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 
-let auditableItemStreamClient: AuditableItemStreamClient | undefined;
+let auditableItemStreamClient: AuditableItemStreamRestClient | undefined;
 
 /**
  * Initialise the auditable item streams.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	auditableItemStreamClient = new AuditableItemStreamClient({
+	auditableItemStreamClient = new AuditableItemStreamRestClient({
 		endpoint: apiUrl,
 		pathPrefix: "ais"
 	});
@@ -265,14 +265,14 @@ export async function auditableItemStreamRemoveEntry(
  * Get entries from an auditable item stream.
  * @param id The id of the stream to get entries from.
  * @param options Options for retrieving entries.
- * @param options.pageSize The number of entries to return.
+ * @param options.limit The number of entries to return.
  * @param options.cursor The cursor to use for pagination.
  * @returns The stream entries or an error if one occurred.
  */
 export async function auditableItemStreamGetEntries(
 	id: string,
 	options?: {
-		pageSize?: number;
+		limit?: number;
 		cursor?: string;
 	}
 ): Promise<
@@ -289,7 +289,7 @@ export async function auditableItemStreamGetEntries(
 	if (Is.object(auditableItemStreamClient)) {
 		try {
 			const result = await auditableItemStreamClient.getEntries(id, {
-				pageSize: options?.pageSize,
+				limit: options?.limit,
 				cursor: options?.cursor
 			});
 			return {

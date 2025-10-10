@@ -34,7 +34,7 @@
 	let entities: ITelemetryMetricValue[] | undefined;
 	let busy = false;
 	let status = '';
-	let pageSize = 50;
+	let limit = 50;
 	let timeStart: string | undefined = undefined;
 	let timeEnd: string | undefined = undefined;
 	let isError = false;
@@ -52,7 +52,7 @@
 		if (Is.stringValue(itemId)) {
 			const result = await metricValuesQuery(
 				itemId,
-				pageSize,
+				limit,
 				validTimeStart,
 				validTimeEnd,
 				cursorHandler.getCurrentCursor()
@@ -129,12 +129,12 @@
 	<Card class="w-full max-w-full rounded-lg border border-gray-300 p-4">
 		<div class="flex flex-col gap-4 lg:flex-row">
 			<Label>
-				{$i18n('pages.telemetryMetricValueList.pageSize')}
+				{$i18n('pages.telemetryMetricValueList.limit')}
 				<Input
-					name="pageSize"
-					placeholder={$i18n('pages.telemetryMetricValueList.pageSize')}
+					name="limit"
+					placeholder={$i18n('pages.telemetryMetricValueList.limit')}
 					color="default"
-					bind:value={pageSize}
+					bind:value={limit}
 					disabled={busy}
 					type="number"
 				></Input>

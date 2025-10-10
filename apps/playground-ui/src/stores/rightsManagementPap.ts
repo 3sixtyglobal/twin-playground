@@ -2,17 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { EntityCondition } from "@twin.org/entity";
-import { PolicyAdministrationPointClient } from "@twin.org/rights-management-rest-client";
+import { PolicyAdministrationPointRestClient } from "@twin.org/rights-management-rest-client";
 import type { IOdrlPolicy } from "@twin.org/standards-w3c-odrl";
 
-let rightsManagementPapClient: PolicyAdministrationPointClient | undefined;
+let rightsManagementPapClient: PolicyAdministrationPointRestClient | undefined;
 
 /**
  * Initialise the rights management PAP client.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	rightsManagementPapClient = new PolicyAdministrationPointClient({
+	rightsManagementPapClient = new PolicyAdministrationPointRestClient({
 		endpoint: apiUrl
 	});
 }
@@ -113,17 +113,17 @@ export async function policyRemove(policyId: string): Promise<undefined | { erro
  * Query policies with optional conditions and pagination.
  * @param conditions The conditions for filtering policies.
  * @param cursor The cursor for pagination.
- * @param pageSize The page size for pagination.
+ * @param limit Limit the number of items for pagination.
  * @returns Nothing or an error if one occurred.
  */
 export async function policyQuery(
 	conditions?: EntityCondition<IOdrlPolicy>,
 	cursor?: string,
-	pageSize?: number
+	limit?: number
 ): Promise<undefined | { error?: string; cursor?: string; policies?: IOdrlPolicy[] }> {
 	if (Is.object(rightsManagementPapClient)) {
 		try {
-			const result = await rightsManagementPapClient.query(conditions, cursor, pageSize);
+			const result = await rightsManagementPapClient.query(conditions, cursor, limit);
 			return {
 				cursor: result.cursor,
 				policies: result.policies

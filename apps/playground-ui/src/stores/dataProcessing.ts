@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IRuleGroup } from "@twin.org/data-processing-models";
-import { DataProcessingClient } from "@twin.org/data-processing-rest-client";
+import { DataProcessingRestClient } from "@twin.org/data-processing-rest-client";
 
-let dataProcessingClient: DataProcessingClient | undefined;
+let dataProcessingClient: DataProcessingRestClient | undefined;
 
 /**
  * Initialise the telemetry.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	dataProcessingClient = new DataProcessingClient({
+	dataProcessingClient = new DataProcessingRestClient({
 		endpoint: apiUrl
 	});
 }
@@ -41,12 +41,12 @@ export async function ruleGroupSet(ruleGroup: IRuleGroup): Promise<
 /**
  * Query rule group data.
  * @param cursor The current cursor.
- * @param pageSize The page size.
+ * @param limit Limit the number of items to return.
  * @returns An array with the entities found and the current cursor.
  */
 export async function ruleGroupQuery(
 	cursor?: string,
-	pageSize?: number
+	limit?: number
 ): Promise<
 	| {
 			error?: string;
@@ -57,7 +57,7 @@ export async function ruleGroupQuery(
 > {
 	if (Is.object(dataProcessingClient)) {
 		try {
-			const result = await dataProcessingClient.query(cursor, pageSize);
+			const result = await dataProcessingClient.query(cursor, limit);
 			return result;
 		} catch (err) {
 			return {

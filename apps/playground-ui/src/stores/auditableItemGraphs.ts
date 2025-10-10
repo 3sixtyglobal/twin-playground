@@ -5,18 +5,18 @@ import {
 	type IAuditableItemGraphVertex,
 	type IAuditableItemGraphVertexList
 } from "@twin.org/auditable-item-graph-models";
-import { AuditableItemGraphClient } from "@twin.org/auditable-item-graph-rest-client";
+import { AuditableItemGraphRestClient } from "@twin.org/auditable-item-graph-rest-client";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 
-let auditableItemGraphClient: AuditableItemGraphClient | undefined;
+let auditableItemGraphClient: AuditableItemGraphRestClient | undefined;
 
 /**
  * Initialise the auditable item graphs.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	auditableItemGraphClient = new AuditableItemGraphClient({
+	auditableItemGraphClient = new AuditableItemGraphRestClient({
 		endpoint: apiUrl,
 		pathPrefix: "aig"
 	});

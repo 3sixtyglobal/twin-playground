@@ -1,16 +1,16 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { NftClient } from "@twin.org/nft-rest-client";
+import { NftRestClient } from "@twin.org/nft-rest-client";
 
-let nftClient: NftClient | undefined;
+let nftClient: NftRestClient | undefined;
 
 /**
  * Initialise the nft.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	nftClient = new NftClient({
+	nftClient = new NftRestClient({
 		endpoint: apiUrl
 	});
 }

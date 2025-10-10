@@ -42,7 +42,7 @@
 	async function loadData(): Promise<void> {
 		busy = true;
 		const result = await auditableItemStreamGetEntries(streamId, {
-			pageSize: 10,
+			limit: 10,
 			cursor: cursorHandler.getCurrentCursor()
 		});
 

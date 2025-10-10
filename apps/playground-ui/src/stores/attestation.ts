@@ -1,19 +1,19 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IAttestationInformation } from "@twin.org/attestation-models";
-import { AttestationClient } from "@twin.org/attestation-rest-client";
+import { AttestationRestClient } from "@twin.org/attestation-rest-client";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { DigitalDocument, WithContext } from "schema-dts";
 
-let attestationClient: AttestationClient | undefined;
+let attestationClient: AttestationRestClient | undefined;
 
 /**
  * Initialise the attestation.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	attestationClient = new AttestationClient({
+	attestationClient = new AttestationRestClient({
 		endpoint: apiUrl
 	});
 }

@@ -1,17 +1,17 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { EntityStorageClient } from "@twin.org/entity-storage-rest-client";
+import { EntityStorageRestClient } from "@twin.org/entity-storage-rest-client";
 import type { IUserAttestationEntry } from "$models/IUserAttestationEntry";
 
-let userAttestationEntryClient: EntityStorageClient<IUserAttestationEntry> | undefined;
+let userAttestationEntryClient: EntityStorageRestClient<IUserAttestationEntry> | undefined;
 
 /**
  * Initialise the attestations.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	userAttestationEntryClient = new EntityStorageClient<IUserAttestationEntry>({
+	userAttestationEntryClient = new EntityStorageRestClient<IUserAttestationEntry>({
 		endpoint: apiUrl,
 		pathPrefix: "user-attestation"
 	});

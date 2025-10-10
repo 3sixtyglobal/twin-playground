@@ -1,17 +1,17 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { IdentityResolverClient } from "@twin.org/identity-rest-client";
+import { IdentityResolverRestClient } from "@twin.org/identity-rest-client";
 import type { IDidDocument } from "@twin.org/standards-w3c-did";
 
-let identityResolverClient: IdentityResolverClient | undefined;
+let identityResolverClient: IdentityResolverRestClient | undefined;
 
 /**
  * Initialise the identity resolver.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	identityResolverClient = new IdentityResolverClient({
+	identityResolverClient = new IdentityResolverRestClient({
 		endpoint: apiUrl
 	});
 }

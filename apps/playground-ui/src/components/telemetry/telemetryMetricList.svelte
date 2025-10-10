@@ -37,7 +37,7 @@
 	let busy = false;
 	let status = '';
 	let type: MetricType | undefined = undefined;
-	let pageSize = 50;
+	let limit = 50;
 	let isError = false;
 	let confirmationId: string = '';
 	let modalIsBusy = false;
@@ -49,7 +49,7 @@
 		status = $i18n('pages.telemetry.loading');
 		busy = true;
 		isError = false;
-		const result = await telemetryQuery(type, cursorHandler.getCurrentCursor(), pageSize);
+		const result = await telemetryQuery(type, cursorHandler.getCurrentCursor(), limit);
 
 		if (Is.stringValue(result?.error)) {
 			isError = true;
@@ -115,12 +115,12 @@
 	<Card class="w-full max-w-full rounded-lg border border-gray-300 p-4">
 		<div class="flex flex-col gap-4 lg:flex-row">
 			<Label>
-				{$i18n('pages.telemetry.pageSize')}
+				{$i18n('pages.telemetry.limit')}
 				<Input
-					name="pageSize"
-					placeholder={$i18n('pages.telemetry.pageSize')}
+					name="limit"
+					placeholder={$i18n('pages.telemetry.limit')}
 					color="default"
-					bind:value={pageSize}
+					bind:value={limit}
 					disabled={busy}
 					type="number"
 				></Input>

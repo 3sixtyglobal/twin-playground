@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { HealthStatus } from "@twin.org/api-models";
-import { InformationClient } from "@twin.org/api-rest-client";
+import { InformationRestClient } from "@twin.org/api-rest-client";
 import { Is } from "@twin.org/core";
 import { get, writable } from "svelte/store";
 
@@ -16,7 +16,7 @@ export const serverComponentHealth = writable<
 	}[]
 >([]);
 
-let informationClient: InformationClient | undefined;
+let informationClient: InformationRestClient | undefined;
 let healthInterval: NodeJS.Timeout | undefined;
 
 /**
@@ -24,7 +24,7 @@ let healthInterval: NodeJS.Timeout | undefined;
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	informationClient = new InformationClient({
+	informationClient = new InformationRestClient({
 		endpoint: apiUrl
 	});
 

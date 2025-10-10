@@ -3,16 +3,16 @@
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { IImmutableProof } from "@twin.org/immutable-proof-models";
-import { ImmutableProofClient } from "@twin.org/immutable-proof-rest-client";
+import { ImmutableProofRestClient } from "@twin.org/immutable-proof-rest-client";
 
-let immutableProofClient: ImmutableProofClient | undefined;
+let immutableProofClient: ImmutableProofRestClient | undefined;
 
 /**
  * Initialise the immutable proof.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	immutableProofClient = new ImmutableProofClient({
+	immutableProofClient = new ImmutableProofRestClient({
 		endpoint: apiUrl
 	});
 }
