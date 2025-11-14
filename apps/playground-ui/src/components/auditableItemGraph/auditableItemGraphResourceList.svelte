@@ -26,18 +26,22 @@
 		ValidationError
 	} from '@twin.org/ui-components-svelte';
 
-	export let items: Omit<IAuditableItemGraphResource, '@context' | 'type'>[];
-	export let busy: boolean;
-	let showModal = false;
+	interface Props {
+		items: Omit<IAuditableItemGraphResource, '@context' | 'type'>[];
+		busy: boolean;
+	}
+
+	let { items = $bindable(), busy }: Props = $props();
+	let showModal = $state(false);
 	let progress: string | undefined;
-	let selectedItem: Omit<IAuditableItemGraphResource, '@context' | 'type'> | undefined;
-	let resourceId: string | undefined;
+	let selectedItem: Omit<IAuditableItemGraphResource, '@context' | 'type'> | undefined = $state();
+	let resourceId: string | undefined = $state();
 	let validationErrors: {
 		[field in 'resourceId' | 'resourceObject']?: IValidationFailure[] | undefined;
-	} = {};
+	} = $state({});
 
-	let selectedResourceObjectType = '';
-	let resourceObjectText = '';
+	let selectedResourceObjectType = $state('');
+	let resourceObjectText = $state('');
 	const examples: { id: string; resourceObject: IJsonLdNodeObject }[] = [
 		{
 			id: 'resource1',
@@ -81,13 +85,13 @@
 		items = items.slice();
 	}
 
-	$: {
+	$effect(() => {
 		const example = examples.find(ex => ex.resourceObject['@type'] === selectedResourceObjectType);
 		if (example) {
 			resourceObjectText = JSON.stringify(example.resourceObject, null, 2);
 			resourceId = example.id;
 		}
-	}
+	});
 
 	async function openModal(index: number = -1): Promise<void> {
 		showModal = true;
@@ -127,7 +131,7 @@
 
 <div class="flex flex-row justify-between gap-5">
 	<Heading tag="h5">{$i18n('pages.auditableItemGraphResourceList.title')}</Heading>
-	<Button on:click={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
+	<Button onclick={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
 		<Icons.PlusOutline class="mr-2" />
 		{$i18n('pages.auditableItemGraphResourceList.addItem')}
 	</Button>
@@ -148,16 +152,13 @@
 					<TableBodyCell>{item.resourceObject?.['@type'] ?? ''}</TableBodyCell>
 					<TableBodyCell
 						><div class="flex gap-2">
-							<Button
-								size="xs"
-								color="plain"
-								on:click={async () => openModal(index)}
-								disabled={busy}><Icons.EditOutline /></Button
+							<Button size="xs" color="plain" onclick={async () => openModal(index)} disabled={busy}
+								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
-								on:click={async () => removeItem(index)}
+								onclick={async () => removeItem(index)}
 								disabled={busy}><Icons.TrashBinOutline /></Button
 							>
 						</div></TableBodyCell

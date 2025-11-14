@@ -6,9 +6,13 @@
 	import { Button, Card, Heading, Icons, Label, Span, i18n } from '@twin.org/ui-components-svelte';
 	import { createExplorerDigestUrl } from '$stores/iota';
 
-	export let item: IJsonLdNodeObject;
+	interface Props {
+		item: IJsonLdNodeObject;
+	}
 
-	let exploreUrl: string | undefined;
+	let { item }: Props = $props();
+
+	let exploreUrl: string | undefined = $state();
 
 	if (item.type === 'VerifiableStorageIotaReceipt' && Is.stringValue(item.digest)) {
 		exploreUrl = createExplorerDigestUrl(item.digest);
@@ -44,7 +48,7 @@
 			{/if}
 			{#if Is.stringValue(exploreUrl)}
 				<div>
-					<Button size="xs" on:click={openExplorer} color="plain" class="gap-2"
+					<Button size="xs" onclick={openExplorer} color="plain" class="gap-2"
 						>{$i18n('components.immutableProofReceipt.explore')}<Icons.LinkOutline
 							size="sm"
 						/></Button

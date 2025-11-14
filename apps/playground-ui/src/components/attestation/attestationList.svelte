@@ -46,16 +46,16 @@
 
 	const cursorHandler = new CursorStackHandler();
 
-	let items: IUserAttestationEntry[] | undefined;
-	let busy = false;
-	let status = '';
-	let isError = false;
-	let confirmationId: string = '';
-	let modalIsBusy = false;
+	let items: IUserAttestationEntry[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
+	let confirmationId: string = $state('');
+	let modalIsBusy = $state(false);
 	const userIdentity = $profileIdentity;
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.attestation.loading');
@@ -127,7 +127,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/attestation/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/attestation/create')} disabled={busy}
 			>{$i18n('pages.attestation.createItem')}</Button
 		>
 	</div>
@@ -154,7 +154,7 @@
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/attestation/${item.id}`)}
+								onclick={() => goto(`/secure/attestation/${item.id}`)}
 							>
 								<Icons.EyeOutline />
 							</Button>
@@ -162,11 +162,11 @@
 								<Button
 									size="xs"
 									color="plain"
-									on:click={() => goto(`/secure/attestation/${item.id}/transfer`)}
+									onclick={() => goto(`/secure/attestation/${item.id}/transfer`)}
 								>
 									<Icons.ArrowRightOutline />
 								</Button>
-								<Button size="xs" color="plain" on:click={async () => removePrompt(item.id)}>
+								<Button size="xs" color="plain" onclick={async () => removePrompt(item.id)}>
 									<Icons.TrashBinOutline />
 								</Button>
 							{/if}

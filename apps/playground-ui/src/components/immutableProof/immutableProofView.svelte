@@ -21,16 +21,20 @@
 	import { immutableProofGet, immutableProofVerify } from '$stores/immutableProof';
 	import { createExplorerVerifiableStorageUrl } from '$stores/iota';
 
-	export let itemId: string;
-	export let returnUrl: string;
-	export let title: string | undefined = undefined;
-	let error: string;
-	let busy = true;
-	let immutableProof: IImmutableProof | undefined;
-	let verifiedProof: boolean | undefined;
-	let failureMessageProof: string | undefined;
-	let verifiableStorageId: string | undefined;
-	let explorerUrl: string | undefined;
+	interface Props {
+		itemId: string;
+		returnUrl: string;
+		title?: string | undefined;
+	}
+
+	let { itemId, returnUrl, title = undefined }: Props = $props();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let immutableProof: IImmutableProof | undefined = $state();
+	let verifiedProof: boolean | undefined = $state();
+	let failureMessageProof: string | undefined = $state();
+	let verifiableStorageId: string | undefined = $state();
+	let explorerUrl: string | undefined = $state();
 
 	async function close(): Promise<void> {
 		await goto(returnUrl);
@@ -78,7 +82,7 @@
 					<div>
 						<Button
 							size="xs"
-							on:click={() => window.open(explorerUrl, '_blank')}
+							onclick={() => window.open(explorerUrl, '_blank')}
 							color="plain"
 							class="gap-2"
 						>
@@ -113,6 +117,6 @@
 		</div>
 	{/if}
 	<div class="flex flex-row justify-start gap-5">
-		<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+		<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 	</div>
 </Card>

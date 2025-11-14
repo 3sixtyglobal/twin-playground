@@ -28,14 +28,14 @@
 
 	const cursorHandler = new CursorStackHandler();
 
-	let items: IAuditableItemGraphVertex[] | undefined;
+	let items: IAuditableItemGraphVertex[] | undefined = $state();
 	let auditableItemGraphInfo: IAuditableItemGraphVertexList | undefined;
-	let busy = false;
-	let status = '';
-	let isError = false;
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.auditableItemGraphList.loading');
@@ -87,7 +87,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/auditable-item-graph/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/auditable-item-graph/create')} disabled={busy}
 			>{$i18n('pages.auditableItemGraphList.createItem')}</Button
 		>
 	</div>
@@ -112,12 +112,12 @@
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/auditable-item-graph/${item.id}`)}
+								onclick={() => goto(`/secure/auditable-item-graph/${item.id}`)}
 								><Icons.EditOutline /></Button
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/auditable-item-graph/${item.id}/changesets`)}
+								onclick={() => goto(`/secure/auditable-item-graph/${item.id}/changesets`)}
 								><Icons.OrderedListOutline /></Button
 							></TableBodyCell
 						>

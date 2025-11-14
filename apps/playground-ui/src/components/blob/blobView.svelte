@@ -21,16 +21,20 @@
 	import { createPrivateUrl } from '$stores/app';
 	import { blobStorageGet, createDownloadLink } from '$stores/blobStorage';
 
-	export let itemId: string | undefined = undefined;
-	let encodingFormat: string | undefined;
-	let fileExtension: string | undefined;
+	interface Props {
+		itemId?: string | undefined;
+	}
+
+	let { itemId = undefined }: Props = $props();
+	let encodingFormat: string | undefined = $state();
+	let fileExtension: string | undefined = $state();
 	let metadata: IJsonLdNodeObject | undefined;
-	let description: string | undefined;
-	let blobInlineUrl: string;
+	let description: string | undefined = $state();
+	let blobInlineUrl: string = $state('');
 	let blobDownloadUrl: string;
-	let error: string;
-	let blobData: string | undefined;
-	let busy = true;
+	let error: string | undefined = $state();
+	let blobData: string | undefined = $state();
+	let busy = $state(true);
 
 	onMount(async () => {
 		if (Is.stringValue(itemId)) {
@@ -128,10 +132,10 @@
 				<div class="flex flex-row justify-between align-bottom">
 					<Label class="mt-1">{$i18n('pages.blobView.document')}</Label>
 					<div class="flex flex-row gap-3">
-						<Button on:click={openDocument} size="xs">
+						<Button onclick={openDocument} size="xs">
 							<Icons.ArrowUpRightFromSquareOutline size="sm" />
 						</Button>
-						<Button on:click={downloadDocument} size="xs">
+						<Button onclick={downloadDocument} size="xs">
 							<Icons.DownloadOutline size="sm" />
 						</Button>
 					</div>
@@ -142,6 +146,6 @@
 		<Error {error} />
 	{/if}
 	<div class="flex flex-row gap-2">
-		<Button on:click={() => goto('/secure/blob')}>{$i18n('actions.back')}</Button>
+		<Button onclick={() => goto('/secure/blob')}>{$i18n('actions.back')}</Button>
 	</div>
 </Card>

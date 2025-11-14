@@ -31,24 +31,28 @@
 	import { onMount } from 'svelte';
 	import { auditableItemGraphListForEdges } from '$stores/auditableItemGraphs';
 
-	export let itemId: string;
-	export let items: Omit<IAuditableItemGraphEdge, '@context' | 'type'>[];
-	export let busy: boolean;
-	let showModal = false;
+	interface Props {
+		itemId: string;
+		items: Omit<IAuditableItemGraphEdge, '@context' | 'type'>[];
+		busy: boolean;
+	}
+
+	let { itemId, items = $bindable(), busy }: Props = $props();
+	let showModal = $state(false);
 	let progress: string | undefined;
-	let selectedItem: Omit<IAuditableItemGraphEdge, '@context' | 'type'> | undefined;
+	let selectedItem: Omit<IAuditableItemGraphEdge, '@context' | 'type'> | undefined = $state();
 	let edgeId: string | undefined;
-	let edgeTargetId: string | undefined;
-	let edgeRelationships: string | undefined;
+	let edgeTargetId: string | undefined = $state();
+	let edgeRelationships: string | undefined = $state();
 	let validationErrors: {
 		[field in 'edgeId' | 'edgeRelationships' | 'annotationObject']?:
 			| IValidationFailure[]
 			| undefined;
-	} = {};
+	} = $state({});
 
-	let selectedAnnotationObjectType = '';
-	let annotationObjectText = '';
-	let availableVertices: IAuditableItemGraphVertex[] = [];
+	let selectedAnnotationObjectType = $state('');
+	let annotationObjectText = $state('');
+	let availableVertices: IAuditableItemGraphVertex[] = $state([]);
 
 	const examples: {
 		edgeRelationships: string;
@@ -102,7 +106,7 @@
 		items = items.slice();
 	}
 
-	$: {
+	$effect(() => {
 		const example = examples.find(
 			ex => ex.annotationObject['@type'] === selectedAnnotationObjectType
 		);
@@ -110,7 +114,7 @@
 			annotationObjectText = JSON.stringify(example.annotationObject, null, 2);
 			edgeRelationships = example.edgeRelationships;
 		}
-	}
+	});
 
 	async function openModal(index: number = -1): Promise<void> {
 		showModal = true;
@@ -180,7 +184,7 @@
 
 <div class="flex flex-row justify-between gap-5">
 	<Heading tag="h5">{$i18n('pages.auditableItemGraphEdgeList.title')}</Heading>
-	<Button on:click={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
+	<Button onclick={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
 		<Icons.PlusOutline class="mr-2" />
 		{$i18n('pages.auditableItemGraphEdgeList.addItem')}
 	</Button>
@@ -203,16 +207,13 @@
 					<TableBodyCell>{item.annotationObject?.['@type'] ?? ''}</TableBodyCell>
 					<TableBodyCell
 						><div class="flex gap-2">
-							<Button
-								size="xs"
-								color="plain"
-								on:click={async () => openModal(index)}
-								disabled={busy}><Icons.EditOutline /></Button
+							<Button size="xs" color="plain" onclick={async () => openModal(index)} disabled={busy}
+								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
-								on:click={async () => removeItem(index)}
+								onclick={async () => removeItem(index)}
 								disabled={busy}><Icons.TrashBinOutline /></Button
 							>
 						</div></TableBodyCell

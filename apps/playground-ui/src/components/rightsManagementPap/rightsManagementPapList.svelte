@@ -32,17 +32,17 @@
 	const cursorHandler = new CursorStackHandler();
 	const policyTypes = Object.values(PolicyType);
 
-	let items: IOdrlPolicy[] | undefined;
-	let busy = false;
-	let status = '';
-	let isError = false;
-	let confirmationId: string = '';
-	let modalIsBusy = false;
-	let policyType: string | undefined = undefined;
-	let limit = 10;
+	let items: IOdrlPolicy[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
+	let confirmationId: string = $state('');
+	let modalIsBusy = $state(false);
+	let policyType: string | undefined = $state(undefined);
+	let limit = $state(10);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.rightsManagement.loading');
 		busy = true;
@@ -146,7 +146,7 @@
 					{/each}
 				</Select>
 			</Label>
-			<Button class="mt-6 max-w-20" on:click={async () => action()} disabled={busy}>
+			<Button class="mt-6 max-w-20" onclick={async () => action()} disabled={busy}>
 				{$i18n('pages.rightsManagement.search')}
 			</Button>
 		</div>
@@ -158,7 +158,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/rights-management-pap/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/rights-management-pap/create')} disabled={busy}
 			>{$i18n('pages.rightsManagement.createPolicy')}</Button
 		>
 	</div>
@@ -185,19 +185,19 @@
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() =>
+								onclick={() =>
 									goto(`/secure/rights-management-pap/${encodeURIComponent(item.uid)}`)}
 								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() =>
+								onclick={() =>
 									goto(`/secure/rights-management-pap/${encodeURIComponent(item.uid)}/view`)}
 							>
 								<Icons.EyeOutline />
 							</Button>
-							<Button size="xs" color="plain" on:click={async () => removePrompt(item.uid)}>
+							<Button size="xs" color="plain" onclick={async () => removePrompt(item.uid)}>
 								<Icons.TrashBinOutline />
 							</Button>
 						</TableBodyCell>

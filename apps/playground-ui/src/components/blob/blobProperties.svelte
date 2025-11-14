@@ -21,15 +21,19 @@
 	import { createPrivateUrl } from '$stores/app';
 	import { blobStorageUpload } from '$stores/blobStorage';
 
-	export let returnUrl: string;
-	let description = '';
-	let files: FileList | undefined;
+	interface Props {
+		returnUrl: string;
+	}
+
+	let { returnUrl }: Props = $props();
+	let description = $state('');
+	let files: FileList | undefined = $state();
 	let validationErrors: {
 		[field in 'description' | 'filename']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let itemId: string | undefined;
-	let progress: string | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let itemId: string | undefined = $state();
+	let progress: string | undefined = $state();
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.notEmpty(
@@ -139,7 +143,7 @@
 					/>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

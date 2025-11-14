@@ -26,16 +26,20 @@
 	import { blobStorageGet, blobStorageList } from '$stores/blobStorage';
 	import { profileIdentity } from '$stores/identityProfile';
 
-	export let returnUrl: string;
+	interface Props {
+		returnUrl: string;
+	}
+
+	let { returnUrl }: Props = $props();
 	let validationErrors: {
 		[field in 'blobId']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let signature: string | undefined;
-	let progress: string | undefined;
-	let itemId: string | undefined;
-	let blobNames: { value: string; name: string }[] = [];
-	let blobId: string | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let signature: string | undefined = $state();
+	let progress: string | undefined = $state();
+	let itemId: string | undefined = $state();
+	let blobNames: { value: string; name: string }[] = $state([]);
+	let blobId: string | undefined = $state();
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.notEmpty(
@@ -172,7 +176,7 @@
 					<Span>{signature}</Span>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

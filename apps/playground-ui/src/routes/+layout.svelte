@@ -1,18 +1,24 @@
 <script lang="ts">
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Is, ObjectHelper } from '@twin.org/core';
 	import { Icons, AppLayout, type ISideBarGroup, i18n } from '@twin.org/ui-components-svelte';
 	import { authenticationState } from '$stores/authentication';
 	import { privateProfile } from '$stores/identityProfile';
 	import '../app.css';
 	import { serverHealthStatus, serverName, serverVersion } from '$stores/information';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
-	let sidebarGroups: ISideBarGroup[] = [];
-	let showAuthBadge = false;
-	let finalInitials: string = '';
-	const isSecureUrl = !$page.route.id?.startsWith('/public/');
+	let { children }: Props = $props();
+
+	let sidebarGroups: ISideBarGroup[] = $state([]);
+	let showAuthBadge = $state(false);
+	let finalInitials: string = $state('');
+	const isSecureUrl = !page.route.id?.startsWith('/public/');
+	const appName = $i18n('app.name');
 
 	const loggedInNavigation = [
 		{
@@ -95,23 +101,26 @@
 		}
 	];
 
-	$: {
+	$effect(() => {
 		sidebarGroups = [];
-
 		if ($authenticationState === 'authenticated') {
 			showAuthBadge = true;
-			sidebarGroups.push({
-				items: loggedInNavigation
-			});
+			sidebarGroups = [
+				{
+					items: loggedInNavigation
+				}
+			];
 		} else if ($authenticationState === 'not-authenticated') {
 			showAuthBadge = false;
-			sidebarGroups.push({
-				items: loggedOutNavigation
-			});
+			sidebarGroups = [
+				{
+					items: loggedOutNavigation
+				}
+			];
 		}
-	}
+	});
 
-	$: {
+	$effect(() => {
 		const initials: string[] = [];
 
 		if (isSecureUrl) {
@@ -134,14 +143,18 @@
 
 			finalInitials = initials.join('');
 		}
-	}
+	});
+
+	$effect(() => {
+		document.title = appName;
+	});
 </script>
 
 <AppLayout
 	showSideBar={isSecureUrl}
 	showFooter={isSecureUrl}
 	homeNavRoute={isSecureUrl ? '/' : undefined}
-	title={$i18n('app.name')}
+	title={appName}
 	{sidebarGroups}
 	authenticated={isSecureUrl && showAuthBadge}
 	initials={finalInitials}
@@ -150,5 +163,5 @@
 	serverName={$serverName}
 	serverVersion={$serverVersion}
 >
-	<slot></slot>
+	{@render children?.()}
 </AppLayout>

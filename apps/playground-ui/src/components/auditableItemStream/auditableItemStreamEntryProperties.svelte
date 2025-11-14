@@ -60,22 +60,26 @@
 
 	const examples = [trackAction, medicalTest, service];
 
-	export let streamId: string;
-	export let entryId: string | undefined = undefined;
+	interface Props {
+		streamId: string;
+		entryId?: string | undefined;
+	}
+
+	let { streamId, entryId = undefined }: Props = $props();
 
 	const isUpdate = Is.stringValue(entryId);
 	let validationErrors: {
 		[field in 'entryObject']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let progress: string | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let progress: string | undefined = $state();
 	const error = '';
-	let result: string = '';
-	let resultIsError: boolean = false;
-	let selectedEntryObjectType = '';
-	let entryObjectText = '';
+	let result: string = $state('');
+	let resultIsError: boolean = $state(false);
+	let selectedEntryObjectType = $state('');
+	let entryObjectText = $state('');
 
-	$: {
+	$effect(() => {
 		const template = examples.find(t => t['@type'] === selectedEntryObjectType);
 		if (template) {
 			const currentTime = new Date().toISOString();
@@ -97,7 +101,7 @@
 
 			entryObjectText = JSON.stringify(newEntry, null, 2);
 		}
-	}
+	});
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.json(

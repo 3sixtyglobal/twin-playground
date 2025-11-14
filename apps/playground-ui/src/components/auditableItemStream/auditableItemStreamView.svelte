@@ -27,12 +27,16 @@
 	import { auditableItemStreamGet } from '$stores/auditableItemStreams';
 	import { eventBusSubscribe, eventBusUnsubscribe } from '$stores/eventBus';
 
-	export let itemId: string;
-	export let returnUrl: string | undefined = undefined;
-	let error: string;
-	let busy = true;
-	let item: IAuditableItemStream | undefined;
-	let entries: IAuditableItemStreamEntry[] | undefined;
+	interface Props {
+		itemId: string;
+		returnUrl?: string | undefined;
+	}
+
+	let { itemId, returnUrl = undefined }: Props = $props();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let item: IAuditableItemStream | undefined = $state();
+	let entries: IAuditableItemStreamEntry[] | undefined = $state();
 	let subscriptionId: string | undefined;
 
 	async function loadStream(): Promise<void> {
@@ -109,7 +113,7 @@
 							<Span>{item.proofId}</Span>
 						</Label>
 						<div>
-							<Button on:click={async () => navigateToImmutableProof(item?.proofId ?? '')}
+							<Button onclick={async () => navigateToImmutableProof(item?.proofId ?? '')}
 								>{$i18n('components.auditableItemStreamView.viewProof')}</Button
 							>
 						</div>
@@ -137,7 +141,7 @@
 								<Span>{entry.proofId}</Span>
 							</Label>
 							<div>
-								<Button on:click={async () => navigateToImmutableProof(entry.proofId ?? '')}
+								<Button onclick={async () => navigateToImmutableProof(entry.proofId ?? '')}
 									>{$i18n('components.auditableItemStreamView.viewProof')}</Button
 								>
 							</div>
@@ -150,6 +154,6 @@
 </Card>
 {#if Is.stringValue(returnUrl)}
 	<div class="mt-5 flex flex-row gap-2">
-		<Button on:click={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
+		<Button onclick={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
 	</div>
 {/if}

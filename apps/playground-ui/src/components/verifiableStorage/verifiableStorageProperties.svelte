@@ -21,15 +21,19 @@
 	import { verifiableStorageUpload } from '$stores/verifiableStorage';
 	import { verifiableStoragesEntrySet } from '$stores/verifiableStorages';
 
-	export let returnUrl: string;
-	let description = '';
-	let textContent = '';
+	interface Props {
+		returnUrl: string;
+	}
+
+	let { returnUrl }: Props = $props();
+	let description = $state('');
+	let textContent = $state('');
 	let validationErrors: {
 		[field in 'description' | 'textContent']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let itemId: string | undefined;
-	let progress: string | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let itemId: string | undefined = $state();
+	let progress: string | undefined = $state();
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.notEmpty(
@@ -140,7 +144,7 @@
 					/>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

@@ -23,17 +23,21 @@
 	import { ruleGroupQuery } from '$stores/dataProcessing';
 	import { documentGet, documentRevisionGet } from '$stores/document';
 
-	export let itemId: string | undefined = undefined;
-	let documentData: IDocument | undefined;
-	let error: string;
-	let busy = true;
-	let documentDataExtracted = false;
-	let dataExtracted: object | undefined;
+	interface Props {
+		itemId?: string | undefined;
+	}
 
-	let ruleGroups: IRuleGroup[] = [];
-	let selectedRuleGroupId = '';
-	let ruleGroupsBusy = false;
-	let ruleGroupsError = '';
+	let { itemId = undefined }: Props = $props();
+	let documentData: IDocument | undefined = $state();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let documentDataExtracted = $state(false);
+	let dataExtracted: object | undefined = $state();
+
+	let ruleGroups: IRuleGroup[] = $state([]);
+	let selectedRuleGroupId = $state('');
+	let ruleGroupsBusy = $state(false);
+	let ruleGroupsError = $state('');
 
 	async function loadData(cursor?: string): Promise<void> {
 		if (!itemId) {
@@ -140,7 +144,7 @@
 				</Label>
 				<Button
 					class="w-40"
-					on:click={async () => extractDocumentData(documentData?.documentRevision)}
+					onclick={async () => extractDocumentData(documentData?.documentRevision)}
 				>
 					{$i18n('pages.documentExtract.extractData')}
 				</Button>
@@ -155,7 +159,7 @@
 					class="w-10"
 					color="plain"
 					size="xs"
-					on:click={async () => copyExtractedData(dataExtracted)}
+					onclick={async () => copyExtractedData(dataExtracted)}
 				>
 					<Icons.ClipboardCleanSolid />
 				</Button>

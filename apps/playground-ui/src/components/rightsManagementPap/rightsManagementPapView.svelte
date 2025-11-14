@@ -18,12 +18,16 @@
 	import { onMount } from 'svelte';
 	import { policyGet } from '$stores/rightsManagementPap';
 
-	export let itemId: string;
-	export let returnUrl: string;
-	export let title: string | undefined = undefined;
-	let error: string;
-	let busy = true;
-	let odrlPolicy: IOdrlPolicy | undefined;
+	interface Props {
+		itemId: string;
+		returnUrl: string;
+		title?: string | undefined;
+	}
+
+	let { itemId, returnUrl, title = undefined }: Props = $props();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let odrlPolicy: IOdrlPolicy | undefined = $state();
 
 	async function close(): Promise<void> {
 		await goto(returnUrl);
@@ -70,6 +74,6 @@
 		</div>
 	{/if}
 	<div class="flex flex-row justify-start gap-5">
-		<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+		<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 	</div>
 </Card>

@@ -19,19 +19,23 @@
 	import { onMount } from 'svelte';
 	import { addValueToMetric, metricGet } from '$stores/telemetry';
 
-	export let returnUrl: string;
-	export let itemId: string | undefined = undefined;
-	let type: MetricType | undefined;
-	let error: string;
-	let busy = false;
-	let customData: { [key: string]: unknown } | undefined = undefined;
-	let progress: string | undefined;
-	let customDataKey: string | undefined = undefined;
-	let customDataValue: string | undefined = undefined;
-	let value: number | 'inc' | 'dec' | undefined = undefined;
+	interface Props {
+		returnUrl: string;
+		itemId?: string | undefined;
+	}
+
+	let { returnUrl, itemId = undefined }: Props = $props();
+	let type: MetricType | undefined = $state();
+	let error: string | undefined = $state();
+	let busy = $state(false);
+	let customData: { [key: string]: unknown } | undefined = $state(undefined);
+	let progress: string | undefined = $state();
+	let customDataKey: string | undefined = $state(undefined);
+	let customDataValue: string | undefined = $state(undefined);
+	let value: number | 'inc' | 'dec' | undefined = $state(undefined);
 	let validationErrors: {
 		[field in 'value']?: IValidationFailure[] | undefined;
-	} = {};
+	} = $state({});
 
 	async function validateValue(validationFailures: IValidationFailure[]): Promise<void> {
 		if (type === MetricType.Gauge) {
@@ -153,7 +157,7 @@
 				{$i18n('pages.telemetryMetricValueProperties.customDataValue')}
 				<Input type="text" name="customDataValue" bind:value={customDataValue} disabled={busy} />
 			</Label>
-			<Button size="xs" class="mt-6 p-2" on:click={addCustomData} disabled={busy}>
+			<Button size="xs" class="mt-6 p-2" onclick={addCustomData} disabled={busy}>
 				<Icons.PlusOutline />
 			</Button>
 		</div>

@@ -6,16 +6,20 @@
 	import { Jwt, type IJwtHeader, type IJwtPayload } from '@twin.org/web';
 	import { onMount } from 'svelte';
 
-	export let proof: string;
+	interface Props {
+		proof: string;
+	}
+
+	let { proof }: Props = $props();
 
 	const parts = proof.split(':');
 	const proofType = parts[0];
 	const proofValue = parts[1];
 
-	let jwtHeader: IJwtHeader | undefined;
-	let jwtPayload: IJwtPayload | undefined;
-	let jwtSignature: Uint8Array | undefined;
-	let busy = true;
+	let jwtHeader: IJwtHeader | undefined = $state();
+	let jwtPayload: IJwtPayload | undefined = $state();
+	let jwtSignature: Uint8Array | undefined = $state();
+	let busy = $state(true);
 
 	onMount(async () => {
 		if (proofType === 'JwtProof') {

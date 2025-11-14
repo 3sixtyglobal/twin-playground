@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/playground-node",
-	"version": "0.0.2-next.0",
+	"version": "0.0.3-next.0",
 	"description": "Serve APIs using the specified configuration",
 	"private": true,
 	"repository": {
@@ -22,7 +22,7 @@
 		"test": "vitest --run --config ./vitest.config.ts --no-cache",
 		"test:build": "tspc -p ./tests/tsconfig.json --noEmit",
 		"validate-locales": "validate-locales",
-		"coverage": "vitest --run --coverage --config ./vitest.config.ts --no-cache",
+		"test:coverage": "vitest --run --coverage --config ./vitest.config.ts --no-cache",
 		"docs:clean": "rimraf docs/open-api",
 		"docs:api": "ts-to-openapi ./ts-to-openapi.json ./docs/open-api/spec.json",
 		"docs": "npm run docs:clean && npm run docs:api",
@@ -31,8 +31,10 @@
 		"start": "node dist/es/index.js"
 	},
 	"dependencies": {
+		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/engine": "next",
+		"@twin.org/engine-models": "next",
 		"@twin.org/engine-types": "next",
 		"@twin.org/node-core": "next",
 		"@twin.org/entity": "next"

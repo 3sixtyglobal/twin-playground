@@ -35,21 +35,25 @@
 
 	const annotationObjectExamples = [note];
 
-	export let itemId: string | undefined = undefined;
+	interface Props {
+		itemId?: string | undefined;
+	}
 
-	let selectedAnnotationObjectType = '';
-	let annotationObjectText = '';
-	let immutableInterval: number | undefined = undefined;
+	let { itemId = $bindable(undefined) }: Props = $props();
+
+	let selectedAnnotationObjectType = $state('');
+	let annotationObjectText = $state('');
+	let immutableInterval: number | undefined = $state(undefined);
 
 	const isUpdate = Is.stringValue(itemId);
 	let validationErrors: {
 		[field in 'annotationObject' | 'immutableInterval']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let progress: string | undefined;
-	let result: string = '';
-	let resultIsError: boolean = false;
-	let saved: boolean = false;
+	} = $state({});
+	let busy = $state(false);
+	let progress: string | undefined = $state();
+	let result: string = $state('');
+	let resultIsError: boolean = $state(false);
+	let saved: boolean = $state(false);
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		if (!isUpdate && Is.notEmpty(immutableInterval)) {
@@ -75,12 +79,12 @@
 		await goto('/secure/auditable-item-stream');
 	}
 
-	$: {
+	$effect(() => {
 		const example = annotationObjectExamples.find(t => t['@type'] === selectedAnnotationObjectType);
 		if (example) {
 			annotationObjectText = JSON.stringify(example, null, 2);
 		}
-	}
+	});
 
 	async function loadData(loadId: string): Promise<void> {
 		busy = true;
@@ -215,7 +219,7 @@
 					/>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

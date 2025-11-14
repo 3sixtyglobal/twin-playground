@@ -27,15 +27,15 @@
 
 	const cursorHandler = new CursorStackHandler();
 
-	let items: IUserImmutableProofEntry[] | undefined;
-	let busy = false;
-	let status = '';
-	let isError = false;
-	let confirmationId: string = '';
-	let modalIsBusy = false;
+	let items: IUserImmutableProofEntry[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
+	let confirmationId: string = $state('');
+	let modalIsBusy = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.immutableProof.loading');
@@ -105,7 +105,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/immutable-proof/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/immutable-proof/create')} disabled={busy}
 			>{$i18n('pages.immutableProof.createProof')}</Button
 		>
 	</div>
@@ -130,11 +130,11 @@
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/immutable-proof/${item.id}`)}
+								onclick={() => goto(`/secure/immutable-proof/${item.id}`)}
 							>
 								<Icons.EyeOutline />
 							</Button>
-							<Button size="xs" color="plain" on:click={async () => removePrompt(item.id)}>
+							<Button size="xs" color="plain" onclick={async () => removePrompt(item.id)}>
 								<Icons.TrashBinOutline />
 							</Button>
 						</TableBodyCell>

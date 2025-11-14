@@ -4,7 +4,7 @@ import { BaseError, ErrorHelper, Is, NotFoundError, ObjectHelper } from "@twin.o
 import { IdentityProfileRestClient } from "@twin.org/identity-rest-client";
 import type { Person, WithContext } from "schema-dts";
 import { get, writable } from "svelte/store";
-import { authenticationState } from "./authentication";
+import { authenticationState } from "./authentication.js";
 
 export const profileIdentity = writable<string>("");
 export const publicProfile = writable<WithContext<Person> | undefined>();

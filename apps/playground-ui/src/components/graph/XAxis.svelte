@@ -1,17 +1,21 @@
 <script lang="ts">
 	import type { ScaleLinear } from 'd3-scale';
 
-	export let xScale: ScaleLinear<number, number>;
-	export let innerHeight: number;
-	export let label: string;
+	interface Props {
+		xScale: ScaleLinear<number, number>;
+		innerHeight: number;
+		label: string;
+	}
+
+	let { xScale, innerHeight, label }: Props = $props();
 
 	function numberOfTicks(pixelsAvailable: number, pixelsPerTick: number = 60): number {
 		return Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
 	}
 
-	$: [xMin, xMax] = xScale.range();
+	let [xMin, xMax] = $derived(xScale.range());
 
-	$: ticks = xScale.ticks(numberOfTicks(xMax - xMin));
+	let ticks = $derived(xScale.ticks(numberOfTicks(xMax - xMin)));
 </script>
 
 <g transform={`translate(0 ${innerHeight})`}>

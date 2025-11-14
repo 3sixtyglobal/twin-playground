@@ -27,20 +27,24 @@
 	import { metricValuesQuery } from '$stores/telemetry';
 	import { CursorStackHandler } from '$utils/shared/cursorStackHandler';
 
-	export let itemId: string | undefined = undefined;
+	interface Props {
+		itemId?: string | undefined;
+	}
+
+	let { itemId = $bindable(undefined) }: Props = $props();
 
 	const cursorHandler = new CursorStackHandler();
 
-	let entities: ITelemetryMetricValue[] | undefined;
-	let busy = false;
-	let status = '';
-	let limit = 50;
-	let timeStart: string | undefined = undefined;
-	let timeEnd: string | undefined = undefined;
-	let isError = false;
+	let entities: ITelemetryMetricValue[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let limit = $state(50);
+	let timeStart: string | undefined = $state(undefined);
+	let timeEnd: string | undefined = $state(undefined);
+	let isError = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.telemetry.loading');
@@ -161,14 +165,14 @@
 					disabled={busy}
 				></Input>
 			</Label>
-			<Button on:click={async () => action()} disabled={busy} class="lg:mt-6">
+			<Button onclick={async () => action()} disabled={busy} class="lg:mt-6">
 				{$i18n('pages.telemetry.search')}
 			</Button>
 		</div>
 	</Card>
 
 	<div class="flex w-full justify-end gap-4">
-		<Button on:click={() => goto(`/secure/telemetry/${itemId}/values/create`)} disabled={busy}
+		<Button onclick={() => goto(`/secure/telemetry/${itemId}/values/create`)} disabled={busy}
 			>{$i18n('pages.telemetryMetricValueList.createMetricValue')}</Button
 		>
 	</div>
@@ -196,7 +200,7 @@
 							{/if}
 						</TableBodyCell>
 						<TableBodyCell class="flex flex-row gap-2">
-							<Button size="xs" color="plain" on:click={async () => copyData(item)}
+							<Button size="xs" color="plain" onclick={async () => copyData(item)}
 								><Icons.ClipboardCheckOutline /></Button
 							>
 						</TableBodyCell>
@@ -209,6 +213,6 @@
 		{$i18n('pages.telemetryMetricValueList.noItems')}
 	{/if}
 	<div class="flex flex-row gap-2">
-		<Button on:click={() => goto('/secure/telemetry/')}>{$i18n('actions.back')}</Button>
+		<Button onclick={() => goto('/secure/telemetry/')}>{$i18n('actions.back')}</Button>
 	</div>
 </section>

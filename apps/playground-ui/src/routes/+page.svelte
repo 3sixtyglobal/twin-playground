@@ -2,7 +2,7 @@
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Spinner } from '@twin.org/ui-components-svelte';
 	import Login from '$components/authentication/login.svelte';
 	import { authenticationState } from '$stores/authentication';
@@ -10,7 +10,7 @@
 	authenticationState.subscribe(value => {
 		if (value === 'authenticated') {
 			// This will get triggered on a successful login
-			goto($page.url.searchParams.get('returnUrl') ?? '/secure/dashboard');
+			goto(page.url.searchParams.get('returnUrl') ?? '/secure/dashboard');
 		}
 	});
 </script>

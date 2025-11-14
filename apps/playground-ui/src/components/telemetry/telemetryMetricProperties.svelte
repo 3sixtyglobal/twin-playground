@@ -22,21 +22,25 @@
 	import { createMetric, metricGet, updateMetric } from '$stores/telemetry';
 	import { getMetricTypeLabels } from '$utils/telemetry/metricTypeLabels';
 
-	export let returnUrl: string;
-	export let itemId: string | undefined = undefined;
-	let id = '';
-	let label = '';
-	let description: string | undefined = '';
-	let type: MetricType = MetricType.Counter;
-	let unit = '';
+	interface Props {
+		returnUrl: string;
+		itemId?: string | undefined;
+	}
+
+	let { returnUrl, itemId = $bindable(undefined) }: Props = $props();
+	let id = $state('');
+	let label = $state('');
+	let description: string | undefined = $state('');
+	let type: MetricType = $state(MetricType.Counter);
+	let unit = $state('');
 	let validationErrors: {
 		[field in 'id' | 'label' | 'type']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let error: string;
-	let progress: string | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let error: string | undefined = $state();
+	let progress: string | undefined = $state();
 	const isUpdate = Is.stringValue(itemId);
-	let saved: boolean = false;
+	let saved: boolean = $state(false);
 	const metricTypes: MetricType[] = Object.values(MetricType);
 	const metricTypeLabels = getMetricTypeLabels();
 
@@ -201,7 +205,7 @@
 					<Span>{id}</Span>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

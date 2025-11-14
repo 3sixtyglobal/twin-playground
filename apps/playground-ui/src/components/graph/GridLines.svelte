@@ -1,9 +1,13 @@
 <script lang="ts">
 	import * as d3 from 'd3';
 
-	export let yScale: d3.ScaleLinear<number, number>;
-	export let innerWidth: number;
-	export let label: string;
+	interface Props {
+		yScale: d3.ScaleLinear<number, number>;
+		innerWidth: number;
+		label: string;
+	}
+
+	let { yScale, innerWidth, label }: Props = $props();
 
 	const formatTick = d3.format('.2s');
 
@@ -11,9 +15,9 @@
 		return Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
 	}
 
-	$: [yMin, yMax] = yScale.range();
+	let [yMin, yMax] = $derived(yScale.range());
 
-	$: ticks = yScale.ticks(numberOfTicks(yMax - yMin));
+	let ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
 </script>
 
 <g>

@@ -29,16 +29,16 @@
 
 	const cursorHandler = new CursorStackHandler();
 
-	let entities: IRuleGroup[] | undefined;
-	let busy = false;
-	let status = '';
-	let limit = 50;
-	let isError = false;
-	let confirmationId: string = '';
-	let modalIsBusy = false;
+	let entities: IRuleGroup[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let limit = $state(50);
+	let isError = $state(false);
+	let confirmationId: string = $state('');
+	let modalIsBusy = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.dataProcessingRuleGroupList.loading');
@@ -122,7 +122,7 @@
 					type="number"
 				></Input>
 			</Label>
-			<Button on:click={async () => action()} disabled={busy} class="lg:mt-6">
+			<Button onclick={async () => action()} disabled={busy} class="lg:mt-6">
 				{$i18n('pages.dataProcessingRuleGroupList.search')}
 			</Button>
 		</div></Card
@@ -134,7 +134,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/data-processing/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/data-processing/create')} disabled={busy}
 			>{$i18n('pages.dataProcessingRuleGroupList.createRuleGroup')}</Button
 		>
 	</div>
@@ -159,21 +159,20 @@
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/data-processing/${encodeURIComponent(item.id)}`)}
+								onclick={() => goto(`/secure/data-processing/${encodeURIComponent(item.id)}`)}
 								><Icons.EditOutline /></Button
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() =>
-									goto(`/secure/data-processing/${encodeURIComponent(item.id)}/rules`)}
+								onclick={() => goto(`/secure/data-processing/${encodeURIComponent(item.id)}/rules`)}
 								><Icons.ListOutline /></Button
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() =>
+								onclick={() =>
 									goto(`/secure/data-processing/${encodeURIComponent(item.id)}/extract`)}
 								><Icons.ArrowRightAltOutline /></Button
-							><Button size="xs" color="plain" on:click={async () => removePrompt(item.id)}
+							><Button size="xs" color="plain" onclick={async () => removePrompt(item.id)}
 								><Icons.TrashBinOutline /></Button
 							>
 						</TableBodyCell>

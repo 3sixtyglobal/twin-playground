@@ -91,7 +91,9 @@
 			"url": "Property \"{property}\" must be a Url formatted string, it is \"{value}\"",
 			"email": "Property \"{property}\" must be string in e-mail format, it is \"{value}\"",
 			"length32Multiple": "Property \"{property}\" should be a multiple of 32, it is {value}",
-			"lengthEntropy": "Property \"{property}\" should be a multiple of 4, >=16 and <= 32, it is {value}"
+			"lengthEntropy": "Property \"{property}\" should be a multiple of 4, >=16 and <= 32, it is {value}",
+			"didPartsTooFew": "The DID \"{value}\" is invalid: expected at least 3 parts but got fewer",
+			"didInvalidStart": "The DID \"{value}\" is invalid: expected to start with 'did'"
 		},
 		"objectHelper": {
 			"failedBytesToJSON": "Failed converting bytes to JSON",
@@ -184,6 +186,13 @@
 			"decodingFailed": "Decoding JSON failed for route \"{route}\"",
 			"failureStatusText": "The request to the API failed: \"{statusText}\""
 		},
+		"contextIdHelper": {
+			"contextIdMissing": "The context ID \"{key}\" is missing from the provided context IDs",
+			"contextIdSplitMismatch": "The context ID split parts length \"{actual}\" does not match the provided keys length \"{expected}\""
+		},
+		"contextIdStore": {
+			"asyncHooksNotAvailable": "Async Hooks are not available in this environment, please ensure you are running in Node.js"
+		},
 		"entitySchemaHelper": {
 			"noIsPrimary": "Property \"entitySchema.properties\" must contain a value with isPrimary set",
 			"multipleIsPrimary": "Property \"entitySchema.properties\" contains more than one property with isPrimary set",
@@ -237,9 +246,6 @@
 			"verificationMethodNotFound": "The verification method \"{methodName}\" of type \"{methodType}\" could not be found",
 			"verificationMethodJwkNotFound": "The verification method \"{methodName}\" of type \"{methodType}\" is missing the JWK"
 		},
-		"idHelper": {
-			"invalidDocumentId": "The document id \"{id}\" is invalid"
-		},
 		"immutableProofRestClient": {
 			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
 		},
@@ -286,9 +292,6 @@
 		"policyNegotiationPointRestClient": {
 			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
 		},
-		"verifiableCredentialAuthenticationGenerator": {
-			"missingNodeIdentity": "The authenticator can not generate a token without a node identity"
-		},
 		"verifiableCredentialAuthenticationProcessor": {
 			"tokenFailed": "Failed to verify token",
 			"tokenNoCredential": "The token does not contain a verifiable credential",
@@ -332,6 +335,7 @@
 		"tokenHelper": {
 			"missing": "The JSON Web token could not be found in the authorization header",
 			"payloadMissingSubject": "The JSON Web token payload does not contain a subject",
+			"payloadMissingOrganization": "The JSON Web token payload does not contain an organization",
 			"expired": "The JSON Web token has expired"
 		},
 		"restRouteProcessor": {
@@ -342,6 +346,9 @@
 		},
 		"jsonLdMimeTypeProcessor": {
 			"invalidJsonLd": "The JSON-LD content is invalid or missing '@context'."
+		},
+		"loggingProcessor": {
+			"responseMessage": "<=== {statusCode} {method} {requestUrl} duration: {elapsedMicroSeconds}µs"
 		},
 		"fastifyWebServer": {
 			"startFailed": "The Web Server failed to start",
@@ -466,7 +473,6 @@
 			"dropTableFailed": " \"{table}\" cannot be dropped",
 			"truncateTableFailed": " \"{table}\" cannot be dropped",
 			"removeFailed": "Removing item with \"{id}\" failed",
-			"itemTypeNotDefined": "The item type is not defined",
 			"setFailed": "Setting item with \"{id}\" failed"
 		},
 		"scyllaDBViewConnector": {
@@ -769,6 +775,10 @@
 			"subscribe": "Subscription created for topic \"{topic}\" with id \"{subscriptionId}\"",
 			"unsubscribe": "Subscription removed for topic \"{topic}\" with id \"{subscriptionId}\""
 		},
+		"loggingProcessor": {
+			"requestMessage": "===> {method} {requestUrl}",
+			"responseMessage": "<=== {statusCode} {method} {requestUrl} duration: {elapsedMicroSeconds}µs"
+		},
 		"fastifyWebServer": {
 			"building": "Building Web Server",
 			"starting": "Starting Web Server at address \"{host}\" on port \"{port}\"",
@@ -779,22 +789,18 @@
 		},
 		"s3BlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
-			"bucketCreated": "Created bucket \"{bucket}\"",
 			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
 		},
 		"azureBlobStorageConnector": {
 			"containerCreating": "Creating container \"{container}\"",
-			"containerCreated": "Created container \"{container}\"",
 			"containerExists": "Skipping create container \"{container}\" as it already exists"
 		},
 		"gcpBlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
-			"bucketCreated": "Created bucket \"{bucket}\"",
 			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
 		},
 		"fileBlobStorageConnector": {
 			"directoryCreating": "Creating directory \"{directory}\"",
-			"directoryCreated": "Created directory \"{directory}\"",
 			"directoryExists": "Skipping create directory \"{directory}\" as it already exists"
 		},
 		"dynamoDbEntityStorageConnector": {
@@ -808,10 +814,11 @@
 			"directoryExists": "Skipping create directory \"{directory}\" as it already exists"
 		},
 		"scyllaDBTableConnector": {
+			"keyspaceCreating": "Creating keyspace \"{keyspace}\"",
+			"keyspaceExists": "Skipping create keyspace \"{keyspace}\" as it already exists",
 			"tableCreating": "Creating table \"{table}\"",
-			"tableCreated": "Created table \"{table}\"",
 			"tableExists": "Skipping create table \"{table}\" as it already exists",
-			"typeCreated": "Created type \"{typeName}\"",
+			"typeCreating": "Creating type \"{typeName}\"",
 			"sql": "SQL: \"{sql}\""
 		},
 		"scyllaDBViewConnector": {

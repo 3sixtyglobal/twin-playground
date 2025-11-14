@@ -20,10 +20,14 @@
 	import { createExplorerNftUrl } from '$stores/iota';
 	import { nftResolve } from '$stores/nft';
 
-	export let itemId: string;
-	export let returnUrl: string | undefined = undefined;
-	let error: string;
-	let busy = true;
+	interface Props {
+		itemId: string;
+		returnUrl?: string | undefined;
+	}
+
+	let { itemId, returnUrl = undefined }: Props = $props();
+	let error: string | undefined = $state();
+	let busy = $state(true);
 	let item:
 		| Partial<{
 				issuer?: string;
@@ -33,8 +37,8 @@
 				metadata?: unknown;
 				error?: string;
 		  }>
-		| undefined;
-	let exploreUrl: string | undefined;
+		| undefined = $state();
+	let exploreUrl: string | undefined = $state();
 
 	onMount(async () => {
 		error = '';
@@ -68,7 +72,7 @@
 					</Label>
 					{#if Is.stringValue(exploreUrl)}
 						<div>
-							<Button size="xs" on:click={openExplorer} color="plain" class="gap-2"
+							<Button size="xs" onclick={openExplorer} color="plain" class="gap-2"
 								>{$i18n('components.nftView.exploreNft')}<Icons.LinkOutline size="sm" /></Button
 							>
 						</div>
@@ -124,7 +128,7 @@
 	{/if}
 	{#if Is.stringValue(returnUrl)}
 		<div class="flex flex-row gap-2">
-			<Button on:click={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
+			<Button onclick={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
 		</div>
 	{/if}
 </Card>

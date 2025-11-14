@@ -17,20 +17,24 @@
 	import { nftTransfer, nftResolve } from '$stores/nft';
 	import { nftsEntrySet } from '$stores/nfts';
 
-	export let itemId: string | undefined;
-	export let returnUrl: string;
+	interface Props {
+		itemId: string | undefined;
+		returnUrl: string;
+	}
+
+	let { itemId, returnUrl }: Props = $props();
 	let validationErrors: {
 		[field in 'issuer' | 'tag' | 'recipientIdentity' | 'recipientAddress']?:
 			| IValidationFailure[]
 			| undefined;
-	} = {};
-	let busy = false;
-	let progress: string | undefined;
-	let recipientIdentity: string | undefined = '';
-	let recipientAddress: string | undefined = '';
-	let newMetadataKey: string | undefined = undefined;
-	let newMetadataValue: string | undefined = undefined;
-	let metadata: unknown | undefined = undefined;
+	} = $state({});
+	let busy = $state(false);
+	let progress: string | undefined = $state();
+	let recipientIdentity: string | undefined = $state('');
+	let recipientAddress: string | undefined = $state('');
+	let newMetadataKey: string | undefined = $state(undefined);
+	let newMetadataValue: string | undefined = $state(undefined);
+	let metadata: unknown | undefined = $state(undefined);
 	let item:
 		| Partial<{
 				issuer?: string;
@@ -40,7 +44,7 @@
 				metadata?: unknown;
 				error?: string;
 		  }>
-		| undefined;
+		| undefined = $state();
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.notEmpty(
@@ -186,7 +190,7 @@
 				</Label>
 			</div>
 			<div class="mb-5 text-right">
-				<Button class="w-40" on:click={addMetadata} disabled={busy}>
+				<Button class="w-40" onclick={addMetadata} disabled={busy}>
 					{$i18n('pages.nftProperties.addMetadata')}
 				</Button>
 			</div>

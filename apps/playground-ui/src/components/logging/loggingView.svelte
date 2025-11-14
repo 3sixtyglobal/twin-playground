@@ -31,18 +31,18 @@
 	const cursorHandler = new CursorStackHandler();
 	const logLevels: LogLevel[] = ['debug', 'info', 'warn', 'error'];
 
-	let entities: ILogEntry[] | undefined;
-	let busy = false;
-	let status = '';
-	let level: LogLevel | undefined = undefined;
-	let source: string | undefined = undefined;
-	let timeStart: string | undefined = undefined;
-	let timeEnd: string | undefined = undefined;
-	let limit = 50;
-	let isError = false;
+	let entities: ILogEntry[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let level: LogLevel | undefined = $state(undefined);
+	let source: string | undefined = $state(undefined);
+	let timeStart: string | undefined = $state(undefined);
+	let timeEnd: string | undefined = $state(undefined);
+	let limit = $state(50);
+	let isError = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.logging.loading');
@@ -184,7 +184,7 @@
 					disabled={busy}
 				></Input>
 			</Label>
-			<Button class="mt-6 max-w-20" on:click={async () => action()} disabled={busy}>
+			<Button class="mt-6 max-w-20" onclick={async () => action()} disabled={busy}>
 				{$i18n('pages.logging.action')}
 			</Button>
 		</div>
@@ -227,15 +227,15 @@
 						</TableBodyCell>
 						<TableBodyCell wrap>{item.ts ? new Date(item.ts).toLocaleString() : ''}</TableBodyCell>
 						<TableBodyCell class="flex flex-row gap-2">
-							<Button size="xs" color="plain" on:click={async () => copyData(item)}>
+							<Button size="xs" color="plain" onclick={async () => copyData(item)}>
 								<Icons.ClipboardListOutline />
 							</Button>
 							<Tooltip>{$i18n('pages.logging.copyAllClipboard')}</Tooltip>
-							<Button size="xs" color="plain" on:click={async () => copyData(item.data)}>
+							<Button size="xs" color="plain" onclick={async () => copyData(item.data)}>
 								<Icons.ClipboardCheckOutline />
 							</Button>
 							<Tooltip>{$i18n('pages.logging.copyDataClipboard')}</Tooltip>
-							<Button size="xs" color="plain" on:click={async () => copyData(item.error)}>
+							<Button size="xs" color="plain" onclick={async () => copyData(item.error)}>
 								<Icons.ExclamationCircleOutline />
 							</Button>
 							<Tooltip>{$i18n('pages.logging.copyErrorClipboard')}</Tooltip>

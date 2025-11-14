@@ -30,26 +30,30 @@
 	import { documentGet, documentRevisionGet, documentRemoveRevision } from '$stores/document';
 	import { attestationIdToNftId, createExplorerNftUrl } from '$stores/iota';
 
-	export let itemId: string | undefined = undefined;
-	let documentData: IDocument | undefined;
-	let documentId: string | undefined;
-	let documentIdFormat: string | undefined;
-	let documentCode: string | undefined;
-	let error: string;
-	let busy = true;
-	let documentList: IDocument[] = [];
-	let showDocumentModal = false;
-	let selectedDocument: IDocument | undefined;
-	let documentModalLoading = false;
+	interface Props {
+		itemId?: string | undefined;
+	}
 
-	let showDeleteConfirmModal = false;
-	let deleteModalIsBusy = false;
+	let { itemId = undefined }: Props = $props();
+	let documentData: IDocument | undefined;
+	let documentId: string | undefined = $state();
+	let documentIdFormat: string | undefined = $state();
+	let documentCode: string | undefined = $state();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let documentList: IDocument[] = $state([]);
+	let showDocumentModal = $state(false);
+	let selectedDocument: IDocument | undefined = $state();
+	let documentModalLoading = $state(false);
+
+	let showDeleteConfirmModal = $state(false);
+	let deleteModalIsBusy = $state(false);
 	let documentRevisionToDelete: number | undefined;
 
-	let hasDeletedDocuments = false;
-	let showDeletedDocuments = false;
-	let filteredDocumentList: IDocument[] = [];
-	let exploreUrl: string | undefined;
+	let hasDeletedDocuments = $state(false);
+	let showDeletedDocuments = $state(false);
+	let filteredDocumentList: IDocument[] = $state([]);
+	let exploreUrl: string | undefined = $state();
 
 	const documentTypes = [
 		{ value: UneceDocumentCodes.BillOfLading, label: 'BillOfLading' },
@@ -283,8 +287,8 @@
 								class="relative inline-block h-6 w-12 cursor-pointer rounded-full transition-colors duration-200 ease-in-out {showDeletedDocuments
 									? 'bg-brand-primary-dark'
 									: 'bg-neutral-700'}"
-								on:click={toggleDeletedDocuments}
-								on:keydown={e => {
+								onclick={toggleDeletedDocuments}
+								onkeydown={e => {
 									if (e.key === 'Enter' || e.key === ' ') {
 										toggleDeletedDocuments();
 									}
@@ -327,7 +331,7 @@
 									<Button
 										size="xs"
 										color="plain"
-										on:click={async () => viewDocumentDetails(document)}
+										onclick={async () => viewDocumentDetails(document)}
 									>
 										<Icons.EyeOutline />
 									</Button>
@@ -335,7 +339,7 @@
 										<Button
 											size="xs"
 											color="plain"
-											on:click={async () => {
+											onclick={async () => {
 												await removePrompt(document.documentRevision);
 											}}
 										>
@@ -399,11 +403,11 @@
 						</Label>
 					{/if}
 					<div class="flex flex-row gap-2">
-						<Button size="xs" on:click={() => downloadSelectedDocument(selectedDocument)}>
+						<Button size="xs" onclick={() => downloadSelectedDocument(selectedDocument)}>
 							<Icons.DownloadOutline />
 						</Button>
 						{#if Is.stringValue(exploreUrl)}
-							<Button size="xs" on:click={openExplorer} color="plain" class="gap-2">
+							<Button size="xs" onclick={openExplorer} color="plain" class="gap-2">
 								{$i18n('components.attestationView.exploreNft')}<Icons.LinkOutline size="sm" />
 							</Button>
 						{/if}
@@ -421,7 +425,7 @@
 				/>
 			</div>
 			<div class="flex flex-row justify-end gap-2 pt-2">
-				<Button on:click={() => (showDocumentModal = false)}>
+				<Button onclick={() => (showDocumentModal = false)}>
 					{$i18n('actions.close')}
 				</Button>
 			</div>

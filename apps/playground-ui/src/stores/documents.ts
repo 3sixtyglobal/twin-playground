@@ -40,6 +40,7 @@ export async function documentEntryList(cursor?: string): Promise<
 				cursor
 			);
 			return {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				items: result.entities as IUserDocumentEntry[],
 				cursor: result.cursor
 			};

@@ -40,6 +40,7 @@ export async function immutableProofList(cursor?: string): Promise<
 				cursor
 			);
 			return {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				items: result.entities as IUserImmutableProofEntry[],
 				cursor: result.cursor
 			};

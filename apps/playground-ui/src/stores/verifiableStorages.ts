@@ -42,6 +42,7 @@ export async function verifiableStorageEntryList(cursor?: string): Promise<
 				cursor
 			);
 			return {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				items: result.entities as IUserVerifiableStorageEntry[],
 				cursor: result.cursor
 			};

@@ -30,15 +30,15 @@
 
 	const cursorHandler = new CursorStackHandler();
 
-	let items: IUserVerifiableStorageEntry[] | undefined;
-	let busy = false;
-	let status = '';
-	let isError = false;
-	let confirmationId: string = '';
-	let modalIsBusy = false;
+	let items: IUserVerifiableStorageEntry[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
+	let confirmationId: string = $state('');
+	let modalIsBusy = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.verifiableStorage.loading');
@@ -108,7 +108,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/verifiable-storage/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/verifiable-storage/create')} disabled={busy}
 			>{$i18n('pages.verifiableStorage.createItem')}</Button
 		>
 	</div>
@@ -137,9 +137,9 @@
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/verifiable-storage/${item.id}`)}
+								onclick={() => goto(`/secure/verifiable-storage/${item.id}`)}
 								><Icons.EyeOutline /></Button
-							><Button size="xs" color="plain" on:click={async () => removePrompt(item.id)}
+							><Button size="xs" color="plain" onclick={async () => removePrompt(item.id)}
 								><Icons.TrashBinOutline /></Button
 							></TableBodyCell
 						>

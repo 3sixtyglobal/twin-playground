@@ -18,23 +18,27 @@
 	import { onMount } from 'svelte';
 	import { ruleGroupGet, ruleGroupSet } from '$stores/dataProcessing';
 
-	export let itemId: string;
-	export let ruleIndex: number = -1;
-	export let returnUrl: string;
+	interface Props {
+		itemId: string;
+		ruleIndex?: number;
+		returnUrl: string;
+	}
+
+	let { itemId, ruleIndex = -1, returnUrl }: Props = $props();
 	const isUpdate = ruleIndex >= 0;
-	let error: string;
-	let busy = false;
+	let error: string | undefined = $state();
+	let busy = $state(false);
 	let ruleGroup: IRuleGroup | undefined;
-	let progress: string | undefined;
-	let source: string = '';
-	let target: string = '';
-	let coerce: CoerceType | undefined;
-	let retainPathDepth: number | undefined;
+	let progress: string | undefined = $state();
+	let source: string = $state('');
+	let target: string = $state('');
+	let coerce: CoerceType | undefined = $state();
+	let retainPathDepth: number | undefined = $state();
 	let validationErrors: {
 		[field in 'source' | 'target' | 'coerce' | 'retainPathDepth']?:
 			| IValidationFailure[]
 			| undefined;
-	} = {};
+	} = $state({});
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.stringValue(

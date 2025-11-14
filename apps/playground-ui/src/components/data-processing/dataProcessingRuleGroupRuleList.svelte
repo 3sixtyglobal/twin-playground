@@ -22,16 +22,20 @@
 	import { onMount } from 'svelte';
 	import { ruleGroupGet, ruleGroupSet } from '$stores/dataProcessing';
 
-	export let itemId: string;
-	export let returnUrl: string;
+	interface Props {
+		itemId: string;
+		returnUrl: string;
+	}
 
-	let ruleGroup: IRuleGroup | undefined;
-	let rules: IRule[] | undefined;
-	let busy = false;
-	let status = '';
-	let isError = false;
-	let confirmationIndex: number = -1;
-	let modalIsBusy = false;
+	let { itemId, returnUrl }: Props = $props();
+
+	let ruleGroup: IRuleGroup | undefined = $state();
+	let rules: IRule[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
+	let confirmationIndex: number = $state(-1);
+	let modalIsBusy = $state(false);
 
 	async function loadData(loadId: string): Promise<void> {
 		status = $i18n('pages.dataProcessingRuleGroupRuleList.loading');
@@ -100,7 +104,7 @@
 	<div class="flex w-full justify-end gap-4">
 		<Button
 			class="w-50"
-			on:click={() => goto(`/secure/data-processing/${itemId}/rules/create`)}
+			onclick={() => goto(`/secure/data-processing/${itemId}/rules/create`)}
 			disabled={busy}>{$i18n('pages.dataProcessingRuleGroupRuleList.createRule')}</Button
 		>
 	</div>
@@ -125,10 +129,10 @@
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() =>
+								onclick={() =>
 									goto(`/secure/data-processing/${encodeURIComponent(itemId)}/rules/${idx}`)}
 								><Icons.EditOutline /></Button
-							><Button size="xs" color="plain" on:click={async () => removePrompt(idx)}
+							><Button size="xs" color="plain" onclick={async () => removePrompt(idx)}
 								><Icons.TrashBinOutline /></Button
 							>
 						</TableBodyCell>
@@ -147,6 +151,6 @@
 		/>
 	{/if}
 	<div class="flex flex-row gap-2">
-		<Button on:click={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
+		<Button onclick={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
 	</div>
 </section>

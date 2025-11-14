@@ -22,21 +22,25 @@
 	import { onMount } from 'svelte';
 	import { policyGet, policyCreate, policyUpdate } from '$stores/rightsManagementPap';
 
-	export let itemId: string | undefined = undefined;
-	export let returnUrl: string;
+	interface Props {
+		itemId?: string | undefined;
+		returnUrl: string;
+	}
+
+	let { itemId = undefined, returnUrl }: Props = $props();
 
 	const isUpdate = Is.stringValue(itemId);
 	let validationErrors: {
 		[field in 'policyObject']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let progress: string | undefined;
-	let error: string;
-	let policyId: string | undefined;
-	let policyObject: IOdrlPolicy | undefined = undefined;
-	let selectedType = '';
-	let textAreaValue = '';
-	let userSelectedType = false;
+	} = $state({});
+	let busy = $state(false);
+	let progress: string | undefined = $state();
+	let error: string | undefined = $state();
+	let policyId: string | undefined = $state();
+	let policyObject: IOdrlPolicy | undefined = $state(undefined);
+	let selectedType = $state('');
+	let textAreaValue = $state('');
+	let userSelectedType = $state(false);
 	const policyObjectExamples: Partial<IOdrlPolicy>[] = [
 		{
 			'@type': 'Set',
@@ -80,7 +84,7 @@
 		}
 	];
 
-	$: {
+	$effect(() => {
 		if (userSelectedType && selectedType) {
 			const example = policyObjectExamples.find(ex => ex['@type'] === selectedType);
 			if (example) {
@@ -92,7 +96,7 @@
 				userSelectedType = false;
 			}
 		}
-	}
+	});
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		busy = true;
@@ -179,7 +183,7 @@
 		busy = false;
 	}
 
-	$: {
+	$effect(() => {
 		if (!textAreaValue.trim()) {
 			policyObject = undefined;
 		} else if (Is.json(textAreaValue)) {
@@ -187,7 +191,7 @@
 		} else {
 			policyObject = undefined;
 		}
-	}
+	});
 
 	onMount(async () => {
 		OdrlDataTypes.registerRedirects();
@@ -237,7 +241,7 @@
 					<Select
 						bind:value={selectedType}
 						disabled={busy}
-						on:change={() => (userSelectedType = true)}
+						onchange={() => (userSelectedType = true)}
 					>
 						<option value="">Select an example</option>
 						{#each policyObjectExamples as example}
@@ -263,7 +267,7 @@
 					<Span>{policyId}</Span>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>
