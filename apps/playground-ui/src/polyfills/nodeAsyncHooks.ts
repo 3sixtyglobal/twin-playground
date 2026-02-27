@@ -42,9 +42,9 @@ interface AsyncHookCallbacks {
 /**
  * Internal no-op used to satisfy async hook signatures in the browser.
  */
-const noop = (): void => {
+function noop(): void {
 	// intentionally empty
-};
+}
 
 /**
  * Minimal async hook handle exposing enable/disable operations.
@@ -171,7 +171,7 @@ export function triggerAsyncId(): number {
  * @param callbacks Callback definitions to satisfy the interface.
  * @returns A hook implementation exposing enable/disable no-ops.
  */
-export const createHook = (callbacks: AsyncHookCallbacks): AsyncHookHandle => {
+export function createHook(callbacks: AsyncHookCallbacks): AsyncHookHandle {
 	if (callbacks) {
 		// Explicitly acknowledge the callbacks argument; no-op for browser builds.
 	}
@@ -179,7 +179,7 @@ export const createHook = (callbacks: AsyncHookCallbacks): AsyncHookHandle => {
 		enable: enableHook,
 		disable: disableHook
 	};
-};
+}
 
 export default {
 	AsyncLocalStorage,
