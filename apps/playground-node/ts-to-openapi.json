@@ -70,7 +70,7 @@
 			"package": "@twin.org/federated-catalogue-service"
 		},
 		{
-			"package": "@twin.org/data-space-connector-service"
+			"package": "@twin.org/dataspace-service"
 		},
 		{
 			"package": "@twin.org/rights-management-service"
