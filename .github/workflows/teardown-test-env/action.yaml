@@ -1,0 +1,10 @@
+name: 'Teardown Testing Environment'
+description: 'Stop and remove test environment services after workflow completion.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Cleanup temporary test files
+      shell: bash
+      run: |
+        rm -f .env
