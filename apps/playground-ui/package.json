@@ -16,7 +16,7 @@
 		"merge-locales": "merge-locales --config ./merge-locales-config.json",
 		"docs:clean": "echo Nothing to clean",
 		"docs": "npm run docs:clean",
-		"dist": "npm run clean && npm run build && npm run check && npm run merge-locales && npm run test && npm run docs",
+		"dist": "npm run clean && npm run build && npm run check && npm run merge-locales && npm run test",
 		"postinstall": "npx playwright install"
 	},
 	"dependencies": {
