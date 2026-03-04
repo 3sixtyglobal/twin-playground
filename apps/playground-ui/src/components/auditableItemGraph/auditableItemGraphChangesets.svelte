@@ -43,7 +43,8 @@
 		if (Is.stringValue(result?.error)) {
 			error = result.error;
 		} else if (Is.objectValue(result?.item)) {
-			changesets = result.item.changesets ?? [];
+			// TODO: Needs updating to use the new changesets endpoint
+			// changesets = result.item.changesets ?? [];
 		}
 
 		busy = false;

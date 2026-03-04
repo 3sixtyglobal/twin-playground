@@ -63,7 +63,7 @@
 		"@playwright/test": "1.58.2",
 		"@sveltejs/adapter-auto": "7.0.1",
 		"@sveltejs/kit": "2.53.4",
-		"svelte": "5.53.6",
+		"svelte": "5.53.7",
 		"@sveltejs/vite-plugin-svelte": "6.2.4",
 		"@twin.org/merge-locales": "next",
 		"@types/d3": "7.4.3",

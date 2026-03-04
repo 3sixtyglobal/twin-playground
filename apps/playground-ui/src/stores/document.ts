@@ -5,7 +5,7 @@ import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { IDocument, IDocumentList } from "@twin.org/document-management-models";
 import { DocumentManagementRestClient } from "@twin.org/document-management-rest-client";
-import type { UneceDocumentCodes } from "@twin.org/standards-unece";
+import type { UneceDocumentCodeList } from "@twin.org/standards-unece";
 
 let documentClient: DocumentManagementRestClient | undefined;
 
@@ -37,7 +37,7 @@ export async function init(apiUrl: string): Promise<void> {
 export async function documentCreate(
 	documentId: string,
 	documentIdFormat: string | undefined,
-	documentCode: UneceDocumentCodes,
+	documentCode: UneceDocumentCodeList,
 	blob: Uint8Array,
 	annotationObject?: IJsonLdNodeObject,
 	auditableItemGraphEdges?: {
@@ -133,7 +133,7 @@ export async function documentGet(
 	if (Is.object(documentClient)) {
 		try {
 			const result = await documentClient.get(auditableItemGraphDocumentId, options, cursor, limit);
-			return { item: result };
+			return { item: result.entries };
 		} catch (err) {
 			return {
 				error: ErrorHelper.formatErrors(err).join("\n")
@@ -175,11 +175,11 @@ export async function documentQuery(
 	documentId: string,
 	cursor?: string,
 	limit?: number
-): Promise<{ error?: string; item?: IAuditableItemGraphVertexList } | undefined> {
+): Promise<{ error?: string; item?: IAuditableItemGraphVertexList; cursor?: string } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
 			const result = await documentClient.query(documentId, cursor, limit);
-			return { item: result };
+			return { item: result.entries, cursor: result.cursor };
 		} catch (err) {
 			return {
 				error: ErrorHelper.formatErrors(err).join("\n")

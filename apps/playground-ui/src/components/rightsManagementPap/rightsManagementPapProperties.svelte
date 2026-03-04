@@ -44,12 +44,12 @@
 	const policyObjectExamples: Partial<IOdrlPolicy>[] = [
 		{
 			'@type': 'Set',
-			'@context': 'https://www.w3.org/ns/odrl/2/',
+			'@context': 'http://www.w3.org/ns/odrl.jsonld',
 			permission: [{ target: 'http://example.com/asset/1', action: 'use' }]
 		},
 		{
 			'@type': 'Offer',
-			'@context': 'https://www.w3.org/ns/odrl/2/',
+			'@context': 'http://www.w3.org/ns/odrl.jsonld',
 			permission: [
 				{
 					target: 'http://example.com/asset/2',
@@ -66,7 +66,7 @@
 		},
 		{
 			'@type': 'Agreement',
-			'@context': 'https://www.w3.org/ns/odrl/2/',
+			'@context': 'http://www.w3.org/ns/odrl.jsonld',
 			permission: [
 				{
 					target: 'http://example.com/asset/3',

@@ -123,7 +123,7 @@ export async function policyQuery(
 ): Promise<undefined | { error?: string; cursor?: string; policies?: IOdrlPolicy[] }> {
 	if (Is.object(rightsManagementPapClient)) {
 		try {
-			const result = await rightsManagementPapClient.query(conditions, cursor, limit);
+			const result = await rightsManagementPapClient.query(undefined, conditions, cursor, limit);
 			return {
 				cursor: result.cursor,
 				policies: result.policies

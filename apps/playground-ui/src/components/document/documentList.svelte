@@ -67,7 +67,7 @@
 						};
 					});
 
-					cursorHandler.updateCursor(result.item.nextItem);
+					cursorHandler.updateCursor(result.cursor);
 					canGoBackwards = cursorHandler.canGoBackwards();
 					canGoForwards = cursorHandler.canGoForwards();
 

@@ -3,7 +3,7 @@
 	// SPDX-License-Identifier: Apache-2.0.
 	import { Converter, Is, Coerce, Urn } from '@twin.org/core';
 	import type { IDocument } from '@twin.org/document-management-models';
-	import { UneceDocumentCodes } from '@twin.org/standards-unece';
+	import { UneceDocumentCodeList } from '@twin.org/standards-unece';
 	import {
 		Button,
 		Card,
@@ -56,11 +56,11 @@
 	let exploreUrl: string | undefined = $state();
 
 	const documentTypes = [
-		{ value: UneceDocumentCodes.BillOfLading, label: 'BillOfLading' },
-		{ value: UneceDocumentCodes.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
-		{ value: UneceDocumentCodes.ExportLicence, label: 'ExportLicence' },
-		{ value: UneceDocumentCodes.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
-		{ value: UneceDocumentCodes.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
+		{ value: UneceDocumentCodeList.BillOfLading, label: 'BillOfLading' },
+		{ value: UneceDocumentCodeList.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
+		{ value: UneceDocumentCodeList.ExportLicence, label: 'ExportLicence' },
+		{ value: UneceDocumentCodeList.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
+		{ value: UneceDocumentCodeList.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
 	];
 
 	async function loadData(cursor?: string): Promise<void> {

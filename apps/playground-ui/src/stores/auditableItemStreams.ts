@@ -107,8 +107,8 @@ export async function auditableItemStreamList(cursor?: string): Promise<
 				cursor
 			);
 			return {
-				items: result.itemListElement,
-				cursor: result.nextItem
+				items: result.entries.itemListElement,
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {
@@ -293,11 +293,11 @@ export async function auditableItemStreamGetEntries(
 				cursor: options?.cursor
 			});
 			return {
-				entries: result.itemListElement.map(entry => ({
+				entries: result.entries.itemListElement.map(entry => ({
 					entryId: entry.id,
 					entryObject: entry.entryObject
 				})),
-				cursor: result.nextItem
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {

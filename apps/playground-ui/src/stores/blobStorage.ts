@@ -101,8 +101,8 @@ export async function blobStorageList(cursor?: string): Promise<
 		try {
 			const result = await blobStorageClient.query(undefined, undefined, undefined, cursor);
 			return {
-				items: result.itemListElement,
-				cursor: result.nextItem
+				items: result.entries.itemListElement,
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {

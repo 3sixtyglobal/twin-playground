@@ -2,7 +2,7 @@
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
 	import { goto } from '$app/navigation';
-	import { Is } from '@twin.org/core';
+	import { Is, ObjectHelper } from '@twin.org/core';
 	import type { IImmutableProof } from '@twin.org/immutable-proof-models';
 	import {
 		Button,
@@ -20,6 +20,8 @@
 	import ImmutableProofReceipt from './immutableProofReceipt.svelte';
 	import { immutableProofGet, immutableProofVerify } from '$stores/immutableProof';
 	import { createExplorerVerifiableStorageUrl } from '$stores/iota';
+	import type { IDidVerifiableCredential } from '@twin.org/standards-w3c-did';
+	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
 
 	interface Props {
 		itemId: string;
@@ -30,7 +32,8 @@
 	let { itemId, returnUrl, title = undefined }: Props = $props();
 	let error: string | undefined = $state();
 	let busy = $state(true);
-	let immutableProof: IImmutableProof | undefined = $state();
+	let immutableProof: IDidVerifiableCredential | undefined = $state();
+	let receipt: IJsonLdNodeObject | undefined = $state();
 	let verifiedProof: boolean | undefined = $state();
 	let failureMessageProof: string | undefined = $state();
 	let verifiableStorageId: string | undefined = $state();
@@ -48,10 +51,11 @@
 			error = result.error;
 		} else {
 			immutableProof = result?.item;
-			if (immutableProof && Is.stringValue(immutableProof.verifiableStorageId)) {
-				verifiableStorageId = immutableProof.verifiableStorageId;
+			verifiableStorageId = ObjectHelper.propertyGet(immutableProof, 'proof.verifiableStorageId');
+			if (Is.stringValue(verifiableStorageId)) {
 				explorerUrl = createExplorerVerifiableStorageUrl(verifiableStorageId);
 			}
+			receipt = ObjectHelper.propertyGet(immutableProof, 'proof.immutableReceipt');
 		}
 
 		const resultVerify = await immutableProofVerify(itemId);
@@ -110,8 +114,8 @@
 						<Code>{JSON.stringify(immutableProof, null, 2)}</Code>
 					</Label>
 				{/if}
-				{#if !Is.empty(immutableProof?.immutableReceipt)}
-					<ImmutableProofReceipt item={immutableProof.immutableReceipt} />
+				{#if !Is.empty(receipt)}
+					<ImmutableProofReceipt item={receipt} />
 				{/if}
 			</div>
 		</div>

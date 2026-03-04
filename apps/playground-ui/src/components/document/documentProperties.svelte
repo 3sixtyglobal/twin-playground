@@ -5,7 +5,7 @@
 	import { Coerce, Is, Validation, type IValidationFailure } from '@twin.org/core';
 	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
 	import type { IDocument } from '@twin.org/document-management-models';
-	import { UneceDocumentCodes } from '@twin.org/standards-unece';
+	import { UneceDocumentCodeList } from '@twin.org/standards-unece';
 	import {
 		Button,
 		Card,
@@ -55,7 +55,7 @@
 	let documentData: IDocument | undefined;
 	let documentId: string = $state('');
 	let documentIdFormat: string = $state('');
-	let documentCode = $state(UneceDocumentCodes.BillOfLading);
+	let documentCode: UneceDocumentCodeList = $state(UneceDocumentCodeList.BillOfLading);
 	let fileData: Uint8Array | undefined;
 	let files: FileList | undefined = $state();
 	let availableVertices: string[] = $state([]);
@@ -292,11 +292,11 @@
 	let selectedAliasAnnotationExample: string = $state('');
 
 	const documentTypes = [
-		{ value: UneceDocumentCodes.BillOfLading, label: 'BillOfLading' },
-		{ value: UneceDocumentCodes.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
-		{ value: UneceDocumentCodes.ExportLicence, label: 'ExportLicence' },
-		{ value: UneceDocumentCodes.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
-		{ value: UneceDocumentCodes.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
+		{ value: UneceDocumentCodeList.BillOfLading, label: 'BillOfLading' },
+		{ value: UneceDocumentCodeList.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
+		{ value: UneceDocumentCodeList.ExportLicence, label: 'ExportLicence' },
+		{ value: UneceDocumentCodeList.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
+		{ value: UneceDocumentCodeList.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
 	];
 
 	$effect(() => {
@@ -349,7 +349,7 @@
 
 			documentId = documentData.documentId ?? '';
 			documentIdFormat = documentData.documentIdFormat ?? '';
-			documentCode = documentData.documentCode ?? UneceDocumentCodes.BillOfLading;
+			documentCode = documentData.documentCode ?? UneceDocumentCodeList.BillOfLading;
 
 			if (Is.object(documentData.annotationObject)) {
 				annotationObjectStr = JSON.stringify(documentData.annotationObject, null, 2);
@@ -392,7 +392,7 @@
 			Validation.arrayOneOf(
 				'documentCode',
 				documentCode,
-				Object.values(UneceDocumentCodes),
+				Object.values(UneceDocumentCodeList),
 				validationFailures,
 				$i18n('pages.documentProperties.documentCode')
 			);

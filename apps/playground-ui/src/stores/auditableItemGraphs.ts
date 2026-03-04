@@ -140,8 +140,8 @@ export async function auditableItemGraphList(cursor?: string): Promise<
 				cursor
 			);
 			return {
-				items: result,
-				cursor: result.nextItem
+				items: result.entries,
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {
@@ -174,7 +174,6 @@ export async function auditableItemGraphGet(
 				extraData
 					? {
 							includeDeleted: true,
-							includeChangesets: true,
 							verifySignatureDepth: VerifyDepth.All
 						}
 					: undefined
@@ -205,7 +204,7 @@ export async function auditableItemGraphListForEdges(): Promise<
 		try {
 			const result = await auditableItemGraphClient.query();
 			return {
-				items: result.itemListElement
+				items: result.entries.itemListElement
 			};
 		} catch (err) {
 			return {
