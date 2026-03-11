@@ -1,4 +1,4 @@
-# @twin.org/playground-node - Deployment Amazon AWS EC2
+# Deployment Amazon AWS EC2
 
 ## Amazon AWS EC2 Instance
 
