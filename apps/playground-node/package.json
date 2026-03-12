@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/playground-node",
 	"version": "0.0.3-next.0",
-	"description": "Serve APIs using the specified configuration",
+	"description": "A REST API server that exposes framework package APIs covering authentication, identity, attestation, blob storage, and non-fungible tokens.",
 	"private": true,
 	"repository": {
 		"type": "git",

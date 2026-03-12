@@ -1,31 +1,12 @@
-# TWIN Playground UI
+# Playground UI
 
-This web front-end demonstrates using the Playground API, it is written using svelte.
+The playground-ui app is a browser-based web interface built with [Svelte](https://svelte.dev/) that provides interactive access to the playground REST API endpoints. It demonstrates how the API can be consumed from a client application, covering areas such as identity, attestation, blob storage, non-fungible tokens, and verifiable credentials.
 
-A deployment of this app can be found here [https://playground.twindev.org/](https://playground.twindev.org/)
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install`, start a development server:
+## Installation
 
 ```shell
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+npm install -D @twin.org/playground-ui
 ```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
 
 ## Changelog
 

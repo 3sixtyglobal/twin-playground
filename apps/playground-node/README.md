@@ -1,32 +1,16 @@
 # Playground Node
 
-A REST server implementation support the routes from various packages.
+The playground-node app is a REST API server that exposes a comprehensive set of API endpoints built on the ecosystem framework packages. It covers functionality including authentication, identity management, attestation, blob storage, non-fungible tokens, auditable item graphs and streams, and verifiable credentials. The server is configured through environment variables and can be deployed in a variety of environments. The full API surface is described in the [OpenAPI specification](https://editor-next.swagger.io/?url=https://raw.githubusercontent.com/twinfoundation/playground/refs/heads/next/apps/playground-node/docs/open-api/spec.json).
 
-A deployment of this API can be found here [https://playground-api.twindev.org/info](https://playground-api.twindev.org/info)
-
-The OpenAPI Spec can be found here [Playground OpenAPI Spec](https://editor-next.swagger.io/?url=https://raw.githubusercontent.com/twinfoundation/playground/refs/heads/next/apps/playground-node/docs/open-api/spec.json)
-
-## Building and running the application
-
-To install the dependencies, perform a full build and start the server.
+## Installation
 
 ```shell
-npm install
-npm run dist
-npm start
-```
-
-## Development mode
-
-Once you have performed a full build you can run the server in development mode, this will watch the TypeScript code, rebuild if there are any changes, and relaunch the server.
-
-```shell
-npm run dev
+npm install -D @twin.org/playground-node
 ```
 
 ## Configuration
 
-There are various options you can set through configuration, these can be found in [docs/configuration.md](docs/configuration.md)
+Configuration options are documented in [docs/configuration.md](docs/configuration.md)
 
 ## Deployment
 

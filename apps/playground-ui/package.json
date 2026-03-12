@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/playground-ui",
 	"version": "0.0.3-next.0",
-	"description": "UI to demonstrate the APIs",
+	"description": "A web interface built with Svelte that provides interactive access to the playground REST API endpoints.",
 	"private": true,
 	"scripts": {
 		"clean": "rimraf .svelte-kit test-results",

@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/playground",
 	"version": "0.0.0",
-	"description": "Playground",
+	"description": "Playground applications demonstrating the capabilities of the ecosystem framework.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/playground.git"
