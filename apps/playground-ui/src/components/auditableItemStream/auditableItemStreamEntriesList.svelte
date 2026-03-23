@@ -116,7 +116,7 @@
 
 	<Error {error} />
 
-	<div class="mb-4 mt-4 flex w-full flex-row justify-end gap-2">
+	<div class="mt-4 mb-4 flex w-full flex-row justify-end gap-2">
 		<Button
 			onclick={async () => {
 				await goto(`/secure/auditable-item-stream/${streamId}/entries/create`);

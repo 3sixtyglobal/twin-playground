@@ -122,7 +122,7 @@
 			<TableBody>
 				{#each items as item}
 					<TableBodyRow>
-						<TableBodyCell class="whitespace-normal break-all">{item.metadata?.name}</TableBodyCell>
+						<TableBodyCell class="break-all whitespace-normal">{item.metadata?.name}</TableBodyCell>
 						<TableBodyCell>{new Date(item.dateCreated).toLocaleString()}</TableBodyCell>
 						<TableBodyCell class="flex flex-row gap-2"
 							><Button size="xs" color="plain" onclick={() => goto(`/secure/blob/${item.id}`)}

@@ -147,9 +147,9 @@
 			<TableBody>
 				{#each items as item}
 					<TableBodyRow>
-						<TableBodyCell class="whitespace-normal break-all">{item.description}</TableBodyCell>
+						<TableBodyCell class="break-all whitespace-normal">{item.description}</TableBodyCell>
 						<TableBodyCell>{new Date(item.dateCreated).toLocaleString()}</TableBodyCell>
-						<TableBodyCell class="whitespace-normal break-all">{item.ownerIdentity}</TableBodyCell>
+						<TableBodyCell class="break-all whitespace-normal">{item.ownerIdentity}</TableBodyCell>
 						<TableBodyCell class="flex flex-row gap-2">
 							<Button
 								size="xs"

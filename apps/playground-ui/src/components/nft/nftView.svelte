@@ -98,7 +98,7 @@
 			</Label>
 
 			{#if !Is.undefined(item?.immutableMetadata)}
-				<Label class="mb-2 mt-5">
+				<Label class="mt-5 mb-2">
 					{$i18n('components.nftView.immutableMetadata')}
 				</Label>
 				{#if Is.object(item?.immutableMetadata)}
@@ -112,7 +112,7 @@
 			{/if}
 
 			{#if !Is.undefined(item?.metadata)}
-				<Label class="mb-2 mt-5">
+				<Label class="mt-5 mb-2">
 					{$i18n('components.nftView.metadata')}
 				</Label>
 				{#if Is.object(item?.metadata)}
