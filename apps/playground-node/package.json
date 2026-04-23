@@ -28,6 +28,7 @@
 		"docs": "npm run docs:clean && npm run docs:api",
 		"dist": "npm run clean && npm run build && npm run merge-locales && npm run validate-locales && npm run test:build && npm run test",
 		"dist:no-test": "npm run clean && npm run build && npm run merge-locales",
+		"bootstrap": "node dist/es/index.js bootstrap-legacy",
 		"start": "node dist/es/index.js"
 	},
 	"dependencies": {

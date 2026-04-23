@@ -1,7 +1,10 @@
 <script lang="ts">
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
-	import type { IAuditableItemGraphResource } from '@twin.org/auditable-item-graph-models';
+	import {
+		AuditableItemGraphTypes,
+		type IAuditableItemGraphResource
+	} from '@twin.org/auditable-item-graph-models';
 	import type { IValidationFailure } from '@twin.org/core';
 	import { Coerce, Is, Validation } from '@twin.org/core';
 	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
@@ -27,14 +30,14 @@
 	} from '@twin.org/ui-components-svelte';
 
 	interface Props {
-		items: Omit<IAuditableItemGraphResource, '@context' | 'type'>[];
+		items: Omit<IAuditableItemGraphResource, '@context'>[];
 		busy: boolean;
 	}
 
 	let { items = $bindable(), busy }: Props = $props();
 	let showModal = $state(false);
 	let progress: string | undefined;
-	let selectedItem: Omit<IAuditableItemGraphResource, '@context' | 'type'> | undefined = $state();
+	let selectedItem: Omit<IAuditableItemGraphResource, '@context'> | undefined = $state();
 	let resourceId: string | undefined = $state();
 	let validationErrors: {
 		[field in 'resourceId' | 'resourceObject']?: IValidationFailure[] | undefined;
@@ -115,6 +118,7 @@
 			selectedItem.resourceObject = Coerce.object(resourceObjectText);
 		} else if (Is.stringValue(resourceId)) {
 			items.push({
+				type: AuditableItemGraphTypes.Resource,
 				id: resourceId,
 				resourceObject: Coerce.object(resourceObjectText)
 			});

@@ -7,11 +7,16 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
 	plugins: [sveltekit()],
 	resolve: {
-		alias: {
-			"node:async_hooks": fileURLToPath(
-				new URL("./src/polyfills/nodeAsyncHooks.ts", import.meta.url)
-			)
-		}
+		alias: [
+			{
+				find: /^tailwindcss\/tailwind$/,
+				replacement: "tailwindcss/index.css"
+			},
+			{
+				find: "node:async_hooks",
+				replacement: fileURLToPath(new URL("./src/polyfills/nodeAsyncHooks.ts", import.meta.url))
+			}
+		]
 	},
 	test: {
 		include: ["src/**/*.{test,spec}.{js,ts}"]

@@ -74,7 +74,7 @@
 		) {
 			progress = $i18n('pages.nftProperties.progress');
 
-			const result = await nftTransfer(itemId, recipientIdentity, recipientAddress, metadata);
+			const result = await nftTransfer(itemId, recipientAddress, metadata);
 			progress = '';
 
 			if (Is.stringValue(result?.error)) {

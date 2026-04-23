@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Copyright 2024 IOTA Stiftung.
+	// Copyright 2026 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
 	import { Is } from '@twin.org/core';
 	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';

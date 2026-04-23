@@ -47,15 +47,17 @@
 			"atLeastOneNumber": "The value should contain at least one number",
 			"atLeastOneSpecialChar": "The value should contain at least one symbol",
 			"schema": {
-				"failedValidation": "The JSON schema failed validation, {message}",
 				"missingType": "Failed to validate as there is no handler for type \"{dataType}\""
 			},
+			"schemaFailed": "Schema failed validation, \"{message}\", keyword: \"{keyword}\", schemaPath: \"{schemaPath}\"",
 			"geo": {
 				"coordinatesLatitudeNumber": "The latitude value must be a number",
 				"coordinatesLatitudeRange": "The latitude value must be between -90 and 90",
 				"coordinatesLongitudeNumber": "The longitude value must be a number",
 				"coordinatesLongitudeRange": "The longitude value must be between -180 and 180"
 			},
+			"missingType": "The object must include at least one @type value",
+			"saltEntropyTooLow": "Salt must have at least 8 unique characters for sufficient entropy.",
 			"auditableItemGraphService": {
 				"edgeIdSameAsVertexId": "The edge with target id \"{targetId}\" can not point to the vertex it belongs to"
 			}
@@ -299,9 +301,6 @@
 			"range": "Value must be between 0 and 355, it is \"{value}\"",
 			"hex": "Value must be a valid hex color in one of the forms #RGB/#ARGB/#RRGGBB/#AARRGGBB, it is \"{hex}\""
 		},
-		"policyNegotiationPointRestClient": {
-			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
-		},
 		"odrlPolicyHelper": {
 			"policyMissingAssignee": "The {policyType} with id \"{policyId}\" is missing an assignee.",
 			"policyMissingAssigner": "The {policyType} with id \"{policyId}\" is missing an assigner."
@@ -311,6 +310,10 @@
 		},
 		"trustHelper": {
 			"trustVerifyFailed": "Trust verification failed for action \"{action}\""
+		},
+		"policyNegotiationPointRestClient": {
+			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component",
+			"publicOriginNotRequired": "The publicOrigin parameter is not required on the REST client"
 		},
 		"silentTelemetryConnector": {
 			"notSupported": "The method \"{methodName}\" is not supported on silent telemetry connector."
@@ -342,15 +345,23 @@
 			"updateUserFailed": "Updating the user failed",
 			"removeUserFailed": "Removing the user failed",
 			"updatePasswordFailed": "Updating the user's password failed",
-			"userNotFound": "The user with the specified e-mail could not be found \"{notFoundId}\"",
+			"userNotFound": "The user with the specified e-mail could not be found \"{notFoundId}\""
+		},
+		"passwordHelper": {
 			"currentPasswordMismatch": "The current password is incorrect"
+		},
+		"entityStorageAuthenticationRateService": {
+			"actionConfigMissing": "No rate-limit configuration exists for action \"{action}\".",
+			"rateLimitExceeded": "The rate limit for action \"{action}\" has been exceeded. Retry after {retryAfterSeconds} seconds."
 		},
 		"tokenHelper": {
 			"missing": "The JSON Web token could not be found in the authorization header",
 			"payloadMissingSubject": "The JSON Web token payload does not contain a subject",
 			"payloadMissingOrganization": "The JSON Web token payload does not contain an organization",
 			"expired": "The JSON Web token has expired",
-			"insufficientScopes": "The JSON Web token does not have the required scopes to access this resource"
+			"insufficientScopes": "The JSON Web token does not have the required scopes to access this resource",
+			"userNotVerified": "The user associated with the JSON Web token could not be verified",
+			"organizationNotVerified": "The organization associated with the JSON Web token could not be verified"
 		},
 		"authHeaderProcessor": {
 			"tenantIdMismatch": "The tenant ID in the token does not match the tenant ID in the context"
@@ -391,6 +402,7 @@
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the Auditable Item Stream service \"{namespace}\"",
 			"createFailed": "Creating the Auditable Item Stream failed",
 			"getFailed": "Getting the Auditable Item Stream failed",
+			"closeFailed": "Closing the Auditable Item Stream failed",
 			"updatingFailed": "Updating the Auditable Item Stream failed",
 			"removingFailed": "Removing Auditable Item Stream failed",
 			"queryingFailed": "Querying the Auditable Item Stream failed",
@@ -402,6 +414,10 @@
 			"gettingEntriesFailed": "Getting entries from the Auditable Item Stream failed",
 			"gettingEntryObjectsFailed": "Getting entry objects from the Auditable Item Stream failed",
 			"removeVerifiableFailed": "Removing verifiable storage from the Auditable Item Stream failed",
+			"closedRequiresEntries": "A stream can only be created as closed when entries are provided",
+			"streamClosed": "The stream with the Id \"{id}\" is closed and does not allow entry updates",
+			"appendOnlyNoEntryUpdates": "Entries in append-only mode cannot be updated for stream \"{id}\"",
+			"appendOnlyNoEntryRemovals": "Entries in append-only mode cannot be removed for stream \"{id}\"",
 			"streamNotFound": "The stream with the Id \"{notFoundId}\" was not found",
 			"streamEntryNotFound": "The stream entry with the Id \"{notFoundId}\" was not found"
 		},
@@ -500,7 +516,8 @@
 		"abstractScyllaDBConnector": {
 			"getFailed": "Getting item with \"{id}\" failed",
 			"findFailed": "Error while querying data on  \"{table}\"",
-			"parseJSONFailed": "Parsing JSON failed for field \"{name}\" with value \"{value}\""
+			"parseJSONFailed": "Parsing JSON failed for field \"{name}\" with value \"{value}\"",
+			"comparisonNotSupported": "Dot-notation nested property path \"{property}\" is not supported in CQL queries"
 		},
 		"entityStorageService": {
 			"entityNotFound": "Could not find entity with id \"{notFoundId}\""

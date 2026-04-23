@@ -4,7 +4,10 @@
 	import { goto } from '$app/navigation';
 	import { Is } from '@twin.org/core';
 	import type { EntityCondition } from '@twin.org/entity';
-	import { type IOdrlPolicy, PolicyType } from '@twin.org/standards-w3c-odrl';
+	import {
+		type IRightsManagementPolicy,
+		RightsManagementPolicyType as PolicyType
+	} from '@twin.org/rights-management-models';
 	import {
 		Button,
 		Card,
@@ -32,7 +35,7 @@
 	const cursorHandler = new CursorStackHandler();
 	const policyTypes = Object.values(PolicyType);
 
-	let items: IOdrlPolicy[] | undefined = $state();
+	let items: IRightsManagementPolicy[] | undefined = $state();
 	let busy = $state(false);
 	let status = $state('');
 	let isError = $state(false);
@@ -48,7 +51,7 @@
 		busy = true;
 		isError = false;
 
-		let conditions: EntityCondition<IOdrlPolicy> | undefined;
+		let conditions: EntityCondition<IRightsManagementPolicy> | undefined;
 		if (policyType && policyType !== 'ALL') {
 			conditions = {
 				property: '@type',
@@ -178,7 +181,7 @@
 			<TableBody>
 				{#each items as item}
 					<TableBodyRow>
-						<TableBodyCell wrap>{item.uid}</TableBodyCell>
+						<TableBodyCell wrap>{item['@id']}</TableBodyCell>
 						<TableBodyCell>{item['@context']}</TableBodyCell>
 						<TableBodyCell>{item['@type']}</TableBodyCell>
 						<TableBodyCell class="flex flex-row gap-2"
@@ -186,18 +189,18 @@
 								size="xs"
 								color="plain"
 								onclick={() =>
-									goto(`/secure/rights-management-pap/${encodeURIComponent(item.uid)}`)}
+									goto(`/secure/rights-management-pap/${encodeURIComponent(item['@id'])}`)}
 								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
 								onclick={() =>
-									goto(`/secure/rights-management-pap/${encodeURIComponent(item.uid)}/view`)}
+									goto(`/secure/rights-management-pap/${encodeURIComponent(item['@id'])}/view`)}
 							>
 								<Icons.EyeOutline />
 							</Button>
-							<Button size="xs" color="plain" onclick={async () => removePrompt(item.uid)}>
+							<Button size="xs" color="plain" onclick={async () => removePrompt(item['@id'])}>
 								<Icons.TrashBinOutline />
 							</Button>
 						</TableBodyCell>

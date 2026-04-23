@@ -25,3 +25,5 @@ runs:
       run: |
         cd apps/playground-ui
         cp .env.example .env
+        cd ../../apps/playground-node
+        cp .env.example-local-entity-storage .env

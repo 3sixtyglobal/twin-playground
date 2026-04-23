@@ -31,7 +31,6 @@
 	let item:
 		| Partial<{
 				issuer?: string;
-				owner?: string;
 				tag?: string;
 				immutableMetadata?: unknown;
 				metadata?: unknown;
@@ -91,10 +90,6 @@
 			<Label>
 				{$i18n('components.nftView.tag')}
 				<Span>{item?.tag}</Span>
-			</Label>
-			<Label>
-				{$i18n('components.nftView.owner')}
-				<Span>{item?.owner}</Span>
 			</Label>
 
 			{#if !Is.undefined(item?.immutableMetadata)}

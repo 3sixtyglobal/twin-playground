@@ -1,7 +1,10 @@
 <script lang="ts">
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
-	import type { IAuditableItemGraphAlias } from '@twin.org/auditable-item-graph-models';
+	import {
+		AuditableItemGraphTypes,
+		type IAuditableItemGraphAlias
+	} from '@twin.org/auditable-item-graph-models';
 	import type { IValidationFailure } from '@twin.org/core';
 	import { Coerce, Is, Validation } from '@twin.org/core';
 	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
@@ -27,14 +30,14 @@
 	} from '@twin.org/ui-components-svelte';
 
 	interface Props {
-		items: Omit<IAuditableItemGraphAlias, '@context' | 'type'>[];
+		items: Omit<IAuditableItemGraphAlias, '@context'>[];
 		busy: boolean;
 	}
 
 	let { items = $bindable(), busy }: Props = $props();
 	let showModal = $state(false);
 	let progress: string | undefined;
-	let selectedItem: Omit<IAuditableItemGraphAlias, '@context' | 'type'> | undefined = $state();
+	let selectedItem: Omit<IAuditableItemGraphAlias, '@context'> | undefined = $state();
 	let aliasId: string | undefined = $state();
 	let aliasFormat: string | undefined = $state();
 	let validationErrors: {
@@ -122,6 +125,7 @@
 			selectedItem.annotationObject = Coerce.object(annotationObjectText);
 		} else if (Is.stringValue(aliasId)) {
 			items.push({
+				type: AuditableItemGraphTypes.Alias,
 				id: aliasId,
 				aliasFormat,
 				annotationObject: Coerce.object(annotationObjectText)

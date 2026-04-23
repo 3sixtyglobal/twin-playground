@@ -29,7 +29,7 @@
 	let innerHeight = $derived(height - margin.top - margin.bottom);
 
 	function xAccessor(d: { ts: string | number | Date }): number {
-		return new Date(d.ts).getTime();
+		return new Date(Number(d.ts)).getTime();
 	}
 
 	function yAccessor(d: { value: number }): number {
@@ -39,12 +39,13 @@
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const bisectX = d3.bisector(xAccessor).left;
 
-	let xScale = $derived(
-		d3
-			.scaleLinear()
-			.domain(d3.extent(stats, xAccessor) as [number, number])
-			.range([0, innerWidth])
-	);
+	let xTimestamps = $derived(stats.map(d => Number(d.ts)));
+	let xTsMin = $derived(d3.min(xTimestamps) ?? Date.now());
+	let xTsMax = $derived(d3.max(xTimestamps) ?? Date.now());
+	let xDomainStart = $derived(xTsMin === xTsMax ? new Date(xTsMin - 60_000) : new Date(xTsMin));
+	let xDomainEnd = $derived(xTsMin === xTsMax ? new Date(xTsMax + 60_000) : new Date(xTsMax));
+
+	let xScale = $derived(d3.scaleTime().domain([xDomainStart, xDomainEnd]).range([0, innerWidth]));
 
 	let yScale = $derived(
 		d3
@@ -54,7 +55,7 @@
 			.nice()
 	);
 
-	let xAccessorScaled = $derived((d: { ts: string | number | Date }) => xScale(xAccessor(d)));
+	let xAccessorScaled = (d: { ts: string | number | Date }): number => xScale(xAccessor(d));
 
 	function yAccessorScaled(d: { value: number }): number {
 		return yScale(yAccessor(d));
@@ -88,7 +89,7 @@
 				<Crosshair
 					xAccessorScaled={xAccessorScaled(hoveredPoint)}
 					yAccessorScaled={yAccessorScaled(hoveredPoint)}
-					xLabel={xAccessor(hoveredPoint)}
+					xLabel={new Date(xAccessor(hoveredPoint)).toLocaleTimeString()}
 					yLabel={yAccessor(hoveredPoint)}
 					{innerHeight}
 				/>

@@ -191,7 +191,7 @@
 					<TableBodyRow>
 						<TableBodyCell class="whitespace-normal">{item.id}</TableBodyCell>
 						<TableBodyCell>{item.value}</TableBodyCell>
-						<TableBodyCell>{new Date(item.ts).toLocaleString()}</TableBodyCell>
+						<TableBodyCell>{new Date(Number(item.ts)).toLocaleString()}</TableBodyCell>
 						<TableBodyCell>
 							{#if item.customData && JSON.stringify(item.customData).length > 50}
 								{JSON.stringify(item.customData).slice(0, 50)}...

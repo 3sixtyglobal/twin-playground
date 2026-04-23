@@ -3,7 +3,7 @@
 	// SPDX-License-Identifier: Apache-2.0.
 	import { goto } from '$app/navigation';
 	import { Is } from '@twin.org/core';
-	import type { IOdrlPolicy } from '@twin.org/standards-w3c-odrl';
+	import type { IRightsManagementPolicy } from '@twin.org/rights-management-models';
 	import {
 		Button,
 		Card,
@@ -27,7 +27,7 @@
 	let { itemId, returnUrl, title = undefined }: Props = $props();
 	let error: string | undefined = $state();
 	let busy = $state(true);
-	let odrlPolicy: IOdrlPolicy | undefined = $state();
+	let odrlPolicy: IRightsManagementPolicy | undefined = $state();
 
 	async function close(): Promise<void> {
 		await goto(returnUrl);

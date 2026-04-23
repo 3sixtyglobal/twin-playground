@@ -14,15 +14,18 @@ import { UserImmutableProofEntry } from "./entities/userImmutableProofEntry.js";
 import { UserNftEntry } from "./entities/userNftEntry.js";
 import { UserVerifiableStorageEntry } from "./entities/userVerifiableStorageEntry.js";
 
-await run({
-	serverName: "Playground Node",
-	serverVersion: "0.0.2-next-0", // x-release-please-version
-	envPrefix: "PLAYGROUND_",
-	localesDirectory: path.resolve("dist/locales"),
-	openApiSpecFile: path.resolve("docs/open-api/spec.json"),
-	favIconFile: path.resolve("static/favicon.ico"),
-	extendEngine
-});
+await run(
+	{
+		serverName: "Playground Node",
+		serverVersion: "0.0.2-next-0", // x-release-please-version
+		envPrefix: "PLAYGROUND_",
+		localesDirectory: path.resolve("dist/locales"),
+		openApiSpecFile: path.resolve("docs/open-api/spec.json"),
+		favIconFile: path.resolve("static/favicon.ico"),
+		extendEngine
+	},
+	process.argv
+);
 
 /**
  * Extends the engine config with types specific to playground.

@@ -68,6 +68,11 @@ jobs:
           npm run dist
           npm run docs
 
+      # Bootstrap the playground node to verify it starts correctly on a fresh install
+      - name: Bootstrap Playground Node
+        working-directory: apps/playground-node
+        run: npm run bootstrap
+
       # Always teardown the environment, necessary to cleanup self-hosted
       - name: Teardown Test Environment
         if: always()

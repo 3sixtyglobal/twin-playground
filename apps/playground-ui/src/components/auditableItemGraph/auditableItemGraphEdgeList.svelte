@@ -1,9 +1,10 @@
 <script lang="ts">
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
-	import type {
-		IAuditableItemGraphEdge,
-		IAuditableItemGraphVertex
+	import {
+		AuditableItemGraphTypes,
+		type IAuditableItemGraphEdge,
+		type IAuditableItemGraphVertex
 	} from '@twin.org/auditable-item-graph-models';
 	import type { IValidationFailure } from '@twin.org/core';
 	import { Coerce, Is, Validation } from '@twin.org/core';
@@ -33,14 +34,14 @@
 
 	interface Props {
 		itemId: string;
-		items: Omit<IAuditableItemGraphEdge, '@context' | 'type'>[];
+		items: Omit<IAuditableItemGraphEdge, '@context'>[];
 		busy: boolean;
 	}
 
 	let { itemId, items = $bindable(), busy }: Props = $props();
 	let showModal = $state(false);
 	let progress: string | undefined;
-	let selectedItem: Omit<IAuditableItemGraphEdge, '@context' | 'type'> | undefined = $state();
+	let selectedItem: Omit<IAuditableItemGraphEdge, '@context'> | undefined = $state();
 	let edgeId: string | undefined;
 	let edgeTargetId: string | undefined = $state();
 	let edgeRelationships: string | undefined = $state();
@@ -143,6 +144,7 @@
 			selectedItem.annotationObject = Coerce.object(annotationObjectText);
 		} else if (Is.stringValue(edgeTargetId)) {
 			items.push({
+				type: AuditableItemGraphTypes.Edge,
 				id: edgeId,
 				targetId: edgeTargetId,
 				edgeRelationships: edgeRelationships?.split(',') ?? [],

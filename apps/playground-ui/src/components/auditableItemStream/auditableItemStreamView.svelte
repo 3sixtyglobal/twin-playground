@@ -46,7 +46,7 @@
 			error = resultVerify.error;
 		} else if (Is.objectValue(resultVerify?.item)) {
 			item = resultVerify.item;
-			entries = resultVerify.item?.entries;
+			entries = resultVerify.item?.entries?.itemListElement;
 		}
 		busy = false;
 	}

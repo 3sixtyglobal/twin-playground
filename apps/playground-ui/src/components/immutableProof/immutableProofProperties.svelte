@@ -130,8 +130,9 @@
 			selectedType = '';
 		} else {
 			try {
-				proofObject = JSON.parse(textAreaValue);
-				if (Is.object(proofObject)) {
+				const parsed = JSON.parse(textAreaValue);
+				proofObject = parsed;
+				if (Is.object(parsed)) {
 					validationErrors.proofObject = [];
 				}
 			} catch {

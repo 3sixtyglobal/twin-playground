@@ -1,7 +1,12 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
+	AuditableItemGraphContexts,
+	AuditableItemGraphTypes,
 	VerifyDepth,
+	type IAuditableItemGraphAlias,
+	type IAuditableItemGraphEdge,
+	type IAuditableItemGraphResource,
 	type IAuditableItemGraphVertex,
 	type IAuditableItemGraphVertexList
 } from "@twin.org/auditable-item-graph-models";
@@ -32,20 +37,9 @@ export async function init(apiUrl: string): Promise<void> {
  */
 export async function auditableItemGraphCreate(
 	annotationObject?: IJsonLdNodeObject,
-	aliases?: {
-		id: string;
-		aliasFormat?: string;
-		annotationObject?: IJsonLdNodeObject;
-	}[],
-	resources?: {
-		id?: string;
-		resourceObject?: IJsonLdNodeObject;
-	}[],
-	edges?: {
-		targetId: string;
-		edgeRelationships: string[];
-		annotationObject?: IJsonLdNodeObject;
-	}[]
+	aliases?: IAuditableItemGraphAlias[],
+	resources?: IAuditableItemGraphResource[],
+	edges?: IAuditableItemGraphEdge[]
 ): Promise<
 	| {
 			error?: string;
@@ -56,6 +50,8 @@ export async function auditableItemGraphCreate(
 	if (Is.object(auditableItemGraphClient)) {
 		try {
 			const id = await auditableItemGraphClient.create({
+				"@context": [AuditableItemGraphContexts.Context, AuditableItemGraphContexts.ContextCommon],
+				type: AuditableItemGraphTypes.Vertex,
 				annotationObject,
 				aliases,
 				resources,
@@ -84,21 +80,9 @@ export async function auditableItemGraphCreate(
 export async function auditableItemGraphUpdate(
 	id: string,
 	annotationObject?: IJsonLdNodeObject,
-	aliases?: {
-		id: string;
-		aliasFormat?: string;
-		annotationObject?: IJsonLdNodeObject;
-	}[],
-	resources?: {
-		id?: string;
-		resourceObject?: IJsonLdNodeObject;
-	}[],
-	edges?: {
-		id?: string;
-		targetId: string;
-		edgeRelationships: string[];
-		annotationObject?: IJsonLdNodeObject;
-	}[]
+	aliases?: IAuditableItemGraphAlias[],
+	resources?: IAuditableItemGraphResource[],
+	edges?: IAuditableItemGraphEdge[]
 ): Promise<
 	| {
 			error?: string;
@@ -107,7 +91,15 @@ export async function auditableItemGraphUpdate(
 > {
 	if (Is.object(auditableItemGraphClient)) {
 		try {
-			await auditableItemGraphClient.update({ id, annotationObject, aliases, resources, edges });
+			await auditableItemGraphClient.update({
+				"@context": [AuditableItemGraphContexts.Context, AuditableItemGraphContexts.ContextCommon],
+				type: AuditableItemGraphTypes.Vertex,
+				id,
+				annotationObject,
+				aliases,
+				resources,
+				edges
+			});
 		} catch (err) {
 			return {
 				error: ErrorHelper.formatErrors(err).join("\n")

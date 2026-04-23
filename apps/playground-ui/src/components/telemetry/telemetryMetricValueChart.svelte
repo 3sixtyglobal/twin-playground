@@ -26,7 +26,6 @@
 		stats = [];
 
 		const values = [];
-		let idx = 0;
 
 		let cursor;
 		do {
@@ -37,15 +36,12 @@
 				status = result.error;
 				break;
 			} else if (Is.arrayValue(result?.entities)) {
-				values.push(...result.entities.map(item => item.value));
+				values.push(...result.entities.map(item => ({ ts: Number(item.ts), value: item.value })));
 			}
 			cursor = result?.cursor;
 		} while (!Is.empty(cursor));
 
-		stats = values.map(value => ({
-			ts: values.length - idx++,
-			value
-		}));
+		stats = values.sort((a, b) => a.ts - b.ts);
 
 		busy = false;
 		status = '';

@@ -225,7 +225,9 @@
 								{JSON.stringify(item.data)}
 							{/if}
 						</TableBodyCell>
-						<TableBodyCell wrap>{item.ts ? new Date(item.ts).toLocaleString() : ''}</TableBodyCell>
+						<TableBodyCell wrap
+							>{item.ts ? new Date(Number(item.ts)).toLocaleString() : ''}</TableBodyCell
+						>
 						<TableBodyCell class="flex flex-row gap-2">
 							<Button size="xs" color="plain" onclick={async () => copyData(item)}>
 								<Icons.ClipboardListOutline />

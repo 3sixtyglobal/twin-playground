@@ -4,7 +4,8 @@
 	import { goto } from '$app/navigation';
 	import { BaseError, Is, ObjectHelper, type IValidationFailure } from '@twin.org/core';
 	import { JsonLdDataTypes, JsonLdHelper } from '@twin.org/data-json-ld';
-	import { OdrlDataTypes, type IOdrlPolicy } from '@twin.org/standards-w3c-odrl';
+	import { OdrlDataTypes } from '@twin.org/standards-w3c-odrl';
+	import type { IRightsManagementPolicy } from '@twin.org/rights-management-models';
 	import {
 		Button,
 		Card,
@@ -37,11 +38,11 @@
 	let progress: string | undefined = $state();
 	let error: string | undefined = $state();
 	let policyId: string | undefined = $state();
-	let policyObject: IOdrlPolicy | undefined = $state(undefined);
+	let policyObject: IRightsManagementPolicy | undefined = $state(undefined);
 	let selectedType = $state('');
 	let textAreaValue = $state('');
 	let userSelectedType = $state(false);
-	const policyObjectExamples: Partial<IOdrlPolicy>[] = [
+	const policyObjectExamples: Partial<IRightsManagementPolicy>[] = [
 		{
 			'@type': 'Set',
 			'@context': 'http://www.w3.org/ns/odrl.jsonld',
@@ -90,9 +91,12 @@
 			if (example) {
 				const uid = isUpdate && Is.stringValue(itemId) ? itemId : undefined;
 
-				example.uid = uid;
-				policyObject = ObjectHelper.clone(example) as IOdrlPolicy;
-				textAreaValue = JSON.stringify(policyObject, null, 2);
+				const cloned = ObjectHelper.clone(example) as IRightsManagementPolicy;
+				if (Is.stringValue(uid)) {
+					cloned['@id'] = uid;
+				}
+				policyObject = cloned;
+				textAreaValue = JSON.stringify(cloned, null, 2);
 				userSelectedType = false;
 			}
 		}
@@ -109,7 +113,7 @@
 			return;
 		}
 
-		const parsedPolicy: IOdrlPolicy = JSON.parse(textAreaValue);
+		const parsedPolicy: IRightsManagementPolicy = JSON.parse(textAreaValue);
 
 		if (!Is.object(parsedPolicy)) {
 			validationFailures.push({
@@ -149,11 +153,11 @@
 		progress = $i18n(`pages.rightsManagementProperties.progress${isUpdate ? 'Update' : ''}`);
 		let result;
 		if (isUpdate && Is.stringValue(itemId)) {
-			policyObject.uid = itemId;
+			policyObject['@id'] = itemId;
 			result = await policyUpdate(policyObject);
 		} else {
 			result = await policyCreate(policyObject);
-			policyObject.uid = result?.uid || '';
+			policyObject['@id'] = result?.uid || '';
 		}
 		progress = '';
 
@@ -161,7 +165,7 @@
 			return result?.error;
 		}
 
-		policyId = policyObject.uid;
+		policyId = policyObject['@id'];
 		busy = false;
 
 		return undefined;
