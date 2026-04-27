@@ -102,7 +102,7 @@ Run `sudo systemctl enable nginx` to auto start the server on instance startup.
 We clone the repo, build it and then make a copy of the relevant .env file.
 
 ```shell
-git clone https://github.com/twinfoundation/playground.git
+git clone https://github.com/iotaledger/twin-playground.git
 cd playground
 npm install
 cd apps/playground-node
