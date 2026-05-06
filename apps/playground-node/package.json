@@ -5,7 +5,7 @@
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/twinfoundation/playground.git",
+		"url": "git+https://github.com/iotaledger/playground.git",
 		"directory": "apps/playground-node"
 	},
 	"author": "martyn.janes@iota.org",
@@ -61,7 +61,7 @@
 		"vitest": "4.1.1"
 	},
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/playground/issues"
+		"url": "git+https://github.com/iotaledger/playground/issues"
 	},
 	"homepage": "https://twindev.org"
 }

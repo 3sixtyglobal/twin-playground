@@ -2,7 +2,7 @@
 
 ## playground-node
 
-The app serves as the backend REST API server for the playground environment. Its primary purpose is to expose and demonstrate a comprehensive set of API endpoints built on the ecosystem framework packages, encompassing authentication, identity management, attestation, blob storage, non-fungible tokens, auditable item graphs and streams, and verifiable credentials. By doing so, it provides a working, end-to-end example of how the framework packages can be composed into a production-grade API layer. The full API surface is described in the [OpenAPI specification](https://editor-next.swagger.io/?url=https://raw.githubusercontent.com/twinfoundation/playground/refs/heads/next/apps/playground-node/docs/open-api/spec.json).
+The app serves as the backend REST API server for the playground environment. Its primary purpose is to expose and demonstrate a comprehensive set of API endpoints built on the ecosystem framework packages, encompassing authentication, identity management, attestation, blob storage, non-fungible tokens, auditable item graphs and streams, and verifiable credentials. By doing so, it provides a working, end-to-end example of how the framework packages can be composed into a production-grade API layer. The full API surface is described in the [OpenAPI specification](https://editor-next.swagger.io/?url=https://raw.githubusercontent.com/iotaledger/playground/refs/heads/next/apps/playground-node/docs/open-api/spec.json).
 
 - [README](../apps/playground-node/README.md)
 - [Configuration](../apps/playground-node/docs/configuration.md)

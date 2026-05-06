@@ -1,6 +1,6 @@
 # Playground Node
 
-The playground-node app is a REST API server that exposes a comprehensive set of API endpoints built on the ecosystem framework packages. It covers functionality including authentication, identity management, attestation, blob storage, non-fungible tokens, auditable item graphs and streams, and verifiable credentials. The server is configured through environment variables and can be deployed in a variety of environments. The full API surface is described in the [OpenAPI specification](https://editor-next.swagger.io/?url=https://raw.githubusercontent.com/twinfoundation/playground/refs/heads/next/apps/playground-node/docs/open-api/spec.json).
+The playground-node app is a REST API server that exposes a comprehensive set of API endpoints built on the ecosystem framework packages. It covers functionality including authentication, identity management, attestation, blob storage, non-fungible tokens, auditable item graphs and streams, and verifiable credentials. The server is configured through environment variables and can be deployed in a variety of environments. The full API surface is described in the [OpenAPI specification](https://editor-next.swagger.io/?url=https://raw.githubusercontent.com/iotaledger/playground/refs/heads/next/apps/playground-node/docs/open-api/spec.json).
 
 ## Installation
 

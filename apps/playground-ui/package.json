@@ -81,7 +81,7 @@
 	},
 	"type": "module",
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/playground/issues"
+		"url": "git+https://github.com/iotaledger/playground/issues"
 	},
 	"homepage": "https://twindev.org"
 }
