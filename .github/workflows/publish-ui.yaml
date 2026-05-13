@@ -21,7 +21,9 @@ env:
 
 jobs:
   deploy:
-    runs-on: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
+    runs-on:
+      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
+      group: ${{ github.event.repository.private && 'twin' || 'default' }}
 
     # Only allow main branch to deploy to production and next branch to deploy to development
     # if: (github.ref == 'refs/heads/main' && github.event.inputs.environment == 'prod') || (github.ref == 'refs/heads/next' && github.event.inputs.environment == 'dev')
