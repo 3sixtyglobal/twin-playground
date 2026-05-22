@@ -2,29 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { IAsyncHookCallbacks } from "./IAsyncHookCallbacks.js";
 import type { IAsyncHookHandle } from "./IAsyncHookHandle.js";
+import { createHook, executionAsyncId, triggerAsyncId } from "./nodeAsyncHooksFunctions.js";
 
 export type { IAsyncHookCallbacks, IAsyncHookHandle };
-
-/**
- * Internal no-op used to satisfy async hook signatures in the browser.
- */
-function noop(): void {
-	// intentionally empty
-}
-
-/**
- * Enables the async hook (no-op in browsers).
- */
-function enableHook(): void {
-	noop();
-}
-
-/**
- * Disables the async hook (no-op in browsers).
- */
-function disableHook(): void {
-	noop();
-}
 
 /**
  * Lightweight AsyncLocalStorage implementation for browser builds.
@@ -97,37 +77,6 @@ export class AsyncLocalStorage<T> {
 	public enterWith(store: T): void {
 		this._store = store;
 	}
-}
-
-/**
- * Returns a placeholder async id for browser execution.
- * @returns Always returns 0.
- */
-export function executionAsyncId(): number {
-	return 0;
-}
-
-/**
- * Returns a placeholder trigger async id for browser execution.
- * @returns Always returns 0.
- */
-export function triggerAsyncId(): number {
-	return 0;
-}
-
-/**
- * Creates a no-op async hook that satisfies the node:async_hooks contract.
- * @param callbacks Callback definitions to satisfy the interface.
- * @returns A hook implementation exposing enable/disable no-ops.
- */
-export function createHook(callbacks: IAsyncHookCallbacks): IAsyncHookHandle {
-	if (callbacks) {
-		// Explicitly acknowledge the callbacks argument; no-op for browser builds.
-	}
-	return {
-		enable: enableHook,
-		disable: disableHook
-	};
 }
 
 export default {
