@@ -13,9 +13,7 @@
 		"apps/playground-node": {
 			"package-name": "playground-node",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": [
-				"src/index.ts"
-			]
+			"extra-files": ["src/index.ts"]
 		},
 		"apps/playground-ui": {
 			"package-name": "playground-ui",
@@ -27,10 +25,7 @@
 		{
 			"type": "linked-versions",
 			"groupName": "repo",
-			"components": [
-				"playground-node",
-				"playground-ui"
-			]
+			"components": ["playground-node", "playground-ui"]
 		}
 	]
 }
