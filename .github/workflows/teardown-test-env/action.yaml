@@ -8,8 +8,3 @@ runs:
       shell: bash
       run: |
         rm -f .env
-
-    - name: Remove Test Environment Variables File
-      shell: bash
-      run: |
-        rm -f /tmp/test_env_vars.txt
