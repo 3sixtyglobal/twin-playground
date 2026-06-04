@@ -12,6 +12,7 @@ export type { IAsyncHookCallbacks, IAsyncHookHandle };
 export class AsyncLocalStorage<T> {
 	/**
 	 * Holds the active store for the current execution context emulation.
+	 * @internal
 	 */
 	private _store: T | undefined;
 
