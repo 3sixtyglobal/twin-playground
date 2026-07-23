@@ -3,7 +3,7 @@
 import type { IAuditableItemGraphVertexList } from "@twin.org/auditable-item-graph-models";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
-import type { IDocument, IDocumentList } from "@twin.org/document-management-models";
+import type { IDocumentHydrated, IDocumentList } from "@twin.org/document-management-models";
 import { DocumentManagementRestClient } from "@twin.org/document-management-rest-client";
 import type { UneceDocumentCodeList } from "@twin.org/standards-unece";
 
@@ -54,11 +54,13 @@ export async function documentCreate(
 	if (Is.object(documentClient)) {
 		try {
 			const id = await documentClient.create(
-				documentId,
-				documentIdFormat,
-				documentCode,
+				{
+					documentId,
+					documentIdFormat,
+					documentCode,
+					annotationObject
+				},
 				blob,
-				annotationObject,
 				auditableItemGraphEdges,
 				options
 			);
@@ -92,12 +94,9 @@ export async function documentUpdate(
 ): Promise<{ error?: string; id?: string } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
-			await documentClient.update(
-				auditableItemGraphDocumentId,
-				blob,
-				annotationObject,
-				auditableItemGraphEdges
-			);
+			await documentClient.updatePartial(auditableItemGraphDocumentId, { annotationObject }, blob, {
+				add: auditableItemGraphEdges
+			});
 			return { id: auditableItemGraphDocumentId };
 		} catch (err) {
 			return {
@@ -210,7 +209,7 @@ export async function documentRevisionGet(
 		includeRemoved?: boolean;
 		extractRuleGroupId?: string;
 	}
-): Promise<{ error?: string; item?: IDocument } | undefined> {
+): Promise<{ error?: string; item?: IDocumentHydrated } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
 			const result = await documentClient.getRevision(documentId, revisionNumber, options);

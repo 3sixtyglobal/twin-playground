@@ -77,6 +77,9 @@
 			"bigint": "Property \"{property}\" must be a bigint, it is \"{value}\"",
 			"boolean": "Property \"{property}\" must be a boolean, it is \"{value}\"",
 			"date": "Property \"{property}\" must be a date, it is \"{value}\"",
+			"dateString": "Property \"{property}\" must be a date-only string in ISO 8601 format, it is \"{value}\"",
+			"dateTimeString": "Property \"{property}\" must be a date-time string in ISO 8601 format, it is \"{value}\"",
+			"timeString": "Property \"{property}\" must be a time string in ISO 8601 format, it is \"{value}\"",
 			"timestampMilliseconds": "Property \"{property}\" must be a timestamp in milliseconds, it is \"{value}\"",
 			"timestampSeconds": "Property \"{property}\" must be a timestamp in seconds, it is \"{value}\"",
 			"objectUndefined": "Property \"{property}\" must be an object, it is \"undefined\"",
@@ -89,11 +92,12 @@
 			"arrayEndsWith": "Property \"{property}\" must be an array ending with [{endValues}], it is \"{value}\"",
 			"uint8Array": "Property \"{property}\" must be a Uint8Array, it is \"{value}\"",
 			"function": "Property \"{property}\" must be a function, it is \"{value}\"",
-			"urn": "Property \"{property}\" must be a Urn formatted string, it is \"{value}\"",
-			"url": "Property \"{property}\" must be a Url formatted string, it is \"{value}\"",
+			"urn": "Property \"{property}\" must be a URN formatted string, it is \"{value}\"",
+			"url": "Property \"{property}\" must be a URL formatted string, it is \"{value}\"",
 			"email": "Property \"{property}\" must be string in e-mail format, it is \"{value}\"",
 			"uuidV7": "Property \"{property}\" must be a UUIDv7 formatted string, it is \"{value}\"",
 			"uuidV7Compact": "Property \"{property}\" must be a UUIDv7 formatted string in compact mode, it is \"{value}\"",
+			"duration": "Property \"{property}\" must be an ISO 8601 duration string, it is \"{value}\"",
 			"length32Multiple": "Property \"{property}\" should be a multiple of 32, it is {value}",
 			"lengthEntropy": "Property \"{property}\" should be a multiple of 4, >=16 and <= 32, it is {value}",
 			"didPartsTooFew": "The DID \"{value}\" is invalid: expected at least 3 parts but got fewer",
@@ -127,6 +131,18 @@
 		},
 		"jsonHelper": {
 			"failedPatch": "Failed to patch the JSON object, patch index \"{index}\" failed"
+		},
+		"mutex": {
+			"lockNotFound": "The key \"{key}\" has no active lock",
+			"lockAlreadyReleased": "The key \"{key}\" is not currently locked",
+			"lockTimeout": "Failed to acquire lock for key \"{key}\" within the timeout of {timeout} milliseconds",
+			"bufferFetchFailed": "Failed to retrieve shared buffer for key \"{key}\" from the main thread",
+			"invalidTimeout": "The timeout value \"{timeoutMs}\" is invalid, it must be a non-negative integer"
+		},
+		"sharedObjectBuffer": {
+			"notCreated": "The shared buffer for object \"{objectId}\" has not been created",
+			"capacityExceeded": "The payload size of {required} bytes exceeds the maximum capacity of {capacity} bytes for object \"{objectId}\"",
+			"bufferFetchFailed": "Failed to retrieve shared buffer for object \"{objectId}\" from the main thread"
 		},
 		"fetchHelper": {
 			"decodingJSON": "Decoding JSON failed for route \"{url}\"",
@@ -190,6 +206,9 @@
 		"slip0010": {
 			"invalidSeed": "The seed is invalid \"{seed}\""
 		},
+		"pbkdf2": {
+			"keyLengthTooSmall": "The key length must be at least 1, it is \"{keyLength}\""
+		},
 		"baseRestClient": {
 			"missingRouteProp": "Missing route parameter in data \"{routeProp}\" for route \"{route}\"",
 			"decodingFailed": "Decoding JSON failed for route \"{route}\"",
@@ -202,8 +221,9 @@
 		"contextIdStore": {
 			"asyncHooksNotAvailable": "Async Hooks are not available in this environment, please ensure you are running in Node.js"
 		},
-		"informationRestClient": {
-			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		"entitySchemaDiffHelper": {
+			"duplicateOldProperty": "The oldProperties array contains a duplicate property key \"{property}\"",
+			"duplicateNewProperty": "The newProperties array contains a duplicate property key \"{property}\""
 		},
 		"entitySchemaHelper": {
 			"noIsPrimary": "Property \"entitySchema.properties\" must contain a value with isPrimary set",
@@ -211,7 +231,8 @@
 			"invalidEntityProperties": "The schema has no properties defined, but the entity has properties",
 			"invalidEntityProperty": "The entity value of \"{value}\" does not match the type \"{type}\" for property \"{property}\"",
 			"invalidOptional": "The entity property \"{property}\" of type \"{type}\" is not optional, but no value has been provided",
-			"invalidEntityKeys": "The entity had additional properties that are not in the schema, \"{keys}\""
+			"invalidEntityKeys": "The entity had additional properties that are not in the schema, \"{keys}\"",
+			"versionMustBeGreaterThanOrEqualZero": "Property \"entitySchema.version\" must be an integer >= 0, but got {version}"
 		},
 		"jsonLdProcessor": {
 			"compact": "The JSON-LD compaction failed",
@@ -239,14 +260,20 @@
 			"publicKeyMultibaseMissingHeader": "Public key multibase \"{publicKeyMultibase}\" is missing the multi codec header",
 			"secretKeyMultibaseMissingHeader": "Secret key multibase \"{secretKeyMultibase}\" is missing the multi codec header"
 		},
-		"auditableItemGraphRestClient": {
-			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
-		},
-		"auditableItemStreamRestClient": {
-			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
+		"silentTelemetryConnector": {
+			"notSupported": "The method \"{methodName}\" is not supported on silent telemetry connector."
 		},
 		"unCodeLists": {
 			"invalidCodeList": "Invalid code list: \"{codeList}\""
+		},
+		"entityStorageHelper": {
+			"sortNotIndexed": "The property \"{property}\" is not indexed and cannot be used for sorting",
+			"propertyNotInSchema": "The property \"{property}\" does not exist in the schema and cannot be used for projection"
+		},
+		"migrationHelper": {
+			"migrateSchemaFailed": "Migration failed for schema \"{schemaName}\".",
+			"transformRequiredForProperty": "A transformation function is required to migrate property \"{from}\" to \"{to}\" of type \"{type}\"",
+			"coercionProducedUndefined": "Coercion of property \"{property}\" to type \"{type}\" produced undefined but the property is not optional"
 		},
 		"eventBusSocketClient": {
 			"socketConnect": "Failure during socket connect",
@@ -260,9 +287,6 @@
 		"documentHelper": {
 			"verificationMethodNotFound": "The verification method \"{methodName}\" of type \"{methodType}\" could not be found",
 			"verificationMethodJwkNotFound": "The verification method \"{methodName}\" of type \"{methodType}\" is missing the JWK"
-		},
-		"immutableProofRestClient": {
-			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component"
 		},
 		"qR": {
 			"typeNumberRange": "The typeNumber parameter should be a number >= 0 and <= 40, it is {typeNumber}",
@@ -315,9 +339,6 @@
 			"notSupportedOnClient": "The method \"{methodName}\" is not supported on the REST client, it can only be used on a server side component",
 			"publicOriginNotRequired": "The publicOrigin parameter is not required on the REST client"
 		},
-		"silentTelemetryConnector": {
-			"notSupported": "The method \"{methodName}\" is not supported on silent telemetry connector."
-		},
 		"nftAttestationConnector": {
 			"attestingFailed": "Attesting the data failed",
 			"verificationFailed": "Verifying the attestation failed",
@@ -361,10 +382,8 @@
 			"expired": "The JSON Web token has expired",
 			"insufficientScopes": "The JSON Web token does not have the required scopes to access this resource",
 			"userNotVerified": "The user associated with the JSON Web token could not be verified",
-			"organizationNotVerified": "The organization associated with the JSON Web token could not be verified"
-		},
-		"authHeaderProcessor": {
-			"tenantIdMismatch": "The tenant ID in the token does not match the tenant ID in the context"
+			"organizationNotVerified": "The organization associated with the JSON Web token could not be verified",
+			"tenantNotVerified": "The tenant associated with the JSON Web token could not be verified"
 		},
 		"restRouteProcessor": {
 			"routeNotFound": "The web server could not find the REST route \"{notFoundId}\""
@@ -378,25 +397,33 @@
 		"loggingProcessor": {
 			"responseMessage": "<=== {statusCode} {method} {requestUrl} duration: {elapsedMicroSeconds}µs"
 		},
+		"healthService": {
+			"componentHealthCheckFailed": "Health check failed for component \"{className}\""
+		},
 		"fastifyWebServer": {
 			"startFailed": "The Web Server failed to start",
 			"badRequest": "The web server could not handle the request",
 			"noRestProcessors": "You must configure at least one REST processor",
 			"noSocketProcessors": "You must configure at least one socket processor",
-			"postProcessorError": "There was a failure after in a post processor for route \"{route}\""
+			"postProcessorError": "There was a failure after in a post processor for route \"{route}\"",
+			"invalidPublicOrigin": "The public origin \"{publicOrigin}\" is not a valid origin URL, it should be in the format \"protocol://host[:port]\"."
 		},
 		"auditableItemGraphService": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the Auditable Item Graph service \"{namespace}\"",
 			"createFailed": "Creating the Auditable Item Graph vertex failed",
 			"getFailed": "Getting the Auditable Item Graph vertex failed",
+			"getVersionFailed": "Getting the Auditable Item Graph vertex version failed",
+			"getVersionsFailed": "Getting the Auditable Item Graph vertex versions failed",
+			"versionNotFound": "The version with the Id \"{notFoundId}\" was not found",
 			"updatingFailed": "Updating the Auditable Item Graph vertex failed",
 			"queryingFailed": "Querying the Auditable Item Graph failed",
-			"removeVerifiableFailed": "Removing the verifiable data the Auditable Item Graph vertex failed",
+			"removeProofFailed": "Removing the proof from the Auditable Item Graph vertex failed",
 			"vertexNotFound": "The vertex with the Id \"{notFoundId}\" was not found",
 			"changesetNotFound": "The changeset with the Id \"{notFoundId}\" was not found",
 			"resourceIdMissing": "You must provide either the id, or the resourceObject must contain an id property for index \"{index}\"",
 			"aliasNotUnique": "The alias id \"{aliasId}\" is already in use on another vertex and the unique flag was set",
-			"invalidEdgeId": "The edge id \"{edgeId}\" is not valid"
+			"invalidEdgeId": "The edge id \"{edgeId}\" is not valid",
+			"listPatchInvalidFormat": "The property \"{property}\" must be a list patch object with add and/or remove, not a bare array"
 		},
 		"auditableItemStreamService": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the Auditable Item Stream service \"{namespace}\"",
@@ -413,7 +440,7 @@
 			"removingEntryFailed": "Removing entry from the Auditable Item Stream failed",
 			"gettingEntriesFailed": "Getting entries from the Auditable Item Stream failed",
 			"gettingEntryObjectsFailed": "Getting entry objects from the Auditable Item Stream failed",
-			"removeVerifiableFailed": "Removing verifiable storage from the Auditable Item Stream failed",
+			"removeProofFailed": "Removing proof from the Auditable Item Stream failed",
 			"closedRequiresEntries": "A stream can only be created as closed when entries are provided",
 			"streamClosed": "The stream with the Id \"{id}\" is closed and does not allow entry updates",
 			"appendOnlyNoEntryUpdates": "Entries in append-only mode cannot be updated for stream \"{id}\"",
@@ -423,41 +450,52 @@
 		},
 		"s3BlobStorageConnector": {
 			"bucketCreateFailed": "Creating bucket \"{bucket}\" failed",
+			"teardownFailed": "Failed to teardown S3 bucket \"{bucket}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"getBlobFailed": "Failed to get blob in S3",
 			"setBlobFailed": "Failed to set blob in S3",
-			"removeBlobFailed": "Failed to remove blob in S3"
+			"removeBlobFailed": "Failed to remove blob in S3",
+			"emptyFailed": "Failed to empty S3 bucket \"{bucketName}\""
 		},
 		"azureBlobStorageConnector": {
 			"containerCreateFailed": "Creating container \"{container}\" failed",
+			"teardownFailed": "Failed to teardown Azure blob storage container \"{container}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"getBlobFailed": "Failed to get blob in Azure",
 			"setBlobFailed": "Failed to set blob in Azure",
-			"removeBlobFailed": "Failed to remove blob in Azure"
+			"removeBlobFailed": "Failed to remove blob in Azure",
+			"emptyFailed": "Failed to empty Azure blob storage container \"{containerName}\""
 		},
 		"gcpBlobStorageConnector": {
 			"bucketCreateFailed": "Creating bucket \"{bucket}\" failed",
+			"teardownFailed": "Failed to teardown GCP storage bucket \"{bucket}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"getBlobFailed": "Failed to get blob in GCP",
 			"setBlobFailed": "Failed to set blob in GCP",
-			"removeBlobFailed": "Failed to remove blob in GCP"
+			"removeBlobFailed": "Failed to remove blob in GCP",
+			"emptyFailed": "Failed to empty GCP storage bucket \"{bucketName}\""
 		},
 		"ipfsBlobStorageConnector": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"fetchFail": "Failure during IPFS request",
 			"setBlobFailed": "Failed to store blob in IPFS",
 			"getBlobFailed": "Failed to get blob from IPFS",
-			"removeBlobFailed": "Failed to remove blob from IPFS"
+			"removeBlobFailed": "Failed to remove blob from IPFS",
+			"emptyFailed": "Failed to empty IPFS blob storage",
+			"teardownFailed": "Failed to teardown IPFS blob storage"
 		},
 		"fileBlobStorageConnector": {
 			"directoryCreateFailed": "Creating directory \"{directory}\" failed",
 			"getBlobFailed": "Unable to get blob \"{id}\"",
 			"setBlobFailed": "Unable to set blob",
 			"removeBlobFailed": "Unable to remove blob",
+			"emptyFailed": "Failed to empty file blob storage directory \"{directory}\"",
+			"teardownFailed": "Failed to teardown file blob storage directory \"{directory}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\""
 		},
 		"memoryBlobStorageConnector": {
-			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\""
+			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
+			"emptyFailed": "Failed to empty memory blob storage"
 		},
 		"blobStorageService": {
 			"noConnectors": "There are no connectors registered with the blob storage factory",
@@ -465,6 +503,7 @@
 			"getFailed": "There was a problem getting the blob",
 			"updateFailed": "There was a problem updating the blob",
 			"removeFailed": "There was a problem removing the blob",
+			"emptyFailed": "There was a problem emptying the blob storage",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage service \"{namespace}\"",
 			"vaultConnectorNotConfigured": "The vault connector is not configured, but encryption/decryption was requested.",
 			"blobNotFound": "The blob with id \"{notFoundId}\" was not found",
@@ -496,18 +535,34 @@
 			"comparisonNotSupported": "Comparison operator \"{comparison}\" is not supported",
 			"conditionalNotSupported": "Conditional operator \"{operator}\" is not supported",
 			"sortSingle": "You can only sort by a single property",
-			"sortNotIndexed": "The property \"{property}\" is not indexed and cannot be used for sorting",
-			"propertyNotFound": "The property \"{property}\" was not found on the entity schema"
+			"propertyNotFound": "The property \"{property}\" was not found on the entity schema",
+			"getPartitionContextIdsFailed": "Unable to get partition context ids",
+			"setBatchFailed": "Unable to set batch of entities",
+			"removeBatchFailed": "Unable to remove batch of entities",
+			"emptyFailed": "Unable to empty entity storage",
+			"countFailed": "Unable to count entities",
+			"teardownFailed": "Unable to teardown entity storage",
+			"finalizeMigrationFailedBootstrap": "Finalizing migration failed during bootstrap phase"
 		},
 		"fileEntityStorageConnector": {
-			"directoryCreateFailed": "Creating directory \"{directory}\" failed"
+			"directoryCreateFailed": "Creating directory \"{directory}\" failed",
+			"emptyFailed": "Unable to empty entity storage",
+			"readStoreCorrupt": "The entity storage store file in directory \"{directory}\" contains corrupt JSON",
+			"readStoreFailed": "Unable to read the entity storage store file in directory \"{directory}\"",
+			"removeBatchFailed": "Unable to remove batch of entities",
+			"teardownFailed": "Unable to teardown entity storage",
+			"writeStoreFailed": "Unable to write the entity storage store file in directory \"{directory}\""
 		},
 		"scyllaDBTableConnector": {
 			"tableCreateFailed": "Creating table \"{table}\" failed",
-			"dropTableFailed": " \"{table}\" cannot be dropped",
-			"truncateTableFailed": " \"{table}\" cannot be dropped",
 			"removeFailed": "Removing item with \"{id}\" failed",
-			"setFailed": "Setting item with \"{id}\" failed"
+			"setFailed": "Setting item with \"{id}\" failed",
+			"setBatchFailed": "Setting batch of items failed",
+			"emptyFailed": "Emptying entity storage failed",
+			"removeBatchFailed": "Remove batch of entities failed",
+			"teardownFailed": "Teardown entity storage failed",
+			"getPartitionContextIdsFailed": "Unable to get partition context ids",
+			"finalizeMigrationFailedBootstrap": "Finalizing migration failed during bootstrap phase"
 		},
 		"scyllaDBViewConnector": {
 			"viewCreateFailed": "Creating view \"{view}\" failed",
@@ -517,16 +572,25 @@
 			"getFailed": "Getting item with \"{id}\" failed",
 			"findFailed": "Error while querying data on  \"{table}\"",
 			"parseJSONFailed": "Parsing JSON failed for field \"{name}\" with value \"{value}\"",
-			"comparisonNotSupported": "Dot-notation nested property path \"{property}\" is not supported in CQL queries"
+			"comparisonNotSupported": "Dot-notation nested property path \"{property}\" is not supported in CQL queries",
+			"notEqualsNotSupported": "The NotEquals operator is not supported in CQL queries for property \"{property}\"",
+			"notIncludesNotSupported": "The NotIncludes operator is not supported in CQL queries for property \"{property}\"",
+			"orConditionNotSupported": "OR logical operators are not supported in CQL queries",
+			"countFailed": "Unable to count entities",
+			"sortOnlyPrimaryKey": "ScyllaDB only supports ORDER BY on clustering (primary key) columns; \"{property}\" is a secondary index and cannot be used for sorting"
 		},
-		"entityStorageService": {
-			"entityNotFound": "Could not find entity with id \"{notFoundId}\""
+		"schemaVersionService": {
+			"storedVersionNewer": "Stored schema version ({stored}) for \"{schemaName}\" is newer than the current version ({current}). Downgrade is not supported.",
+			"noMigrationStep": "No migration step from version {missingFromVersion} to {missingToVersion} found for \"{schemaName}\". Cannot complete migration from {stored} to {current}. Register the versioned schema class \"{schemaName}V{missingFromVersion}\" in EntitySchemaFactory.",
+			"noMigrationStepTarget": "No target schema for migration step {missingFromVersion} to {missingToVersion} found for \"{schemaName}\". Cannot complete migration from {stored} to {current}. Register the versioned schema class \"{schemaName}V{missingToVersion}\" in EntitySchemaFactory.",
+			"connectorNotMigrationCapable": "Schema \"{schemaName}\" needs migration from version {stored} to {current} but its connector does not support automatic migration. Please migrate the schema manually before starting the node."
 		},
 		"entityStorageIdentityResolverConnector": {
 			"documentNotFound": "The document could not be found",
 			"resolveDocumentFailed": "Resolving the document failed"
 		},
 		"entityStorageIdentityConnector": {
+			"addAlsoKnownAsFailed": "Adding to the alsoKnownAs property failed",
 			"addServiceFailed": "Adding the service failed",
 			"addVerificationMethodFailed": "Adding the verification method failed",
 			"algorithmKeyTypeMismatch": "Algorithm \"{algorithm}\" requires key type \"{expectedKeyType}\", but key \"{keyId}\" has type \"{actualKeyType}\"",
@@ -537,11 +601,13 @@
 			"createVerifiableCredentialFailed": "Creating the verifiable credential failed",
 			"createVerifiablePresentationFailed": "Creating the verifiable presentation failed",
 			"documentNotFound": "The document could not be found \"{notFoundId}\"",
+			"invalidAlias": "The alias is invalid it must be a Url or Urn, it is \"{alias}\"",
 			"jwkSignatureFailed": "The signature on the JWK failed verification",
 			"methodMissing": "The verification method specified does not exist \"{method}\"",
 			"missingDid": "The full id including DID is required",
 			"privateKeyMissing": "The private key could not be found for key \"{keyId}\"",
 			"publicKeyJwkMissing": "The verification method contains no publicKeyJwk in method \"{method}\"",
+			"removeAlsoKnownAsFailed": "Removing from the alsoKnownAs property failed",
 			"removeDocumentFailed": "Removing the document failed",
 			"removeServiceFailed": "Removing the service failed",
 			"removeVerificationMethodFailed": "Removing the verification method failed",
@@ -567,6 +633,7 @@
 			"resolveDocumentFailed": "Resolving the document failed \"{documentId}\""
 		},
 		"iotaIdentityConnector": {
+			"addAlsoKnownAsFailed": "Adding to the alsoKnownAs property failed",
 			"addServiceFailed": "Adding the service failed",
 			"addVerificationMethodFailed": "Adding the verification method failed",
 			"algorithmKeyTypeMismatch": "Algorithm \"{algorithm}\" requires key type \"{expectedKeyType}\", but key \"{keyId}\" has type \"{actualKeyType}\"",
@@ -580,13 +647,14 @@
 			"documentNotFound": "The document could not be found",
 			"gasStationTransactionBuildFailed": "Building the gas station transaction failed",
 			"identityNotFound": "The identity could not be found \"{notFoundId}\"",
+			"invalidAlias": "The alias is invalid it must be a Url or Urn, it is \"{alias}\"",
 			"invalidSubjectId": "The subject id format is invalid it must be a Url or Urn, it is \"{subjectId}\"",
 			"methodMissing": "The verification method specified does not exist \"{method}\"",
 			"missingControllerToken": "The controller token is missing",
 			"missingDid": "The full id including DID is required",
 			"privateKeyMissing": "The verification method contains no privateKey \"{keyId}\"",
 			"publicKeyJwkMethodMissing": "The verification method contains no publicKeyJwk in method \"{method}\"",
-			"publicKeyJwkMissing": "The verification method contains no publicKeyJwk in JWK \"{jwk}\"",
+			"removeAlsoKnownAsFailed": "Removing from the alsoKnownAs property failed",
 			"removeDocumentFailed": "Removing the document failed",
 			"removeServiceFailed": "Removing the service failed",
 			"removeVerificationMethodFailed": "Removing the verification method failed",
@@ -611,6 +679,8 @@
 			"verificationMethodRemoveFailed": "Removing the verification method failed \"{verificationMethodId}\"",
 			"serviceCreateFailed": "Creating the service failed for identity \"{identity}\", service \"{serviceId}\"",
 			"serviceRemoveFailed": "Removing the service failed \"{serviceId}\"",
+			"alsoKnownAsAddFailed": "Adding to the alsoKnownAs property failed for identity \"{identity}\"",
+			"alsoKnownAsRemoveFailed": "Removing from the alsoKnownAs property failed for identity \"{identity}\"",
 			"verifiableCredentialCreateFailed": "Creating the verifiable credential failed for method \"{verificationMethodId}\"",
 			"verifiableCredentialVerifyFailed": "Verifying the verifiable credential failed",
 			"verifiableCredentialRevokeFailed": "Revoking the verifiable credential failed for document \"{issuerIdentity}\" with index \"{credentialIndex}\"",
@@ -640,45 +710,10 @@
 			"createFailed": "Creating the proof failed",
 			"getFailed": "Getting the proof failed",
 			"verifyFailed": "Verifying the proof failed",
-			"removeVerifiableFailed": "Removing verifiable entry from the Immutable Proof failed",
+			"removeFailed": "Removing the Immutable Proof failed",
+			"removeNotarizationFailed": "Removing notarization entry from the Immutable Proof failed",
 			"proofNotFound": "The proof with the Id \"{notFoundId}\" was not found",
 			"createProofFailed": "Creating the immutable proof failed"
-		},
-		"entityStorageVerifiableStorageConnector": {
-			"verifiableStorageNotFound": "The verifiable item with the Id \"{notFoundId}\" was not found",
-			"creatingFailed": "Creating the item failed",
-			"updatingFailed": "Updating the item failed",
-			"gettingFailed": "Getting the item failed",
-			"removingFailed": "Removing the item failed",
-			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the IOTA Verifiable Storage connector \"{namespace}\"",
-			"notInAllowList": "The user is not in the allow list",
-			"notCreator": "Only the creator can remove the verifiable item",
-			"allowListTooBig": "The number of items in the allow list is larger than the maximum allowed"
-		},
-		"iotaVerifiableStorageConnector": {
-			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the IOTA Verifiable Storage connector \"{namespace}\"",
-			"creatingFailed": "Creating the verifiable item failed",
-			"updatingFailed": "Updating the verifiable item failed",
-			"gettingFailed": "Getting the verifiable item failed",
-			"removingFailed": "Removing the verifiable item failed",
-			"updateFailed": "Updating the verifiable item failed",
-			"packageIdNotFound": "Package ID not found for network \"{network}\"",
-			"storingTransactionFailed": "The transaction to store the data failed",
-			"removingTransactionFailed": "The transaction to remove the data failed",
-			"objectNotFound": "The object was not found",
-			"objectIdNotFound": "The object ID was not found in the verifiable item for namespace \"{namespace}\"",
-			"connectorNotStarted": "Please call start() before using this connector. Package ID: \"{packageId}\" is missing.",
-			"startFailed": "Failed to start the IOTA Verifiable Storage connector.",
-			"invalidGasBudget": "The gas budget must be greater than 0",
-			"notInAllowList": "The user is not in the allow list",
-			"notCreator": "Only the creator can remove the verifiable item",
-			"allowListTooBig": "The number of items in the allow list is larger than the maximum allowed",
-			"contractDataNotFound": "Contract data not found for network \"{network}\". Available networks: {availableNetworks}",
-			"deployedPackageIdRequired": "deployedPackageId is required for network operations on \"{network}\".",
-			"packageNotFoundOnNetwork": "Package \"{deployedPackageId}\" not found on \"{network}\" network"
-		},
-		"iotaVerifiableStorageUtils": {
-			"invalidVerifiableStorageIdFormat": "The verifiable storage ID \"{id}\" has an invalid format"
 		},
 		"entityStorageNftConnector": {
 			"nftNotFound": "The NFT with the ID \"{notFoundId}\" was not found",
@@ -701,7 +736,7 @@
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the IOTA NFT connector \"{namespace}\"",
 			"failedToGetNftId": "Failed to get NFT ID from mint response",
 			"nftNotFound": "The NFT \"{notFoundId}\" was not found",
-			"nftOwnerNftFound": "The owner for NFT \"{nftId}\" was not found",
+			"nftOwnerNotFound": "The owner for NFT \"{nftId}\" was not found",
 			"startFailed": "Failed to start the IOTA NFT connector",
 			"packageIdNotInitialised": "The package id has not been initialised.",
 			"invalidImmutableMetadata": "The immutable metadata for NFT \"{nftId}\" is invalid",
@@ -710,8 +745,7 @@
 			"packageNotFoundOnNetwork": "Package \"{deployedPackageId}\" not found on \"{network}\" network",
 			"deployedPackageIdRequired": "deployedPackageId is required for network operations on \"{network}\".",
 			"packageIdNotFound": "Package ID not found for network \"{network}\"",
-			"invalidGasBudget": "Invalid gas budget: {gasBudget}",
-			"noWalletConfigured": "For write operations a wallet must be configured in the connector options"
+			"invalidGasBudget": "Invalid gas budget: {gasBudget}"
 		},
 		"iotaNftUtils": {
 			"invalidNftIdFormat": "The NFT ID \"{id}\" has an invalid format"
@@ -730,7 +764,11 @@
 			"metricAlreadyExists": "The metric already exists \"{existingId}\"",
 			"counterIncOnly": "A counter metric can only be incremented, or added to with an integer",
 			"upDownCounterIncOrDecOnly": "An up/down counter metric can only be incremented, decremented or adjusted with an integer",
-			"gaugeNoIncDec": "A gauge can not be incremented or decremented"
+			"gaugeNoIncDec": "A gauge can not be incremented or decremented",
+			"maxHistoryMustBePositiveInteger": "The maxHistory option must be a positive integer"
+		},
+		"metricsCollectorService": {
+			"producerCollectionFailed": "Failed to collect metrics from producer \"{producer}\""
 		},
 		"vaultConnectorHelper": {
 			"invalidSignature": "The JSON Web token signature could not be verified"
@@ -740,6 +778,7 @@
 			"keyNotFound": "The key \"{notFoundId}\" was not found in the vault",
 			"secretNotFound": "The secret \"{notFoundId}\" was not found in the vault",
 			"unsupportedKeyType": "The key type \"{keyType}\" is not supported",
+			"symmetricKeyHasNoPrivateKey": "The symmetric key \"{name}\" does not have a separate private key component",
 			"keyTypeMismatch": "The key type \"{keyType}\" does not match the requested encryption method \"{encryptionType}\""
 		},
 		"hashicorpVaultConnector": {
@@ -763,6 +802,7 @@
 			"keyNotFound": "The key \"{notFoundId}\" was not found in the vault",
 			"secretNotFound": "The secret \"{notFoundId}\" was not found in the vault",
 			"getKeyFailed": "Failed to get key \"{name}\"",
+			"symmetricKeyHasNoPrivateKey": "The symmetric key \"{name}\" does not have a separate private key component",
 			"signDataFailed": "Failed to sign data \"{name}\"",
 			"invalidSignResponse": "Invalid sign response \"{name}\"",
 			"verifyDataFailed": "Failed to verify data \"{name}\"",
@@ -780,10 +820,6 @@
 		},
 		"iotaWalletConnector": {
 			"transferFailed": "The wallet transfer failed."
-		},
-		"iotaFaucetConnector": {
-			"fundingFailed": "Fund the address from faucet failed",
-			"faucetRateLimit": "Faucet rate limit exceeded"
 		},
 		"rightsManagement": {
 			"policyUidRequired": "Policy UID is required",
@@ -805,9 +841,6 @@
 	},
 	"validation": {
 		"defaultFieldName": "The field"
-	},
-	"errorMessages": {
-		"fetch": "Fetch"
 	},
 	"codeLists": {
 		"accessRightsTypeCodeList": {
@@ -15379,6 +15412,11 @@
 		}
 	},
 	"info": {
+		"migrationHelper": {
+			"migrateSchemaStarting": "Migrating schema \"{schemaName}\"",
+			"migrateSchemaFinalizing": "Finalizing migration of schema \"{schemaName}\"",
+			"migrateSchemaComplete": "Migration of schema \"{schemaName}\" complete"
+		},
 		"eventBusSocketClient": {
 			"subscribe": "Subscription created for topic \"{topic}\" with id \"{subscriptionId}\"",
 			"unsubscribe": "Subscription removed for topic \"{topic}\" with id \"{subscriptionId}\""
@@ -15397,29 +15435,53 @@
 		},
 		"s3BlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
-			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
+			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists",
+			"bucketDeleting": "Deleting bucket \"{bucket}\"",
+			"bucketDeleted": "Bucket \"{bucket}\" deleted"
 		},
 		"azureBlobStorageConnector": {
 			"containerCreating": "Creating container \"{container}\"",
-			"containerExists": "Skipping create container \"{container}\" as it already exists"
+			"containerExists": "Skipping create container \"{container}\" as it already exists",
+			"containerDeleting": "Deleting container \"{container}\"",
+			"containerDeleted": "Container \"{container}\" deleted"
 		},
 		"gcpBlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
-			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
+			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists",
+			"bucketDeleting": "Deleting bucket \"{bucket}\"",
+			"bucketDeleted": "Bucket \"{bucket}\" deleted"
+		},
+		"ipfsBlobStorageConnector": {
+			"storeTearingDown": "Tearing down IPFS blob storage",
+			"storeTornDown": "IPFS blob storage torn down"
 		},
 		"fileBlobStorageConnector": {
 			"directoryCreating": "Creating directory \"{directory}\"",
-			"directoryExists": "Skipping create directory \"{directory}\" as it already exists"
+			"directoryExists": "Skipping create directory \"{directory}\" as it already exists",
+			"directoryRemoving": "Removing directory \"{directory}\"",
+			"directoryRemoved": "Directory \"{directory}\" removed"
+		},
+		"memoryBlobStorageConnector": {
+			"storeTearingDown": "Tearing down memory blob storage",
+			"storeTornDown": "Memory blob storage torn down"
 		},
 		"dynamoDbEntityStorageConnector": {
 			"tableCreating": "Creating table \"{tableName}\"",
 			"tableCreated": "Created table \"{tableName}\"",
-			"tableExists": "Skipping create table \"{tableName}\" as it already exists"
+			"tableExists": "Skipping create table \"{tableName}\" as it already exists",
+			"tableDeleting": "Deleting table \"{tableName}\"",
+			"tableDeleted": "Table \"{tableName}\" deleted"
 		},
 		"fileEntityStorageConnector": {
 			"directoryCreating": "Creating directory \"{directory}\"",
 			"directoryCreated": "Created directory \"{directory}\"",
-			"directoryExists": "Skipping create directory \"{directory}\" as it already exists"
+			"directoryExists": "Skipping create directory \"{directory}\" as it already exists",
+			"storeTearingDown": "Tearing down entity storage",
+			"storeTornDown": "Entity storage torn down"
+		},
+		"memoryEntityStorageConnector": {
+			"storeTearingDown": "Tearing down entity storage",
+			"storeTornDown": "Entity storage torn down"
 		},
 		"scyllaDBTableConnector": {
 			"keyspaceCreating": "Creating keyspace \"{keyspace}\"",
@@ -15427,7 +15489,9 @@
 			"tableCreating": "Creating table \"{table}\"",
 			"tableExists": "Skipping create table \"{table}\" as it already exists",
 			"typeCreating": "Creating type \"{typeName}\"",
-			"sql": "SQL: \"{sql}\""
+			"sql": "SQL: \"{sql}\"",
+			"tableDropping": "Dropping table \"{table}\"",
+			"tableDropped": "Table \"{table}\" dropped"
 		},
 		"scyllaDBViewConnector": {
 			"viewCreating": "Creating view \"{view}\"",
@@ -15437,11 +15501,18 @@
 		"abstractScyllaDBConnector": {
 			"sql": "SQL: \"{sql}\""
 		},
+		"schemaVersionService": {
+			"noMigrationRequired": "No migration required for schema \"{schemaName}\", version {version}.",
+			"migrationRequired": "Migration required for schema \"{schemaName}\" from version {from} to {to}.",
+			"partitionStart": "Starting migration of {itemTotal} partitions.",
+			"partitionProgress": "Migrating partition {itemIndex} of {itemTotal}.",
+			"partitionEnd": "Completed migration of {itemTotal} partitions.",
+			"partitionItemsStart": "Starting migration of {itemTotal} items in current partition.",
+			"partitionItemsProgress": "Migrating items in current partition: {itemIndex} of {itemTotal} processed.",
+			"partitionItemsEnd": "Completed migration of {itemTotal} items in current partition."
+		},
 		"immutableProofService": {
 			"createdProof": "The immutable proof with Id \"{proofId}\" has been created successfully"
-		},
-		"iotaVerifiableStorageConnector": {
-			"contractReady": "Contract ready for use"
 		},
 		"iotaNftConnector": {
 			"contractReady": "Contract ready for use"
@@ -16176,6 +16247,69 @@
 			"noData": "There is no data in the resolved NFT",
 			"proofFailed": "The proof of the attestation could not be verified",
 			"revoked": "The proof of the attestation has been revoked"
+		}
+	},
+	"health": {
+		"fastifyWebServer": {
+			"description": "Checks if the Web Server is reachable",
+			"reachable": "The Web Server is reachable",
+			"unreachable": "The Web Server is unreachable"
+		},
+		"s3BlobStorageConnector": {
+			"healthDescription": "S3 blob storage connector is healthy, bucket \"{bucketName}\" in region \"{region}\"",
+			"healthCheckFailed": "Failed to connect to S3 bucket \"{bucketName}\" in region \"{region}\""
+		},
+		"azureBlobStorageConnector": {
+			"healthDescription": "Azure blob storage connector is healthy, container \"{containerName}\" in account \"{accountName}\"",
+			"healthCheckFailed": "Failed to connect to Azure blob storage container \"{containerName}\" in account \"{accountName}\""
+		},
+		"gcpBlobStorageConnector": {
+			"healthDescription": "GCP blob storage connector is healthy, bucket \"{bucketName}\" in project \"{projectId}\"",
+			"healthCheckFailed": "Failed to connect to GCP storage bucket \"{bucketName}\" in project \"{projectId}\""
+		},
+		"ipfsBlobStorageConnector": {
+			"healthDescription": "IPFS blob storage connector is healthy, connected to \"{apiUrl}\"",
+			"healthCheckFailed": "Failed to connect to IPFS node at \"{apiUrl}\""
+		},
+		"fileBlobStorageConnector": {
+			"healthDescription": "File blob storage connector is healthy, directory \"{directory}\"",
+			"healthCheckFailed": "Failed to access the storage directory \"{directory}\""
+		},
+		"memoryBlobStorageConnector": {
+			"healthDescription": "Memory blob storage connector is healthy, storing \"{storedItemCount}\" items"
+		},
+		"dynamoDbEntityStorageConnector": {
+			"healthDescription": "Checks if the DynamoDB table \"{tableName}\" is available",
+			"connectionFailed": "Failed to connect to DynamoDB table \"{tableName}\""
+		},
+		"fileEntityStorageConnector": {
+			"healthDescription": "Checks if there is sufficient disk space in directory \"{directory}\" for the file entity storage connector to operate properly",
+			"diskSpaceError": "Disk space critically low in directory \"{directory}\", {freeBytes} bytes free, threshold is {thresholdBytes} bytes",
+			"diskSpaceCheckFailed": "Failed to check disk space in directory \"{directory}\"",
+			"diskSpaceWarning": "Disk space low in directory \"{directory}\", {freeBytes} bytes free, threshold is {thresholdBytes} bytes"
+		},
+		"memoryEntityStorageConnector": {
+			"healthDescription": "Memory entity storage for \"{entityType}\" is always available"
+		},
+		"scyllaDBTableConnector": {
+			"healthDescription": "Checks if the ScyllaDB table \"{table}\" is available",
+			"connectionFailed": "Failed to connect to ScyllaDB table \"{table}\""
+		},
+		"iotaIdentityConnector": {
+			"healthDescription": "Connectivity and availability of the IOTA node \"{endpoint}\"",
+			"nodeHealthCheckFailed": "Failed to check IOTA node health status \"{endpoint}\""
+		},
+		"iotaIdentityConnectorGasStation": {
+			"healthDescription": "Connectivity and availability of the IOTA gas station \"{endpoint}\"",
+			"healthCheckFailed": "Failed to check gas station health status \"{endpoint}\""
+		},
+		"iotaIdentityResolverConnector": {
+			"healthDescription": "Connectivity and availability of the IOTA resolver node \"{endpoint}\"",
+			"nodeHealthCheckFailed": "Failed to check IOTA node health status \"{endpoint}\""
+		},
+		"hashicorpVaultConnector": {
+			"healthDescription": "Connectivity and availability of the Hashicorp Vault server \"{endpoint}\"",
+			"vaultHealthCheckFailed": "Failed to check Vault health status \"{endpoint}\""
 		}
 	},
 	"auditableItemGraphService": {},

@@ -70,12 +70,11 @@
 	async function action(): Promise<string | undefined> {
 		if (
 			Is.stringValue(itemId) &&
-			Is.stringValue(recipientIdentity) &&
 			Is.stringValue(recipientAddress)
 		) {
 			progress = $i18n('pages.attestationTransfer.progress');
 
-			const result = await attestationTransfer(itemId, recipientIdentity, recipientAddress);
+			const result = await attestationTransfer(itemId, recipientAddress);
 			progress = '';
 
 			if (Is.stringValue(result?.error)) {

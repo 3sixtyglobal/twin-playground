@@ -1,23 +1,13 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { HealthStatus } from "@twin.org/api-models";
 import { InformationRestClient } from "@twin.org/api-rest-client";
 import { Is } from "@twin.org/core";
-import { get, writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 export const serverVersion = writable<string>("");
 export const serverName = writable<string>("");
-export const serverHealthStatus = writable<HealthStatus | undefined>();
-export const serverComponentHealth = writable<
-	{
-		name: string;
-		status: HealthStatus;
-		details?: string;
-	}[]
->([]);
 
 let informationClient: InformationRestClient | undefined;
-let healthInterval: NodeJS.Timeout | undefined;
 
 /**
  * Initialise the API information.
@@ -27,12 +17,6 @@ export async function init(apiUrl: string): Promise<void> {
 	informationClient = new InformationRestClient({
 		endpoint: apiUrl
 	});
-
-	await getHealth();
-
-	if (Is.empty(healthInterval)) {
-		healthInterval = setInterval(getHealth, 30000);
-	}
 }
 
 /**
@@ -45,27 +29,5 @@ export async function getInfo(): Promise<void> {
 			serverVersion.set(result.version);
 			serverName.set(result.name);
 		} catch {}
-	}
-}
-
-/**
- * Get the health of the server.
- */
-export async function getHealth(): Promise<void> {
-	if (Is.object(informationClient)) {
-		try {
-			const result = await informationClient.health();
-			serverHealthStatus.set(result.status);
-			serverComponentHealth.set(result.components ?? []);
-
-			if (
-				(result.status !== HealthStatus.Error && !Is.stringValue(get(serverVersion))) ||
-				!Is.stringValue(get(serverName))
-			) {
-				await getInfo();
-			}
-		} catch {
-			serverHealthStatus.set(HealthStatus.Error);
-		}
 	}
 }

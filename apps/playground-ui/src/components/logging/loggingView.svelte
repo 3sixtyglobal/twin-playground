@@ -108,7 +108,7 @@
 		await loadData();
 	}
 
-	async function copyData(data?: object): Promise<void> {
+	async function copyData(data: object | undefined = undefined): Promise<void> {
 		if (!data) {
 			return;
 		}

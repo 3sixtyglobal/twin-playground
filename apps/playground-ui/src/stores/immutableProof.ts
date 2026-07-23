@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
+import type { IImmutableProofCredential } from "@twin.org/immutable-proof-models";
 import { ImmutableProofRestClient } from "@twin.org/immutable-proof-rest-client";
-import type { IDidVerifiableCredential } from "@twin.org/standards-w3c-did";
 
 let immutableProofClient: ImmutableProofRestClient | undefined;
 
@@ -25,7 +25,7 @@ export async function init(apiUrl: string): Promise<void> {
 export async function immutableProofGet(proofId: string): Promise<
 	| {
 			error?: string;
-			item?: IDidVerifiableCredential;
+			item?: IImmutableProofCredential;
 	  }
 	| undefined
 > {
@@ -79,7 +79,7 @@ export async function immutableProofRemoveVerifiable(
 ): Promise<undefined | { error: string }> {
 	if (Is.object(immutableProofClient)) {
 		try {
-			await immutableProofClient.removeVerifiable(proofId);
+			await immutableProofClient.removeNotarization(proofId);
 			return undefined;
 		} catch (err) {
 			return {

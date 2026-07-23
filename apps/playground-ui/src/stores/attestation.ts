@@ -73,18 +73,16 @@ export async function attestationGet(attestationId: string): Promise<
 /**
  * Transfer an attestation to a new holder.
  * @param attestationId The attestation to transfer.
- * @param holderIdentity The identity to transfer the attestation to.
  * @param holderAddress The address to transfer the attestation to.
  * @returns Nothing or an error if one occurred.
  */
 export async function attestationTransfer(
 	attestationId: string,
-	holderIdentity: string,
 	holderAddress: string
 ): Promise<{ error?: string } | undefined> {
 	if (Is.object(attestationClient)) {
 		try {
-			await attestationClient.transfer(attestationId, holderIdentity, holderAddress);
+			await attestationClient.transfer(attestationId, holderAddress);
 			return {};
 		} catch (err) {
 			return {

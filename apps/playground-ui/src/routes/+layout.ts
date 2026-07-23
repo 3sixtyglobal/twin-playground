@@ -51,6 +51,9 @@ export async function load(params: { url: URL }): Promise<void> {
 	} catch (err) {
 		// Nothing else is initialised yet so we need to console log manually
 		// eslint-disable-next-line no-console
-		console.error("Error during initialisation", ErrorHelper.formatErrors(err, true).join("\n"));
+		console.error(
+			"Error during initialisation",
+			ErrorHelper.formatErrors(err, { includeStack: true, includeAdditional: true }).join("\n")
+		);
 	}
 }

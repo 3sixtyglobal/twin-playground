@@ -100,7 +100,7 @@
 		await loadData();
 	}
 
-	async function copyData(data?: ITelemetryMetricValue): Promise<void> {
+	async function copyData(data: ITelemetryMetricValue | undefined = undefined): Promise<void> {
 		if (!data) {
 			return;
 		}

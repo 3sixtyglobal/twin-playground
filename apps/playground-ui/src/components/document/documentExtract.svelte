@@ -3,7 +3,7 @@
 	// SPDX-License-Identifier: Apache-2.0.
 	import { Is } from '@twin.org/core';
 	import type { IRuleGroup } from '@twin.org/data-processing-models';
-	import type { IDocument } from '@twin.org/document-management-models';
+import type { IDocumentHydrated } from '@twin.org/document-management-models';
 	import {
 		Button,
 		Card,
@@ -28,7 +28,7 @@
 	}
 
 	let { itemId = undefined }: Props = $props();
-	let documentData: IDocument | undefined = $state();
+	let documentData: IDocumentHydrated | undefined = $state();
 	let error: string | undefined = $state();
 	let busy = $state(true);
 	let documentDataExtracted = $state(false);
@@ -39,7 +39,7 @@
 	let ruleGroupsBusy = $state(false);
 	let ruleGroupsError = $state('');
 
-	async function loadData(cursor?: string): Promise<void> {
+	async function loadData(cursor: string | undefined = undefined): Promise<void> {
 		if (!itemId) {
 			return;
 		}
@@ -71,7 +71,7 @@
 		ruleGroupsBusy = false;
 	});
 
-	async function extractDocumentData(documentRevision?: number): Promise<void> {
+	async function extractDocumentData(documentRevision: number | undefined = undefined): Promise<void> {
 		if (!itemId) {
 			documentDataExtracted = false;
 			return;

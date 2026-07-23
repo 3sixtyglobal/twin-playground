@@ -12,6 +12,7 @@ import { init as initDataProcessing } from "./dataProcessing.js";
 import { init as initDocument } from "./document.js";
 import { init as initDocuments } from "./documents.js";
 import { init as initEventBus } from "./eventBus.js";
+import { init as initHealth } from "./health.js";
 import { init as initIdentity } from "./identity.js";
 import { init as initIdentityProfile } from "./identityProfile.js";
 import { init as initIdentityResolver } from "./identityResolver.js";
@@ -57,6 +58,7 @@ export async function init(options: {
 
 	await initLocales(options.rootUrl, options.localesIndex, options.debugLanguages);
 	await initInformation(options.apiUrl);
+	await initHealth(options.apiUrl);
 	await initAuthentication(options.apiUrl);
 	await initIdentityProfile(options.apiUrl);
 	await initIdentityResolver(options.apiUrl);

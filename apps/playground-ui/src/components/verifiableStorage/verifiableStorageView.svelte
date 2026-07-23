@@ -66,7 +66,7 @@
 		window.open(exploreUrl, '_blank');
 	}
 
-	async function copyData(data?: string): Promise<void> {
+	async function copyData(data: string | undefined = undefined): Promise<void> {
 		if (!data) {
 			return;
 		}

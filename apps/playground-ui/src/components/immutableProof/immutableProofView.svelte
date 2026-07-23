@@ -3,7 +3,7 @@
 	// SPDX-License-Identifier: Apache-2.0.
 	import { goto } from '$app/navigation';
 	import { Is, ObjectHelper } from '@twin.org/core';
-	import type { IImmutableProof } from '@twin.org/immutable-proof-models';
+	import type { IImmutableProofCredential } from '@twin.org/immutable-proof-models';
 	import {
 		Button,
 		Card,
@@ -20,7 +20,6 @@
 	import ImmutableProofReceipt from './immutableProofReceipt.svelte';
 	import { immutableProofGet, immutableProofVerify } from '$stores/immutableProof';
 	import { createExplorerVerifiableStorageUrl } from '$stores/iota';
-	import type { IDidVerifiableCredential } from '@twin.org/standards-w3c-did';
 	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
 
 	interface Props {
@@ -32,7 +31,7 @@
 	let { itemId, returnUrl, title = undefined }: Props = $props();
 	let error: string | undefined = $state();
 	let busy = $state(true);
-	let immutableProof: IDidVerifiableCredential | undefined = $state();
+	let immutableProof: IImmutableProofCredential | undefined = $state();
 	let receipt: IJsonLdNodeObject | undefined = $state();
 	let verifiedProof: boolean | undefined = $state();
 	let failureMessageProof: string | undefined = $state();

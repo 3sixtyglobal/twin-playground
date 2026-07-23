@@ -64,7 +64,7 @@
 		a.click();
 	}
 
-	function openIdentity(id?: string): void {
+	function openIdentity(id: string | undefined = undefined): void {
 		if (Is.stringValue(id)) {
 			const a = document.createElement('a');
 			a.href = `/public/identity/${id}`;
@@ -145,23 +145,6 @@
 				<Label>
 					{$i18n('components.attestationView.transferred')}
 					<Span>{new Date(item.dateTransferred)}</Span>
-				</Label>
-			{/if}
-			{#if Is.stringValue(item?.holderIdentity)}
-				<Label>
-					<div class="flex flex-row items-center gap-2">
-						{$i18n('components.attestationView.holderIdentity')}
-						<Button
-							onclick={() => openIdentity(item?.holderIdentity)}
-							size="xs"
-							color="plain"
-							class="gap-2"
-						>
-							{$i18n('actions.view')}
-							<Icons.ArrowUpRightFromSquareOutline size="sm" />
-						</Button>
-					</div>
-					<Span>{item.holderIdentity}</Span>
 				</Label>
 			{/if}
 			{#if Is.object(item?.attestationObject)}

@@ -4,10 +4,8 @@
 	import { goto } from '$app/navigation';
 	import { Is } from '@twin.org/core';
 	import type { EntityCondition } from '@twin.org/entity';
-	import {
-		type IRightsManagementPolicy,
-		RightsManagementPolicyType as PolicyType
-	} from '@twin.org/rights-management-models';
+	import type { IRightsManagementPolicy } from '@twin.org/rights-management-models';
+	import { OdrlPolicyType as PolicyType } from '@twin.org/standards-w3c-odrl';
 	import {
 		Button,
 		Card,

@@ -2,7 +2,7 @@
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
 	import { Converter, Is, Coerce, Urn } from '@twin.org/core';
-	import type { IDocument } from '@twin.org/document-management-models';
+	import type { IDocument, IDocumentHydrated } from '@twin.org/document-management-models';
 	import { UneceDocumentCodeList } from '@twin.org/standards-unece';
 	import {
 		Button,
@@ -43,7 +43,7 @@
 	let busy = $state(true);
 	let documentList: IDocument[] = $state([]);
 	let showDocumentModal = $state(false);
-	let selectedDocument: IDocument | undefined = $state();
+	let selectedDocument: IDocumentHydrated | undefined = $state();
 	let documentModalLoading = $state(false);
 
 	let showDeleteConfirmModal = $state(false);
@@ -63,7 +63,7 @@
 		{ value: UneceDocumentCodeList.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
 	];
 
-	async function loadData(cursor?: string): Promise<void> {
+	async function loadData(cursor: string | undefined = undefined): Promise<void> {
 		if (!itemId) {
 			return;
 		}
@@ -145,7 +145,7 @@
 		window.open(exploreUrl, '_blank');
 	}
 
-	async function viewDocumentDetails(document: IDocument): Promise<void> {
+	async function viewDocumentDetails(document: IDocumentHydrated): Promise<void> {
 		selectedDocument = document;
 		showDocumentModal = true;
 		documentModalLoading = true;
@@ -180,7 +180,7 @@
 		}
 	}
 
-	function downloadSelectedDocument(document?: IDocument): void {
+	function downloadSelectedDocument(document: IDocumentHydrated | undefined = undefined): void {
 		if (!document?.blobStorageEntry?.blob) {
 			return;
 		}
@@ -201,7 +201,7 @@
 		URL.revokeObjectURL(url);
 	}
 
-	async function removePrompt(revision?: number): Promise<void> {
+	async function removePrompt(revision: number | undefined = undefined): Promise<void> {
 		if (!revision) {
 			return;
 		}

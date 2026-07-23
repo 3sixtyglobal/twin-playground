@@ -7,7 +7,8 @@
 	import { authenticationState } from '$stores/authentication';
 	import { privateProfile } from '$stores/identityProfile';
 	import '../app.css';
-	import { serverHealthStatus, serverName, serverVersion } from '$stores/information';
+	import { serverName, serverVersion } from '$stores/information';
+	import { serverHealthStatus } from '$stores/health';
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
