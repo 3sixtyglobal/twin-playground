@@ -69,6 +69,7 @@
 		"@sveltejs/vite-plugin-svelte": "7.0.0",
 		"@twin.org/merge-locales": "next",
 		"@types/d3": "7.4.3",
+		"@types/node": "26.1.1",
 		"autoprefixer": "10.4.27",
 		"globals": "17.4.0",
 		"postcss": "8.5.8",
