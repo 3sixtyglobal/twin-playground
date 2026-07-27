@@ -1,23 +1,23 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { BaseError, ErrorHelper, Is, NotFoundError, ObjectHelper } from "@twin.org/core";
-import { IdentityProfileClient } from "@twin.org/identity-rest-client";
+import { IdentityProfileRestClient } from "@twin.org/identity-rest-client";
 import type { Person, WithContext } from "schema-dts";
 import { get, writable } from "svelte/store";
-import { authenticationState } from "./authentication";
+import { authenticationState } from "./authentication.js";
 
 export const profileIdentity = writable<string>("");
 export const publicProfile = writable<WithContext<Person> | undefined>();
 export const privateProfile = writable<WithContext<Person> | undefined>();
 
-let identityProfileClient: IdentityProfileClient | undefined;
+let identityProfileClient: IdentityProfileRestClient | undefined;
 
 /**
  * Initialise the identity profile.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	identityProfileClient = new IdentityProfileClient({
+	identityProfileClient = new IdentityProfileRestClient({
 		endpoint: apiUrl
 	});
 

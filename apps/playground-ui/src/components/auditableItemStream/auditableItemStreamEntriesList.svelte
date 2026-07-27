@@ -27,22 +27,26 @@
 	} from '$stores/auditableItemStreams';
 	import { CursorStackHandler } from '$utils/shared/cursorStackHandler';
 
-	export let streamId: string;
-	let busy = false;
-	let error = '';
-	let entries: { entryId: string; entryObject: IJsonLdNodeObject }[] = [];
-	let confirmationId: string | undefined;
-	let modalIsBusy = false;
+	interface Props {
+		streamId: string;
+	}
+
+	let { streamId }: Props = $props();
+	let busy = $state(false);
+	let error = $state('');
+	let entries: { entryId: string; entryObject: IJsonLdNodeObject }[] = $state([]);
+	let confirmationId: string | undefined = $state();
+	let modalIsBusy = $state(false);
 
 	const cursorHandler = new CursorStackHandler();
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		busy = true;
 		const result = await auditableItemStreamGetEntries(streamId, {
-			pageSize: 10,
+			limit: 10,
 			cursor: cursorHandler.getCurrentCursor()
 		});
 
@@ -112,9 +116,9 @@
 
 	<Error {error} />
 
-	<div class="mb-4 mt-4 flex w-full flex-row justify-end gap-2">
+	<div class="mt-4 mb-4 flex w-full flex-row justify-end gap-2">
 		<Button
-			on:click={async () => {
+			onclick={async () => {
 				await goto(`/secure/auditable-item-stream/${streamId}/entries/create`);
 			}}
 		>
@@ -147,15 +151,15 @@
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() =>
+								onclick={() =>
 									goto(`/secure/auditable-item-stream/${streamId}/entries/${entry.entryId}`)}
 							>
 								<Icons.EditOutline />
 							</Button>
-							<Button size="xs" color="plain" on:click={async () => copyEntryData(entry)}>
+							<Button size="xs" color="plain" onclick={async () => copyEntryData(entry)}>
 								<Icons.ClipboardOutline />
 							</Button>
-							<Button size="xs" color="plain" on:click={async () => removePrompt(entry.entryId)}
+							<Button size="xs" color="plain" onclick={async () => removePrompt(entry.entryId)}
 								><Icons.TrashBinOutline /></Button
 							>
 						</TableBodyCell>
@@ -181,6 +185,6 @@
 	{/if}
 
 	<div class="flex w-full justify-start">
-		<Button on:click={close}>{$i18n('actions.close')}</Button>
+		<Button onclick={close}>{$i18n('actions.close')}</Button>
 	</div>
 </section>

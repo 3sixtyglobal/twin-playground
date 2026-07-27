@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
-import { VerifiableStorageClient } from "@twin.org/verifiable-storage-rest-client";
+import { VerifiableStorageRestClient } from "@twin.org/verifiable-storage-rest-client";
 
-let verifiableStorageClient: VerifiableStorageClient | undefined;
+let verifiableStorageClient: VerifiableStorageRestClient | undefined;
 
 /**
  * Initialise the verifiable storage.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	verifiableStorageClient = new VerifiableStorageClient({
+	verifiableStorageClient = new VerifiableStorageRestClient({
 		endpoint: apiUrl
 	});
 }

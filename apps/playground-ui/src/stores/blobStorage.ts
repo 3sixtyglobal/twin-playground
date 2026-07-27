@@ -1,18 +1,18 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageEntry } from "@twin.org/blob-storage-models";
-import { BlobStorageClient } from "@twin.org/blob-storage-rest-client";
+import { BlobStorageRestClient } from "@twin.org/blob-storage-rest-client";
 import { Converter, ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 
-let blobStorageClient: BlobStorageClient | undefined;
+let blobStorageClient: BlobStorageRestClient | undefined;
 
 /**
  * Initialise the blob storage.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	blobStorageClient = new BlobStorageClient({
+	blobStorageClient = new BlobStorageRestClient({
 		endpoint: apiUrl
 	});
 }
@@ -101,8 +101,8 @@ export async function blobStorageList(cursor?: string): Promise<
 		try {
 			const result = await blobStorageClient.query(undefined, undefined, undefined, cursor);
 			return {
-				items: result.itemListElement,
-				cursor: result.nextItem
+				items: result.entries.itemListElement,
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {

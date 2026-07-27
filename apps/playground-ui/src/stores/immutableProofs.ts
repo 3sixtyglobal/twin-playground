@@ -1,17 +1,17 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { EntityStorageClient } from "@twin.org/entity-storage-rest-client";
+import { EntityStorageRestClient } from "@twin.org/entity-storage-rest-client";
 import type { IUserImmutableProofEntry } from "$models/IUserImmutableProofEntry";
 
-let userImmutableProofEntryClient: EntityStorageClient<IUserImmutableProofEntry> | undefined;
+let userImmutableProofEntryClient: EntityStorageRestClient<IUserImmutableProofEntry> | undefined;
 
 /**
  * Initialise the immutable proof.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	userImmutableProofEntryClient = new EntityStorageClient<IUserImmutableProofEntry>({
+	userImmutableProofEntryClient = new EntityStorageRestClient<IUserImmutableProofEntry>({
 		endpoint: apiUrl,
 		pathPrefix: "user-immutable-proof"
 	});
@@ -40,6 +40,7 @@ export async function immutableProofList(cursor?: string): Promise<
 				cursor
 			);
 			return {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				items: result.entities as IUserImmutableProofEntry[],
 				cursor: result.cursor
 			};

@@ -7,11 +7,13 @@
 export class CursorStackHandler {
 	/**
 	 * Stack of cursors for pagination navigation.
+	 * @internal
 	 */
 	private readonly _cursorStack: string[];
 
 	/**
 	 * Current index in the cursor stack.
+	 * @internal
 	 */
 	private _cursorStackIndex: number;
 

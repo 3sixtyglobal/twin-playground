@@ -46,12 +46,6 @@ export class UserDocumentEntry {
 	public lastUpdated!: string;
 
 	/**
-	 * The node identity it was created with.
-	 */
-	@property({ type: "string", isSecondary: true, optional: true })
-	public nodeIdentity?: string;
-
-	/**
 	 * The user identity who created it.
 	 */
 	@property({ type: "string", isSecondary: true, optional: true })

@@ -2,8 +2,8 @@
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
 	import { goto } from '$app/navigation';
-	import { Is } from '@twin.org/core';
-	import type { IImmutableProof } from '@twin.org/immutable-proof-models';
+	import { Is, ObjectHelper } from '@twin.org/core';
+	import type { IImmutableProofCredential } from '@twin.org/immutable-proof-models';
 	import {
 		Button,
 		Card,
@@ -20,17 +20,23 @@
 	import ImmutableProofReceipt from './immutableProofReceipt.svelte';
 	import { immutableProofGet, immutableProofVerify } from '$stores/immutableProof';
 	import { createExplorerVerifiableStorageUrl } from '$stores/iota';
+	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
 
-	export let itemId: string;
-	export let returnUrl: string;
-	export let title: string | undefined = undefined;
-	let error: string;
-	let busy = true;
-	let immutableProof: IImmutableProof | undefined;
-	let verifiedProof: boolean | undefined;
-	let failureMessageProof: string | undefined;
-	let verifiableStorageId: string | undefined;
-	let explorerUrl: string | undefined;
+	interface Props {
+		itemId: string;
+		returnUrl: string;
+		title?: string | undefined;
+	}
+
+	let { itemId, returnUrl, title = undefined }: Props = $props();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let immutableProof: IImmutableProofCredential | undefined = $state();
+	let receipt: IJsonLdNodeObject | undefined = $state();
+	let verifiedProof: boolean | undefined = $state();
+	let failureMessageProof: string | undefined = $state();
+	let verifiableStorageId: string | undefined = $state();
+	let explorerUrl: string | undefined = $state();
 
 	async function close(): Promise<void> {
 		await goto(returnUrl);
@@ -44,10 +50,11 @@
 			error = result.error;
 		} else {
 			immutableProof = result?.item;
-			if (immutableProof && Is.stringValue(immutableProof.verifiableStorageId)) {
-				verifiableStorageId = immutableProof.verifiableStorageId;
+			verifiableStorageId = ObjectHelper.propertyGet(immutableProof, 'proof.verifiableStorageId');
+			if (Is.stringValue(verifiableStorageId)) {
 				explorerUrl = createExplorerVerifiableStorageUrl(verifiableStorageId);
 			}
+			receipt = ObjectHelper.propertyGet(immutableProof, 'proof.immutableReceipt');
 		}
 
 		const resultVerify = await immutableProofVerify(itemId);
@@ -78,7 +85,7 @@
 					<div>
 						<Button
 							size="xs"
-							on:click={() => window.open(explorerUrl, '_blank')}
+							onclick={() => window.open(explorerUrl, '_blank')}
 							color="plain"
 							class="gap-2"
 						>
@@ -106,13 +113,13 @@
 						<Code>{JSON.stringify(immutableProof, null, 2)}</Code>
 					</Label>
 				{/if}
-				{#if !Is.empty(immutableProof?.immutableReceipt)}
-					<ImmutableProofReceipt item={immutableProof.immutableReceipt} />
+				{#if !Is.empty(receipt)}
+					<ImmutableProofReceipt item={receipt} />
 				{/if}
 			</div>
 		</div>
 	{/if}
 	<div class="flex flex-row justify-start gap-5">
-		<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+		<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 	</div>
 </Card>

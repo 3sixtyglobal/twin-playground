@@ -20,21 +20,24 @@
 	import { createExplorerNftUrl } from '$stores/iota';
 	import { nftResolve } from '$stores/nft';
 
-	export let itemId: string;
-	export let returnUrl: string | undefined = undefined;
-	let error: string;
-	let busy = true;
+	interface Props {
+		itemId: string;
+		returnUrl?: string | undefined;
+	}
+
+	let { itemId, returnUrl = undefined }: Props = $props();
+	let error: string | undefined = $state();
+	let busy = $state(true);
 	let item:
 		| Partial<{
 				issuer?: string;
-				owner?: string;
 				tag?: string;
 				immutableMetadata?: unknown;
 				metadata?: unknown;
 				error?: string;
 		  }>
-		| undefined;
-	let exploreUrl: string | undefined;
+		| undefined = $state();
+	let exploreUrl: string | undefined = $state();
 
 	onMount(async () => {
 		error = '';
@@ -68,7 +71,7 @@
 					</Label>
 					{#if Is.stringValue(exploreUrl)}
 						<div>
-							<Button size="xs" on:click={openExplorer} color="plain" class="gap-2"
+							<Button size="xs" onclick={openExplorer} color="plain" class="gap-2"
 								>{$i18n('components.nftView.exploreNft')}<Icons.LinkOutline size="sm" /></Button
 							>
 						</div>
@@ -88,13 +91,9 @@
 				{$i18n('components.nftView.tag')}
 				<Span>{item?.tag}</Span>
 			</Label>
-			<Label>
-				{$i18n('components.nftView.owner')}
-				<Span>{item?.owner}</Span>
-			</Label>
 
 			{#if !Is.undefined(item?.immutableMetadata)}
-				<Label class="mb-2 mt-5">
+				<Label class="mt-5 mb-2">
 					{$i18n('components.nftView.immutableMetadata')}
 				</Label>
 				{#if Is.object(item?.immutableMetadata)}
@@ -108,7 +107,7 @@
 			{/if}
 
 			{#if !Is.undefined(item?.metadata)}
-				<Label class="mb-2 mt-5">
+				<Label class="mt-5 mb-2">
 					{$i18n('components.nftView.metadata')}
 				</Label>
 				{#if Is.object(item?.metadata)}
@@ -124,7 +123,7 @@
 	{/if}
 	{#if Is.stringValue(returnUrl)}
 		<div class="flex flex-row gap-2">
-			<Button on:click={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
+			<Button onclick={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
 		</div>
 	{/if}
 </Card>

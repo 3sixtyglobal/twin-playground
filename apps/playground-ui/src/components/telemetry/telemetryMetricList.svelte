@@ -33,23 +33,23 @@
 	const metricTypes: MetricType[] = Object.values(MetricType);
 	const metricTypeLabels = getMetricTypeLabels();
 
-	let entities: ITelemetryMetric[] | undefined;
-	let busy = false;
-	let status = '';
-	let type: MetricType | undefined = undefined;
-	let pageSize = 50;
-	let isError = false;
-	let confirmationId: string = '';
-	let modalIsBusy = false;
+	let entities: ITelemetryMetric[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let type: MetricType | undefined = $state(undefined);
+	let limit = $state(50);
+	let isError = $state(false);
+	let confirmationId: string = $state('');
+	let modalIsBusy = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.telemetry.loading');
 		busy = true;
 		isError = false;
-		const result = await telemetryQuery(type, cursorHandler.getCurrentCursor(), pageSize);
+		const result = await telemetryQuery(type, cursorHandler.getCurrentCursor(), limit);
 
 		if (Is.stringValue(result?.error)) {
 			isError = true;
@@ -115,12 +115,12 @@
 	<Card class="w-full max-w-full rounded-lg border border-gray-300 p-4">
 		<div class="flex flex-col gap-4 lg:flex-row">
 			<Label>
-				{$i18n('pages.telemetry.pageSize')}
+				{$i18n('pages.telemetry.limit')}
 				<Input
-					name="pageSize"
-					placeholder={$i18n('pages.telemetry.pageSize')}
+					name="limit"
+					placeholder={$i18n('pages.telemetry.limit')}
 					color="default"
-					bind:value={pageSize}
+					bind:value={limit}
 					disabled={busy}
 					type="number"
 				></Input>
@@ -134,7 +134,7 @@
 					{/each}
 				</Select>
 			</Label>
-			<Button on:click={async () => action()} disabled={busy} class="lg:mt-6">
+			<Button onclick={async () => action()} disabled={busy} class="lg:mt-6">
 				{$i18n('pages.telemetry.search')}
 			</Button>
 		</div></Card
@@ -146,7 +146,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/telemetry/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/telemetry/create')} disabled={busy}
 			>{$i18n('pages.telemetry.createMetric')}</Button
 		>
 	</div>
@@ -175,20 +175,20 @@
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/telemetry/${encodeURIComponent(item.id)}`)}
+								onclick={() => goto(`/secure/telemetry/${encodeURIComponent(item.id)}`)}
 								><Icons.EditOutline /></Button
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/telemetry/${encodeURIComponent(item.id)}/values`)}
+								onclick={() => goto(`/secure/telemetry/${encodeURIComponent(item.id)}/values`)}
 								><Icons.ListOutline /></Button
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() =>
+								onclick={() =>
 									goto(`/secure/telemetry/${encodeURIComponent(item.id)}/values/chart`)}
 								><Icons.ChartLineUpOutline /></Button
-							><Button size="xs" color="plain" on:click={async () => removePrompt(item.id)}
+							><Button size="xs" color="plain" onclick={async () => removePrompt(item.id)}
 								><Icons.TrashBinOutline /></Button
 							>
 						</TableBodyCell>

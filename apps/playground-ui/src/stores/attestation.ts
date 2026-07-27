@@ -1,19 +1,19 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IAttestationInformation } from "@twin.org/attestation-models";
-import { AttestationClient } from "@twin.org/attestation-rest-client";
+import { AttestationRestClient } from "@twin.org/attestation-rest-client";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { DigitalDocument, WithContext } from "schema-dts";
 
-let attestationClient: AttestationClient | undefined;
+let attestationClient: AttestationRestClient | undefined;
 
 /**
  * Initialise the attestation.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	attestationClient = new AttestationClient({
+	attestationClient = new AttestationRestClient({
 		endpoint: apiUrl
 	});
 }
@@ -73,18 +73,16 @@ export async function attestationGet(attestationId: string): Promise<
 /**
  * Transfer an attestation to a new holder.
  * @param attestationId The attestation to transfer.
- * @param holderIdentity The identity to transfer the attestation to.
  * @param holderAddress The address to transfer the attestation to.
  * @returns Nothing or an error if one occurred.
  */
 export async function attestationTransfer(
 	attestationId: string,
-	holderIdentity: string,
 	holderAddress: string
 ): Promise<{ error?: string } | undefined> {
 	if (Is.object(attestationClient)) {
 		try {
-			await attestationClient.transfer(attestationId, holderIdentity, holderAddress);
+			await attestationClient.transfer(attestationId, holderAddress);
 			return {};
 		} catch (err) {
 			return {

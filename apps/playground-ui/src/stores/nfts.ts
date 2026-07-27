@@ -1,17 +1,17 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { EntityStorageClient } from "@twin.org/entity-storage-rest-client";
+import { EntityStorageRestClient } from "@twin.org/entity-storage-rest-client";
 import type { IUserNftEntry } from "$models/IUserNftEntry";
 
-let userNftEntryClient: EntityStorageClient<IUserNftEntry> | undefined;
+let userNftEntryClient: EntityStorageRestClient<IUserNftEntry> | undefined;
 
 /**
  * Initialise the nfts.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	userNftEntryClient = new EntityStorageClient<IUserNftEntry>({
+	userNftEntryClient = new EntityStorageRestClient<IUserNftEntry>({
 		endpoint: apiUrl,
 		pathPrefix: "user-nft"
 	});
@@ -40,6 +40,7 @@ export async function nftEntryList(cursor?: string): Promise<
 				cursor
 			);
 			return {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				items: result.entities as IUserNftEntry[],
 				cursor: result.cursor
 			};

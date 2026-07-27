@@ -1,22 +1,27 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
+	AuditableItemGraphContexts,
+	AuditableItemGraphTypes,
 	VerifyDepth,
+	type IAuditableItemGraphAlias,
+	type IAuditableItemGraphEdge,
+	type IAuditableItemGraphResource,
 	type IAuditableItemGraphVertex,
 	type IAuditableItemGraphVertexList
 } from "@twin.org/auditable-item-graph-models";
-import { AuditableItemGraphClient } from "@twin.org/auditable-item-graph-rest-client";
+import { AuditableItemGraphRestClient } from "@twin.org/auditable-item-graph-rest-client";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 
-let auditableItemGraphClient: AuditableItemGraphClient | undefined;
+let auditableItemGraphClient: AuditableItemGraphRestClient | undefined;
 
 /**
  * Initialise the auditable item graphs.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	auditableItemGraphClient = new AuditableItemGraphClient({
+	auditableItemGraphClient = new AuditableItemGraphRestClient({
 		endpoint: apiUrl,
 		pathPrefix: "aig"
 	});
@@ -32,20 +37,9 @@ export async function init(apiUrl: string): Promise<void> {
  */
 export async function auditableItemGraphCreate(
 	annotationObject?: IJsonLdNodeObject,
-	aliases?: {
-		id: string;
-		aliasFormat?: string;
-		annotationObject?: IJsonLdNodeObject;
-	}[],
-	resources?: {
-		id?: string;
-		resourceObject?: IJsonLdNodeObject;
-	}[],
-	edges?: {
-		id: string;
-		edgeRelationships: string[];
-		annotationObject?: IJsonLdNodeObject;
-	}[]
+	aliases?: IAuditableItemGraphAlias[],
+	resources?: IAuditableItemGraphResource[],
+	edges?: IAuditableItemGraphEdge[]
 ): Promise<
 	| {
 			error?: string;
@@ -56,6 +50,8 @@ export async function auditableItemGraphCreate(
 	if (Is.object(auditableItemGraphClient)) {
 		try {
 			const id = await auditableItemGraphClient.create({
+				"@context": [AuditableItemGraphContexts.Context, AuditableItemGraphContexts.ContextCommon],
+				type: AuditableItemGraphTypes.Vertex,
 				annotationObject,
 				aliases,
 				resources,
@@ -84,20 +80,9 @@ export async function auditableItemGraphCreate(
 export async function auditableItemGraphUpdate(
 	id: string,
 	annotationObject?: IJsonLdNodeObject,
-	aliases?: {
-		id: string;
-		aliasFormat?: string;
-		annotationObject?: IJsonLdNodeObject;
-	}[],
-	resources?: {
-		id?: string;
-		resourceObject?: IJsonLdNodeObject;
-	}[],
-	edges?: {
-		id: string;
-		edgeRelationships: string[];
-		annotationObject?: IJsonLdNodeObject;
-	}[]
+	aliases?: IAuditableItemGraphAlias[],
+	resources?: IAuditableItemGraphResource[],
+	edges?: IAuditableItemGraphEdge[]
 ): Promise<
 	| {
 			error?: string;
@@ -106,7 +91,15 @@ export async function auditableItemGraphUpdate(
 > {
 	if (Is.object(auditableItemGraphClient)) {
 		try {
-			await auditableItemGraphClient.update({ id, annotationObject, aliases, resources, edges });
+			await auditableItemGraphClient.update({
+				"@context": [AuditableItemGraphContexts.Context, AuditableItemGraphContexts.ContextCommon],
+				type: AuditableItemGraphTypes.Vertex,
+				id,
+				annotationObject,
+				aliases,
+				resources,
+				edges
+			});
 		} catch (err) {
 			return {
 				error: ErrorHelper.formatErrors(err).join("\n")
@@ -139,8 +132,8 @@ export async function auditableItemGraphList(cursor?: string): Promise<
 				cursor
 			);
 			return {
-				items: result,
-				cursor: result.nextItem
+				items: result.entries,
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {
@@ -173,7 +166,6 @@ export async function auditableItemGraphGet(
 				extraData
 					? {
 							includeDeleted: true,
-							includeChangesets: true,
 							verifySignatureDepth: VerifyDepth.All
 						}
 					: undefined
@@ -204,7 +196,7 @@ export async function auditableItemGraphListForEdges(): Promise<
 		try {
 			const result = await auditableItemGraphClient.query();
 			return {
-				items: result.itemListElement
+				items: result.entries.itemListElement
 			};
 		} catch (err) {
 			return {

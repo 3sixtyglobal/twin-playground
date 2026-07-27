@@ -7,9 +7,13 @@
 	import Point from '$components/graph/Point.svelte';
 	import XAxis from '$components/graph/XAxis.svelte';
 
-	export let stats: { ts: string | number | Date; value: number }[];
+	interface Props {
+		stats: { ts: string | number | Date; value: number }[];
+	}
 
-	let hoveredPoint: { ts: string | number | Date; value: number } | null = null;
+	let { stats }: Props = $props();
+
+	let hoveredPoint: { ts: string | number | Date; value: number } | null = $state(null);
 
 	const margin = {
 		top: 50,
@@ -18,14 +22,14 @@
 		left: 90
 	};
 
-	let width = 200;
-	$: height = 0.5 * width;
+	let width = $state(200);
+	let height = $derived(0.5 * width);
 
-	$: innerWidth = width - margin.left - margin.right;
-	$: innerHeight = height - margin.top - margin.bottom;
+	let innerWidth = $derived(width - margin.left - margin.right);
+	let innerHeight = $derived(height - margin.top - margin.bottom);
 
 	function xAccessor(d: { ts: string | number | Date }): number {
-		return new Date(d.ts).getTime();
+		return new Date(Number(d.ts)).getTime();
 	}
 
 	function yAccessor(d: { value: number }): number {
@@ -35,18 +39,23 @@
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const bisectX = d3.bisector(xAccessor).left;
 
-	$: xScale = d3
-		.scaleLinear()
-		.domain(d3.extent(stats, xAccessor) as [number, number])
-		.range([0, innerWidth]);
+	let xTimestamps = $derived(stats.map(d => Number(d.ts)));
+	let xTsMin = $derived(d3.min(xTimestamps) ?? Date.now());
+	let xTsMax = $derived(d3.max(xTimestamps) ?? Date.now());
+	let xDomainStart = $derived(xTsMin === xTsMax ? new Date(xTsMin - 60_000) : new Date(xTsMin));
+	let xDomainEnd = $derived(xTsMin === xTsMax ? new Date(xTsMax + 60_000) : new Date(xTsMax));
 
-	$: yScale = d3
-		.scaleLinear()
-		.domain(d3.extent(stats, yAccessor) as [number, number])
-		.range([innerHeight, 0])
-		.nice();
+	let xScale = $derived(d3.scaleTime().domain([xDomainStart, xDomainEnd]).range([0, innerWidth]));
 
-	$: xAccessorScaled = (d: { ts: string | number | Date }) => xScale(xAccessor(d));
+	let yScale = $derived(
+		d3
+			.scaleLinear()
+			.domain(d3.extent(stats, yAccessor) as [number, number])
+			.range([innerHeight, 0])
+			.nice()
+	);
+
+	let xAccessorScaled = (d: { ts: string | number | Date }): number => xScale(xAccessor(d));
 
 	function yAccessorScaled(d: { value: number }): number {
 		return yScale(yAccessor(d));
@@ -69,8 +78,8 @@
 		aria-label="line chart showing the variation of the provided statistics over time"
 		{width}
 		{height}
-		on:mousemove={handleMouseMove}
-		on:mouseleave={handleMouseLeave}
+		onmousemove={handleMouseMove}
+		onmouseleave={handleMouseLeave}
 	>
 		<g transform={`translate(${margin.left}, ${margin.top})`}>
 			<XAxis {xScale} {innerHeight} label="Ts" />
@@ -80,7 +89,7 @@
 				<Crosshair
 					xAccessorScaled={xAccessorScaled(hoveredPoint)}
 					yAccessorScaled={yAccessorScaled(hoveredPoint)}
-					xLabel={xAccessor(hoveredPoint)}
+					xLabel={new Date(xAccessor(hoveredPoint)).toLocaleTimeString()}
 					yLabel={yAccessor(hoveredPoint)}
 					{innerHeight}
 				/>

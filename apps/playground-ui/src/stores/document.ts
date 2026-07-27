@@ -3,18 +3,18 @@
 import type { IAuditableItemGraphVertexList } from "@twin.org/auditable-item-graph-models";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
-import type { IDocument, IDocumentList } from "@twin.org/document-management-models";
-import { DocumentManagementClient } from "@twin.org/document-management-rest-client";
-import type { UneceDocumentCodes } from "@twin.org/standards-unece";
+import type { IDocumentHydrated, IDocumentList } from "@twin.org/document-management-models";
+import { DocumentManagementRestClient } from "@twin.org/document-management-rest-client";
+import type { UneceDocumentCodeList } from "@twin.org/standards-unece";
 
-let documentClient: DocumentManagementClient | undefined;
+let documentClient: DocumentManagementRestClient | undefined;
 
 /**
  * Initialise the document management.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	documentClient = new DocumentManagementClient({
+	documentClient = new DocumentManagementRestClient({
 		endpoint: apiUrl,
 		pathPrefix: "documents"
 	});
@@ -37,11 +37,11 @@ export async function init(apiUrl: string): Promise<void> {
 export async function documentCreate(
 	documentId: string,
 	documentIdFormat: string | undefined,
-	documentCode: UneceDocumentCodes,
+	documentCode: UneceDocumentCodeList,
 	blob: Uint8Array,
 	annotationObject?: IJsonLdNodeObject,
 	auditableItemGraphEdges?: {
-		id: string;
+		targetId: string;
 		addAlias?: boolean;
 		aliasAnnotationObject?: IJsonLdNodeObject;
 	}[],
@@ -54,11 +54,13 @@ export async function documentCreate(
 	if (Is.object(documentClient)) {
 		try {
 			const id = await documentClient.create(
-				documentId,
-				documentIdFormat,
-				documentCode,
+				{
+					documentId,
+					documentIdFormat,
+					documentCode,
+					annotationObject
+				},
 				blob,
-				annotationObject,
 				auditableItemGraphEdges,
 				options
 			);
@@ -84,19 +86,17 @@ export async function documentUpdate(
 	blob?: Uint8Array,
 	annotationObject?: IJsonLdNodeObject,
 	auditableItemGraphEdges?: {
-		id: string;
+		id?: string;
+		targetId: string;
 		addAlias?: boolean;
 		aliasAnnotationObject?: IJsonLdNodeObject;
 	}[]
 ): Promise<{ error?: string; id?: string } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
-			await documentClient.update(
-				auditableItemGraphDocumentId,
-				blob,
-				annotationObject,
-				auditableItemGraphEdges
-			);
+			await documentClient.updatePartial(auditableItemGraphDocumentId, { annotationObject }, blob, {
+				add: auditableItemGraphEdges
+			});
 			return { id: auditableItemGraphDocumentId };
 		} catch (err) {
 			return {
@@ -115,7 +115,7 @@ export async function documentUpdate(
  * @param options.includeAttestation Flag to include the attestation information for the document.
  * @param options.includeRemoved Flag to include deleted documents.
  * @param cursor The cursor to get the next chunk of revisions.
- * @param pageSize Page size of items to return.
+ * @param limit Limit the number of items to return.
  * @returns The document list and its properties or an error if one occurred.
  */
 export async function documentGet(
@@ -127,17 +127,12 @@ export async function documentGet(
 		includeRemoved?: boolean;
 	},
 	cursor?: string,
-	pageSize?: number
+	limit?: number
 ): Promise<{ error?: string; item?: IDocumentList } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
-			const result = await documentClient.get(
-				auditableItemGraphDocumentId,
-				options,
-				cursor,
-				pageSize
-			);
-			return { item: result };
+			const result = await documentClient.get(auditableItemGraphDocumentId, options, cursor, limit);
+			return { item: result.entries };
 		} catch (err) {
 			return {
 				error: ErrorHelper.formatErrors(err).join("\n")
@@ -172,18 +167,18 @@ export async function documentRemoveRevision(
  * Query for documents with a specific id.
  * @param documentId The document id to find in the graph.
  * @param cursor The cursor to get the next chunk of documents.
- * @param pageSize The page size to get the next chunk of documents.
+ * @param limit The limit to get the next chunk of documents.
  * @returns The graph vertices list or an error if one occurred.
  */
 export async function documentQuery(
 	documentId: string,
 	cursor?: string,
-	pageSize?: number
-): Promise<{ error?: string; item?: IAuditableItemGraphVertexList } | undefined> {
+	limit?: number
+): Promise<{ error?: string; item?: IAuditableItemGraphVertexList; cursor?: string } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
-			const result = await documentClient.query(documentId, cursor, pageSize);
-			return { item: result };
+			const result = await documentClient.query(documentId, cursor, limit);
+			return { item: result.entries, cursor: result.cursor };
 		} catch (err) {
 			return {
 				error: ErrorHelper.formatErrors(err).join("\n")
@@ -214,7 +209,7 @@ export async function documentRevisionGet(
 		includeRemoved?: boolean;
 		extractRuleGroupId?: string;
 	}
-): Promise<{ error?: string; item?: IDocument } | undefined> {
+): Promise<{ error?: string; item?: IDocumentHydrated } | undefined> {
 	if (Is.object(documentClient)) {
 		try {
 			const result = await documentClient.getRevision(documentId, revisionNumber, options);

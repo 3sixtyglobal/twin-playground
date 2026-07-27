@@ -1,17 +1,19 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { EntityStorageClient } from "@twin.org/entity-storage-rest-client";
+import { EntityStorageRestClient } from "@twin.org/entity-storage-rest-client";
 import type { IUserVerifiableStorageEntry } from "$models/IUserVerifiableStorageEntry";
 
-let userVerifiableStorageEntryClient: EntityStorageClient<IUserVerifiableStorageEntry> | undefined;
+let userVerifiableStorageEntryClient:
+	| EntityStorageRestClient<IUserVerifiableStorageEntry>
+	| undefined;
 
 /**
  * Initialise the verifiable storage.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	userVerifiableStorageEntryClient = new EntityStorageClient<IUserVerifiableStorageEntry>({
+	userVerifiableStorageEntryClient = new EntityStorageRestClient<IUserVerifiableStorageEntry>({
 		endpoint: apiUrl,
 		pathPrefix: "user-verifiable-storage"
 	});
@@ -40,6 +42,7 @@ export async function verifiableStorageEntryList(cursor?: string): Promise<
 				cursor
 			);
 			return {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				items: result.entities as IUserVerifiableStorageEntry[],
 				cursor: result.cursor
 			};

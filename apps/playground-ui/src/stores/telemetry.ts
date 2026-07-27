@@ -6,16 +6,16 @@ import type {
 	ITelemetryMetricValue,
 	MetricType
 } from "@twin.org/telemetry-models";
-import { TelemetryClient } from "@twin.org/telemetry-rest-client";
+import { TelemetryRestClient } from "@twin.org/telemetry-rest-client";
 
-let telemetryClient: TelemetryClient | undefined;
+let telemetryClient: TelemetryRestClient | undefined;
 
 /**
  * Initialise the telemetry.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	telemetryClient = new TelemetryClient({
+	telemetryClient = new TelemetryRestClient({
 		endpoint: apiUrl
 	});
 }
@@ -46,13 +46,13 @@ export async function createMetric(metric: ITelemetryMetric): Promise<
  * Query telemetry data.
  * @param type The type of the metric.
  * @param cursor The current cursor.
- * @param pageSize The page size.
+ * @param limit Limit the number of items to return.
  * @returns An array with the entities found and the current cursor.
  */
 export async function telemetryQuery(
 	type?: MetricType,
 	cursor?: string,
-	pageSize?: number
+	limit?: number
 ): Promise<
 	| {
 			error?: string;
@@ -63,7 +63,7 @@ export async function telemetryQuery(
 > {
 	if (Is.object(telemetryClient)) {
 		try {
-			const result = await telemetryClient.query(type, cursor, pageSize);
+			const result = await telemetryClient.query(type, cursor, limit);
 			return result;
 		} catch (err) {
 			return {
@@ -174,7 +174,7 @@ export async function addValueToMetric(
 /**
  * Get the data from verifiable storage.
  * @param id The if of the immutable data to get.
- * @param pageSize The page size.
+ * @param limit Limit the number of items to return.
  * @param timeStart The start time.
  * @param timeEnd The end time.
  * @param cursor The current cursor.
@@ -182,7 +182,7 @@ export async function addValueToMetric(
  */
 export async function metricValuesQuery(
 	id: string,
-	pageSize?: number,
+	limit?: number,
 	timeStart?: number,
 	timeEnd?: number,
 	cursor?: string
@@ -197,7 +197,7 @@ export async function metricValuesQuery(
 > {
 	if (Is.object(telemetryClient)) {
 		try {
-			const result = await telemetryClient.queryValues(id, timeStart, timeEnd, cursor, pageSize);
+			const result = await telemetryClient.queryValues(id, timeStart, timeEnd, cursor, limit);
 			return result;
 		} catch (err) {
 			return {

@@ -1,4 +1,4 @@
-# @twin.org/playground-node - Deployment Docker
+# Deployment Docker
 
 ## Docker Building
 

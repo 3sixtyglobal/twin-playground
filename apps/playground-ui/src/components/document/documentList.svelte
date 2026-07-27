@@ -30,15 +30,15 @@
 
 	const cursorHandler = new CursorStackHandler();
 
-	let items: IUserDocumentEntry[] | undefined;
-	let busy = false;
-	let status = '';
-	let isError = false;
-	let searchDocumentId = '';
-	let isSearchMode = false;
+	let items: IUserDocumentEntry[] | undefined = $state();
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
+	let searchDocumentId = $state('');
+	let isSearchMode = $state(false);
 
-	$: canGoBackwards = cursorHandler.canGoBackwards();
-	$: canGoForwards = cursorHandler.canGoForwards();
+	let canGoBackwards = $derived(cursorHandler.canGoBackwards());
+	let canGoForwards = $derived(cursorHandler.canGoForwards());
 
 	async function loadData(): Promise<void> {
 		status = $i18n('pages.document.loading');
@@ -67,7 +67,7 @@
 						};
 					});
 
-					cursorHandler.updateCursor(result.item.nextItem);
+					cursorHandler.updateCursor(result.cursor);
 					canGoBackwards = cursorHandler.canGoBackwards();
 					canGoForwards = cursorHandler.canGoForwards();
 
@@ -155,11 +155,11 @@
 				/>
 			</Label>
 			<div class="flex flex-row gap-2">
-				<Button on:click={search} disabled={busy || !searchDocumentId.trim()}>
+				<Button onclick={search} disabled={busy || !searchDocumentId.trim()}>
 					{$i18n('common.labels.search')}
 				</Button>
 				{#if isSearchMode}
-					<Button on:click={clearSearch} disabled={busy}>
+					<Button onclick={clearSearch} disabled={busy}>
 						{$i18n('common.labels.clear')}
 					</Button>
 				{/if}
@@ -172,7 +172,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<Button on:click={() => goto('/secure/document/create')} disabled={busy}
+		<Button onclick={() => goto('/secure/document/create')} disabled={busy}
 			>{$i18n('pages.document.createItem')}</Button
 		>
 	</div>
@@ -201,17 +201,17 @@
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/document/${item.id}?edit=true`)}
+								onclick={() => goto(`/secure/document/${item.id}?edit=true`)}
 								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/document/${item.id}/view`)}><Icons.EyeSolid /></Button
+								onclick={() => goto(`/secure/document/${item.id}/view`)}><Icons.EyeSolid /></Button
 							><Button
 								size="xs"
 								color="plain"
-								on:click={() => goto(`/secure/document/${item.id}/extract`)}
+								onclick={() => goto(`/secure/document/${item.id}/extract`)}
 								><Icons.ArrowRightAltOutline /></Button
 							>
 						</TableBodyCell>

@@ -17,23 +17,25 @@ permissions:
 
 env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PLAYGROUND }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  TWIN_VERCEL_ORG_ID: ${{ secrets.TWIN_VERCEL_ORG_ID }}
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
+      group: ${{ github.event.repository.private && 'twin' || 'default' }}
 
     # Only allow main branch to deploy to production and next branch to deploy to development
     # if: (github.ref == 'refs/heads/main' && github.event.inputs.environment == 'prod') || (github.ref == 'refs/heads/next' && github.event.inputs.environment == 'dev')
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install Vercel CLI
         run: npm install -g vercel
@@ -43,8 +45,8 @@ jobs:
         id: deploy
         run: |
           DEPLOYMENT_URL=$(vercel deploy \
-          --token=${{ secrets.VERCEL_TOKEN }} \
-          --scope=${{ secrets.VERCEL_SCOPE }} \
+          --token=${{ secrets.TWIN_VERCEL_TOKEN }} \
+          --scope=${{ secrets.TWIN_VERCEL_SCOPE }} \
           --target=${{ github.event.inputs.environment == 'prod' && 'production' || 'dev' }} \
           --force \
           --cwd=apps/playground-ui)
@@ -56,5 +58,5 @@ jobs:
           vercel alias set \
           ${{ steps.deploy.outputs.deployment-url }} \
           ${{ github.event.inputs.environment == 'prod' && secrets.DOMAIN_PLAYGROUND_PROD || secrets.DOMAIN_PLAYGROUND_DEV }} \
-          --token=${{ secrets.VERCEL_TOKEN }} \
-          --scope=${{ secrets.VERCEL_SCOPE }}
+          --token=${{ secrets.TWIN_VERCEL_TOKEN }} \
+          --scope=${{ secrets.TWIN_VERCEL_SCOPE }}

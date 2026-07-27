@@ -1,11 +1,6 @@
-<script>
-	export let xAccessorScaled;
-	export let yAccessorScaled;
-	export let xLabel;
-	export let yLabel;
-	export let innerHeight;
-
+<script lang="ts">
 	import * as d3 from 'd3';
+	let { xAccessorScaled, yAccessorScaled, xLabel, yLabel, innerHeight } = $props();
 
 	const formatYLabel = d3.format(',.0f');
 </script>

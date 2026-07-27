@@ -22,13 +22,17 @@
 	import { identityResolve } from '$stores/identityResolver';
 	import { createExplorerIdentityUrl } from '$stores/iota';
 
-	export let itemId: string;
-	let error: string;
-	let didDocument: IDidDocument | undefined;
-	let busy = true;
-	let exploreUrl: string | undefined;
-	let displayName: string | undefined;
-	let schema: string | undefined;
+	interface Props {
+		itemId: string;
+	}
+
+	let { itemId }: Props = $props();
+	let error: string | undefined = $state();
+	let didDocument: IDidDocument | undefined = $state();
+	let busy = $state(true);
+	let exploreUrl: string | undefined = $state();
+	let displayName: string | undefined = $state();
+	let schema: string | undefined = $state();
 
 	const urn = Urn.fromValidString(itemId);
 	if (urn.namespaceMethod() === 'iota') {
@@ -91,7 +95,7 @@
 				{/if}
 				{#if Is.stringValue(exploreUrl)}
 					<Label>
-						<Button size="xs" on:click={openExplorer} color="plain" class="max-w-32 gap-2"
+						<Button size="xs" onclick={openExplorer} color="plain" class="max-w-32 gap-2"
 							>{$i18n('pages.identityPublic.explore')}<Icons.LinkOutline size="sm" /></Button
 						>
 					</Label>

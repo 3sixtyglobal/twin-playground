@@ -1,9 +1,10 @@
 <script lang="ts">
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
-	import type {
-		IAuditableItemGraphEdge,
-		IAuditableItemGraphVertex
+	import {
+		AuditableItemGraphTypes,
+		type IAuditableItemGraphEdge,
+		type IAuditableItemGraphVertex
 	} from '@twin.org/auditable-item-graph-models';
 	import type { IValidationFailure } from '@twin.org/core';
 	import { Coerce, Is, Validation } from '@twin.org/core';
@@ -31,23 +32,28 @@
 	import { onMount } from 'svelte';
 	import { auditableItemGraphListForEdges } from '$stores/auditableItemGraphs';
 
-	export let itemId: string;
-	export let items: Omit<IAuditableItemGraphEdge, '@context' | 'type'>[];
-	export let busy: boolean;
-	let showModal = false;
+	interface Props {
+		itemId: string;
+		items: Omit<IAuditableItemGraphEdge, '@context'>[];
+		busy: boolean;
+	}
+
+	let { itemId, items = $bindable(), busy }: Props = $props();
+	let showModal = $state(false);
 	let progress: string | undefined;
-	let selectedItem: Omit<IAuditableItemGraphEdge, '@context' | 'type'> | undefined;
+	let selectedItem: Omit<IAuditableItemGraphEdge, '@context'> | undefined = $state();
 	let edgeId: string | undefined;
-	let edgeRelationships: string | undefined;
+	let edgeTargetId: string | undefined = $state();
+	let edgeRelationships: string | undefined = $state();
 	let validationErrors: {
 		[field in 'edgeId' | 'edgeRelationships' | 'annotationObject']?:
 			| IValidationFailure[]
 			| undefined;
-	} = {};
+	} = $state({});
 
-	let selectedAnnotationObjectType = '';
-	let annotationObjectText = '';
-	let availableVertices: IAuditableItemGraphVertex[] = [];
+	let selectedAnnotationObjectType = $state('');
+	let annotationObjectText = $state('');
+	let availableVertices: IAuditableItemGraphVertex[] = $state([]);
 
 	const examples: {
 		edgeRelationships: string;
@@ -73,10 +79,10 @@
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.stringValue(
-			'edgeId',
-			edgeId,
+			'edgeTargetId',
+			edgeTargetId,
 			validationFailures,
-			$i18n('pages.auditableItemGraphEdgeList.edgeId')
+			$i18n('pages.auditableItemGraphEdgeList.edgeTargetId')
 		);
 
 		Validation.stringValue(
@@ -101,7 +107,7 @@
 		items = items.slice();
 	}
 
-	$: {
+	$effect(() => {
 		const example = examples.find(
 			ex => ex.annotationObject['@type'] === selectedAnnotationObjectType
 		);
@@ -109,7 +115,7 @@
 			annotationObjectText = JSON.stringify(example.annotationObject, null, 2);
 			edgeRelationships = example.edgeRelationships;
 		}
-	}
+	});
 
 	async function openModal(index: number = -1): Promise<void> {
 		showModal = true;
@@ -117,11 +123,13 @@
 		if (index >= 0) {
 			selectedItem = items[index];
 			edgeId = selectedItem.id;
+			edgeTargetId = selectedItem.targetId;
 			edgeRelationships = selectedItem.edgeRelationships.join(',');
 			annotationObjectText = JSON.stringify(selectedItem.annotationObject, null, 2);
 		} else {
 			selectedItem = undefined;
 			edgeId = undefined;
+			edgeTargetId = undefined;
 			edgeRelationships = undefined;
 			annotationObjectText = '';
 		}
@@ -131,11 +139,14 @@
 		showModal = false;
 		if (Is.object(selectedItem)) {
 			selectedItem.id = edgeId ?? selectedItem.id;
+			selectedItem.targetId = edgeTargetId ?? selectedItem.targetId;
 			selectedItem.edgeRelationships = edgeRelationships?.split(',') ?? [];
 			selectedItem.annotationObject = Coerce.object(annotationObjectText);
-		} else if (Is.stringValue(edgeId)) {
+		} else if (Is.stringValue(edgeTargetId)) {
 			items.push({
+				type: AuditableItemGraphTypes.Edge,
 				id: edgeId,
+				targetId: edgeTargetId,
 				edgeRelationships: edgeRelationships?.split(',') ?? [],
 				annotationObject: Coerce.object(annotationObjectText)
 			});
@@ -175,7 +186,7 @@
 
 <div class="flex flex-row justify-between gap-5">
 	<Heading tag="h5">{$i18n('pages.auditableItemGraphEdgeList.title')}</Heading>
-	<Button on:click={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
+	<Button onclick={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
 		<Icons.PlusOutline class="mr-2" />
 		{$i18n('pages.auditableItemGraphEdgeList.addItem')}
 	</Button>
@@ -198,16 +209,13 @@
 					<TableBodyCell>{item.annotationObject?.['@type'] ?? ''}</TableBodyCell>
 					<TableBodyCell
 						><div class="flex gap-2">
-							<Button
-								size="xs"
-								color="plain"
-								on:click={async () => openModal(index)}
-								disabled={busy}><Icons.EditOutline /></Button
+							<Button size="xs" color="plain" onclick={async () => openModal(index)} disabled={busy}
+								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
-								on:click={async () => removeItem(index)}
+								onclick={async () => removeItem(index)}
 								disabled={busy}><Icons.TrashBinOutline /></Button
 							>
 						</div></TableBodyCell
@@ -244,7 +252,7 @@
 				<Select
 					name="edgeId"
 					color={Is.arrayValue(validationErrors.edgeId) ? 'error' : 'default'}
-					bind:value={edgeId}
+					bind:value={edgeTargetId}
 					disabled={busy}
 				>
 					{#each availableVertices as itemOption}

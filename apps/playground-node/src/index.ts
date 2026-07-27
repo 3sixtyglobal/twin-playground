@@ -1,9 +1,10 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import path from "node:path";
+import { ContextIdHelper, ContextIdKeys } from "@twin.org/context";
 import { Is } from "@twin.org/core";
 import { EngineConfigHelper } from "@twin.org/engine";
-import type { IEngineConfig } from "@twin.org/engine-types";
+import type { IEngineCore } from "@twin.org/engine-models";
 import { EntitySchemaHelper } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
 import { run } from "@twin.org/node-core";
@@ -13,20 +14,32 @@ import { UserImmutableProofEntry } from "./entities/userImmutableProofEntry.js";
 import { UserNftEntry } from "./entities/userNftEntry.js";
 import { UserVerifiableStorageEntry } from "./entities/userVerifiableStorageEntry.js";
 
-await run({
-	serverName: "Playground Node",
-	serverVersion: "0.0.1", // x-release-please-version
-	envPrefix: "PLAYGROUND_",
-	localesDirectory: path.resolve("dist/locales"),
-	openApiSpecFile: path.resolve("docs/open-api/spec.json"),
-	extendConfig
-});
+await run(
+	{
+		serverName: "Playground Node",
+		serverVersion: "0.0.3-next.1-0", // x-release-please-version
+		envPrefix: "PLAYGROUND_",
+		localesDirectory: path.resolve("dist/locales"),
+		openApiSpecFile: path.resolve("docs/open-api/spec.json"),
+		favIconFile: path.resolve("static/favicon.ico"),
+		extendEngine
+	},
+	process.argv
+);
 
 /**
  * Extends the engine config with types specific to playground.
- * @param engineConfig The engine configuration.
+ * @param engineCore The engine core.
  */
-export async function extendConfig(engineConfig: IEngineConfig): Promise<void> {
+export async function extendEngine(engineCore: IEngineCore): Promise<void> {
+	const partitionContextIds = ContextIdHelper.pickKeysFromAvailable(engineCore.getContextIdKeys(), [
+		ContextIdKeys.Node,
+		ContextIdKeys.Tenant,
+		ContextIdKeys.User
+	]);
+
+	const engineConfig = engineCore.getConfig();
+
 	// Add a custom entity storage type for the users attestations,
 	// but only if the attestation connectors are available.
 	if (Is.arrayValue(engineConfig.types.attestationConnector)) {
@@ -34,7 +47,8 @@ export async function extendConfig(engineConfig: IEngineConfig): Promise<void> {
 			engineConfig,
 			nameof<UserAttestationEntry>(),
 			EntitySchemaHelper.getSchema(UserAttestationEntry),
-			"user-attestation"
+			"user-attestation",
+			partitionContextIds
 		);
 	}
 
@@ -45,7 +59,8 @@ export async function extendConfig(engineConfig: IEngineConfig): Promise<void> {
 			engineConfig,
 			nameof<UserNftEntry>(),
 			EntitySchemaHelper.getSchema(UserNftEntry),
-			"user-nft"
+			"user-nft",
+			partitionContextIds
 		);
 	}
 
@@ -56,7 +71,8 @@ export async function extendConfig(engineConfig: IEngineConfig): Promise<void> {
 			engineConfig,
 			nameof<UserVerifiableStorageEntry>(),
 			EntitySchemaHelper.getSchema(UserVerifiableStorageEntry),
-			"user-verifiable-storage"
+			"user-verifiable-storage",
+			partitionContextIds
 		);
 	}
 
@@ -66,7 +82,8 @@ export async function extendConfig(engineConfig: IEngineConfig): Promise<void> {
 			engineConfig,
 			nameof<UserImmutableProofEntry>(),
 			EntitySchemaHelper.getSchema(UserImmutableProofEntry),
-			"user-immutable-proof"
+			"user-immutable-proof",
+			partitionContextIds
 		);
 	}
 
@@ -76,7 +93,8 @@ export async function extendConfig(engineConfig: IEngineConfig): Promise<void> {
 			engineConfig,
 			nameof<UserDocumentEntry>(),
 			EntitySchemaHelper.getSchema(UserDocumentEntry),
-			"user-document"
+			"user-document",
+			partitionContextIds
 		);
 	}
 }

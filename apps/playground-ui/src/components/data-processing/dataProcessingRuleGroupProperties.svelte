@@ -20,19 +20,23 @@
 	import { onMount } from 'svelte';
 	import { ruleGroupGet, ruleGroupSet } from '$stores/dataProcessing';
 
-	export let returnUrl: string;
-	export let itemId: string | undefined = undefined;
-	let id = '';
-	let label = '';
+	interface Props {
+		returnUrl: string;
+		itemId?: string | undefined;
+	}
+
+	let { returnUrl, itemId = $bindable(undefined) }: Props = $props();
+	let id = $state('');
+	let label = $state('');
 	let rules: IRule[] = [];
 	const isUpdate = Is.stringValue(itemId);
 	let validationErrors: {
 		[field in 'id' | 'label']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let saved = false;
-	let error = '';
-	let progress: string | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let saved = $state(false);
+	let error = $state('');
+	let progress: string | undefined = $state();
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.notEmpty(
@@ -155,7 +159,7 @@
 					<Span>{itemId}</Span>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

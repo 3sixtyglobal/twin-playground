@@ -18,11 +18,15 @@
 	import { onMount } from 'svelte';
 	import { auditableItemGraphGet } from '$stores/auditableItemGraphs';
 
-	export let itemId: string;
-	export let returnUrl: string;
-	let busy = false;
-	let error: string | undefined = undefined;
-	let changesets: IAuditableItemGraphChangeset[] = [];
+	interface Props {
+		itemId: string;
+		returnUrl: string;
+	}
+
+	let { itemId, returnUrl }: Props = $props();
+	let busy = $state(false);
+	let error: string | undefined = $state(undefined);
+	let changesets: IAuditableItemGraphChangeset[] = $state([]);
 
 	async function navigateToImmutableProof(proofId: string): Promise<void> {
 		const proofIdParts = proofId.split(':');
@@ -39,7 +43,8 @@
 		if (Is.stringValue(result?.error)) {
 			error = result.error;
 		} else if (Is.objectValue(result?.item)) {
-			changesets = result.item.changesets ?? [];
+			// TODO: Needs updating to use the new changesets endpoint
+			// changesets = result.item.changesets ?? [];
 		}
 
 		busy = false;
@@ -91,7 +96,7 @@
 						<div>
 							<Button
 								size="sm"
-								on:click={async () => navigateToImmutableProof(changeset.proofId ?? '')}
+								onclick={async () => navigateToImmutableProof(changeset.proofId ?? '')}
 							>
 								{$i18n('pages.auditableItemGraphChangesets.viewProof')}
 							</Button>
@@ -108,6 +113,6 @@
 		{$i18n('pages.auditableItemGraphChangesets.noItems')}
 	{/if}
 	<div class="flex flex-row justify-start gap-5">
-		<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+		<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 	</div>
 </section>

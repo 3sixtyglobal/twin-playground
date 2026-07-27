@@ -2,8 +2,8 @@
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
 	import { Converter, Is, Coerce, Urn } from '@twin.org/core';
-	import type { IDocument } from '@twin.org/document-management-models';
-	import { UneceDocumentCodes } from '@twin.org/standards-unece';
+	import type { IDocument, IDocumentHydrated } from '@twin.org/document-management-models';
+	import { UneceDocumentCodeList } from '@twin.org/standards-unece';
 	import {
 		Button,
 		Card,
@@ -30,36 +30,40 @@
 	import { documentGet, documentRevisionGet, documentRemoveRevision } from '$stores/document';
 	import { attestationIdToNftId, createExplorerNftUrl } from '$stores/iota';
 
-	export let itemId: string | undefined = undefined;
-	let documentData: IDocument | undefined;
-	let documentId: string | undefined;
-	let documentIdFormat: string | undefined;
-	let documentCode: string | undefined;
-	let error: string;
-	let busy = true;
-	let documentList: IDocument[] = [];
-	let showDocumentModal = false;
-	let selectedDocument: IDocument | undefined;
-	let documentModalLoading = false;
+	interface Props {
+		itemId?: string | undefined;
+	}
 
-	let showDeleteConfirmModal = false;
-	let deleteModalIsBusy = false;
+	let { itemId = undefined }: Props = $props();
+	let documentData: IDocument | undefined;
+	let documentId: string | undefined = $state();
+	let documentIdFormat: string | undefined = $state();
+	let documentCode: string | undefined = $state();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let documentList: IDocument[] = $state([]);
+	let showDocumentModal = $state(false);
+	let selectedDocument: IDocumentHydrated | undefined = $state();
+	let documentModalLoading = $state(false);
+
+	let showDeleteConfirmModal = $state(false);
+	let deleteModalIsBusy = $state(false);
 	let documentRevisionToDelete: number | undefined;
 
-	let hasDeletedDocuments = false;
-	let showDeletedDocuments = false;
-	let filteredDocumentList: IDocument[] = [];
-	let exploreUrl: string | undefined;
+	let hasDeletedDocuments = $state(false);
+	let showDeletedDocuments = $state(false);
+	let filteredDocumentList: IDocument[] = $state([]);
+	let exploreUrl: string | undefined = $state();
 
 	const documentTypes = [
-		{ value: UneceDocumentCodes.BillOfLading, label: 'BillOfLading' },
-		{ value: UneceDocumentCodes.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
-		{ value: UneceDocumentCodes.ExportLicence, label: 'ExportLicence' },
-		{ value: UneceDocumentCodes.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
-		{ value: UneceDocumentCodes.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
+		{ value: UneceDocumentCodeList.BillOfLading, label: 'BillOfLading' },
+		{ value: UneceDocumentCodeList.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
+		{ value: UneceDocumentCodeList.ExportLicence, label: 'ExportLicence' },
+		{ value: UneceDocumentCodeList.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
+		{ value: UneceDocumentCodeList.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
 	];
 
-	async function loadData(cursor?: string): Promise<void> {
+	async function loadData(cursor: string | undefined = undefined): Promise<void> {
 		if (!itemId) {
 			return;
 		}
@@ -141,7 +145,7 @@
 		window.open(exploreUrl, '_blank');
 	}
 
-	async function viewDocumentDetails(document: IDocument): Promise<void> {
+	async function viewDocumentDetails(document: IDocumentHydrated): Promise<void> {
 		selectedDocument = document;
 		showDocumentModal = true;
 		documentModalLoading = true;
@@ -176,15 +180,18 @@
 		}
 	}
 
-	function downloadSelectedDocument(document?: IDocument): void {
+	function downloadSelectedDocument(document: IDocumentHydrated | undefined = undefined): void {
 		if (!document?.blobStorageEntry?.blob) {
 			return;
 		}
 
 		const a = globalThis.document.createElement('a');
-		const blob = new Blob([Converter.base64ToBytes(document.blobStorageEntry.blob)], {
-			type: document.blobStorageEntry.encodingFormat ?? 'application/octet-stream'
-		});
+		const blob = new Blob(
+			[new Uint8Array(Converter.base64ToBytes(document.blobStorageEntry.blob))],
+			{
+				type: document.blobStorageEntry.encodingFormat ?? 'application/octet-stream'
+			}
+		);
 		const url = URL.createObjectURL(blob);
 		a.href = url;
 		const encodingFormat = document.blobStorageEntry.encodingFormat ?? '';
@@ -194,7 +201,7 @@
 		URL.revokeObjectURL(url);
 	}
 
-	async function removePrompt(revision?: number): Promise<void> {
+	async function removePrompt(revision: number | undefined = undefined): Promise<void> {
 		if (!revision) {
 			return;
 		}
@@ -280,8 +287,8 @@
 								class="relative inline-block h-6 w-12 cursor-pointer rounded-full transition-colors duration-200 ease-in-out {showDeletedDocuments
 									? 'bg-brand-primary-dark'
 									: 'bg-neutral-700'}"
-								on:click={toggleDeletedDocuments}
-								on:keydown={e => {
+								onclick={toggleDeletedDocuments}
+								onkeydown={e => {
 									if (e.key === 'Enter' || e.key === ' ') {
 										toggleDeletedDocuments();
 									}
@@ -324,7 +331,7 @@
 									<Button
 										size="xs"
 										color="plain"
-										on:click={async () => viewDocumentDetails(document)}
+										onclick={async () => viewDocumentDetails(document)}
 									>
 										<Icons.EyeOutline />
 									</Button>
@@ -332,7 +339,7 @@
 										<Button
 											size="xs"
 											color="plain"
-											on:click={async () => {
+											onclick={async () => {
 												await removePrompt(document.documentRevision);
 											}}
 										>
@@ -396,11 +403,11 @@
 						</Label>
 					{/if}
 					<div class="flex flex-row gap-2">
-						<Button size="xs" on:click={() => downloadSelectedDocument(selectedDocument)}>
+						<Button size="xs" onclick={() => downloadSelectedDocument(selectedDocument)}>
 							<Icons.DownloadOutline />
 						</Button>
 						{#if Is.stringValue(exploreUrl)}
-							<Button size="xs" on:click={openExplorer} color="plain" class="gap-2">
+							<Button size="xs" onclick={openExplorer} color="plain" class="gap-2">
 								{$i18n('components.attestationView.exploreNft')}<Icons.LinkOutline size="sm" />
 							</Button>
 						{/if}
@@ -418,7 +425,7 @@
 				/>
 			</div>
 			<div class="flex flex-row justify-end gap-2 pt-2">
-				<Button on:click={() => (showDocumentModal = false)}>
+				<Button onclick={() => (showDocumentModal = false)}>
 					{$i18n('actions.close')}
 				</Button>
 			</div>

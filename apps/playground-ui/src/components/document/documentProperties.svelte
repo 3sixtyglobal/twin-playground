@@ -5,7 +5,7 @@
 	import { Coerce, Is, Validation, type IValidationFailure } from '@twin.org/core';
 	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
 	import type { IDocument } from '@twin.org/document-management-models';
-	import { UneceDocumentCodes } from '@twin.org/standards-unece';
+	import { UneceDocumentCodeList } from '@twin.org/standards-unece';
 	import {
 		Button,
 		Card,
@@ -29,8 +29,12 @@
 	import { documentCreate, documentGet, documentUpdate } from '$stores/document';
 	import { documentsEntrySet } from '$stores/documents';
 
-	export let itemId: string | undefined = undefined;
-	export let returnUrl: string | undefined = undefined;
+	interface Props {
+		itemId?: string | undefined;
+		returnUrl?: string | undefined;
+	}
+
+	let { itemId = $bindable(undefined), returnUrl = undefined }: Props = $props();
 
 	const isUpdate = Is.stringValue(itemId);
 
@@ -43,22 +47,22 @@
 			| 'vertexId'
 			| 'edgeAliasAnnotationObject'
 			| 'options']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let loadingBusy = false;
-	let progress: string | undefined;
-	let error: string | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let loadingBusy = $state(false);
+	let progress: string | undefined = $state();
+	let error: string | undefined = $state();
 	let documentData: IDocument | undefined;
-	let documentId: string = '';
-	let documentIdFormat: string = '';
-	let documentCode = UneceDocumentCodes.BillOfLading;
+	let documentId: string = $state('');
+	let documentIdFormat: string = $state('');
+	let documentCode: UneceDocumentCodeList = $state(UneceDocumentCodeList.BillOfLading);
 	let fileData: Uint8Array | undefined;
-	let files: FileList | undefined;
-	let availableVertices: string[] = [];
+	let files: FileList | undefined = $state();
+	let availableVertices: string[] = $state([]);
 
 	// Advanced options variables
-	let annotationObjectStr: string = '';
-	let selectedAnnotationExample: string = '';
+	let annotationObjectStr: string = $state('');
+	let selectedAnnotationExample: string = $state('');
 
 	// Annotation object examples
 	const annotationObjectExamples = [
@@ -278,47 +282,47 @@
 		}
 	];
 
-	let vertexId: string = '';
-	let vertexAddAlias: boolean = false;
-	let edgeAliasAnnotationObjectStr: string = '';
-	let selectedEdgeAliasAnnotationExample: string = '';
-	let createAttestation: boolean = false;
-	let addAlias: boolean = false;
-	let aliasAnnotationObjectStr: string = '';
-	let selectedAliasAnnotationExample: string = '';
+	let vertexId: string = $state('');
+	let vertexAddAlias: boolean = $state(false);
+	let edgeAliasAnnotationObjectStr: string = $state('');
+	let selectedEdgeAliasAnnotationExample: string = $state('');
+	let createAttestation: boolean = $state(false);
+	let addAlias: boolean = $state(false);
+	let aliasAnnotationObjectStr: string = $state('');
+	let selectedAliasAnnotationExample: string = $state('');
 
 	const documentTypes = [
-		{ value: UneceDocumentCodes.BillOfLading, label: 'BillOfLading' },
-		{ value: UneceDocumentCodes.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
-		{ value: UneceDocumentCodes.ExportLicence, label: 'ExportLicence' },
-		{ value: UneceDocumentCodes.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
-		{ value: UneceDocumentCodes.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
+		{ value: UneceDocumentCodeList.BillOfLading, label: 'BillOfLading' },
+		{ value: UneceDocumentCodeList.PhytosanitaryCertificate, label: 'PhytosanitaryCertificate' },
+		{ value: UneceDocumentCodeList.ExportLicence, label: 'ExportLicence' },
+		{ value: UneceDocumentCodeList.CustomsClearanceNotice, label: 'CustomsClearanceNotice' },
+		{ value: UneceDocumentCodeList.DeclarationOfOrigin, label: 'DeclarationOfOrigin' }
 	];
 
-	$: {
+	$effect(() => {
 		const example = annotationObjectExamples.find(ex => ex.value === selectedAnnotationExample);
 		if (example) {
 			annotationObjectStr = JSON.stringify(example.object, null, 2);
 		}
-	}
+	});
 
-	$: {
+	$effect(() => {
 		const example = edgeAliasAnnotationObjectExamples.find(
 			ex => ex.value === selectedEdgeAliasAnnotationExample
 		);
 		if (example) {
 			edgeAliasAnnotationObjectStr = JSON.stringify(example.object, null, 2);
 		}
-	}
+	});
 
-	$: {
+	$effect(() => {
 		const example = aliasAnnotationObjectExamples.find(
 			ex => ex.value === selectedAliasAnnotationExample
 		);
 		if (example) {
 			aliasAnnotationObjectStr = JSON.stringify(example.object, null, 2);
 		}
-	}
+	});
 
 	async function loadDocumentData(): Promise<void> {
 		if (!itemId) {
@@ -345,7 +349,7 @@
 
 			documentId = documentData.documentId ?? '';
 			documentIdFormat = documentData.documentIdFormat ?? '';
-			documentCode = documentData.documentCode ?? UneceDocumentCodes.BillOfLading;
+			documentCode = documentData.documentCode ?? UneceDocumentCodeList.BillOfLading;
 
 			if (Is.object(documentData.annotationObject)) {
 				annotationObjectStr = JSON.stringify(documentData.annotationObject, null, 2);
@@ -388,7 +392,7 @@
 			Validation.arrayOneOf(
 				'documentCode',
 				documentCode,
-				Object.values(UneceDocumentCodes),
+				Object.values(UneceDocumentCodeList),
 				validationFailures,
 				$i18n('pages.documentProperties.documentCode')
 			);
@@ -470,7 +474,8 @@
 
 			let auditableItemGraphEdges:
 				| {
-						id: string;
+						id?: string;
+						targetId: string;
 						addAlias?: boolean;
 						aliasAnnotationObject?: IJsonLdNodeObject;
 				  }[]
@@ -483,7 +488,7 @@
 
 				auditableItemGraphEdges = [
 					{
-						id: vertexId,
+						targetId: vertexId,
 						addAlias: vertexAddAlias,
 						aliasAnnotationObject: edgeAliasAnnotationObject
 					}
@@ -726,7 +731,7 @@
 								{$i18n('pages.documentProperties.createVertexFirst')}
 							</P>
 							<Button
-								on:click={() => goto('/secure/auditable-item-graph')}
+								onclick={() => goto('/secure/auditable-item-graph')}
 								size="sm"
 								class="whitespace-nowrap"
 							>
@@ -780,7 +785,7 @@
 					<Span>{itemId}</Span>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

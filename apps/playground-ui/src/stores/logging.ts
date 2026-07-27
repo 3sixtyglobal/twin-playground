@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { ILogEntry, LogLevel } from "@twin.org/logging-models";
-import { LoggingClient } from "@twin.org/logging-rest-client";
+import { LoggingRestClient } from "@twin.org/logging-rest-client";
 
-let loggingClient: LoggingClient | undefined;
+let loggingClient: LoggingRestClient | undefined;
 
 /**
  * Initialise the logging.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	loggingClient = new LoggingClient({
+	loggingClient = new LoggingRestClient({
 		endpoint: apiUrl
 	});
 }
@@ -23,7 +23,7 @@ export async function init(apiUrl: string): Promise<void> {
  * @param timeStart The start time.
  * @param timeEnd The end time.
  * @param cursor The current cursor.
- * @param pageSize The page size.
+ * @param limit Limit the number of items to return.
  * @returns An array with the entities found and the current cursor.
  */
 export async function loggingQuery(
@@ -32,7 +32,7 @@ export async function loggingQuery(
 	timeStart?: number,
 	timeEnd?: number,
 	cursor?: string,
-	pageSize?: number
+	limit?: number
 ): Promise<
 	| {
 			error?: string;
@@ -43,7 +43,7 @@ export async function loggingQuery(
 > {
 	if (Is.object(loggingClient)) {
 		try {
-			const result = await loggingClient.query(level, source, timeStart, timeEnd, cursor, pageSize);
+			const result = await loggingClient.query(level, source, timeStart, timeEnd, cursor, limit);
 			return result;
 		} catch (err) {
 			return {

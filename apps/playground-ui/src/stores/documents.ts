@@ -1,17 +1,17 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { EntityStorageClient } from "@twin.org/entity-storage-rest-client";
+import { EntityStorageRestClient } from "@twin.org/entity-storage-rest-client";
 import type { IUserDocumentEntry } from "$models/IUserDocumentEntry";
 
-let userDocumentEntryClient: EntityStorageClient<IUserDocumentEntry> | undefined;
+let userDocumentEntryClient: EntityStorageRestClient<IUserDocumentEntry> | undefined;
 
 /**
  * Initialise the documents.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	userDocumentEntryClient = new EntityStorageClient<IUserDocumentEntry>({
+	userDocumentEntryClient = new EntityStorageRestClient<IUserDocumentEntry>({
 		endpoint: apiUrl,
 		pathPrefix: "user-document"
 	});
@@ -40,6 +40,7 @@ export async function documentEntryList(cursor?: string): Promise<
 				cursor
 			);
 			return {
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 				items: result.entities as IUserDocumentEntry[],
 				cursor: result.cursor
 			};

@@ -21,16 +21,20 @@
 	import { immutableProofCreate } from '$stores/immutableProof';
 	import { immutableProofsEntrySet } from '$stores/immutableProofs';
 
-	export let returnUrl: string;
+	interface Props {
+		returnUrl: string;
+	}
+
+	let { returnUrl }: Props = $props();
 	let validationErrors: {
 		[field in 'proofObject']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let progress: string | undefined;
-	let proofId: string | undefined;
-	let proofObject: IJsonLdNodeObject | undefined = undefined;
-	let selectedType = '';
-	let textAreaValue = '';
+	} = $state({});
+	let busy = $state(false);
+	let progress: string | undefined = $state();
+	let proofId: string | undefined = $state();
+	let proofObject: IJsonLdNodeObject | undefined = $state(undefined);
+	let selectedType = $state('');
+	let textAreaValue = $state('');
 	const proofObjectExamples: IJsonLdNodeObject[] = [
 		{
 			'@context': 'https://schema.org',
@@ -120,21 +124,22 @@
 		}
 	}
 
-	$: {
+	$effect(() => {
 		if (!textAreaValue.trim()) {
 			proofObject = undefined;
 			selectedType = '';
 		} else {
 			try {
-				proofObject = JSON.parse(textAreaValue);
-				if (Is.object(proofObject)) {
+				const parsed = JSON.parse(textAreaValue);
+				proofObject = parsed;
+				if (Is.object(parsed)) {
 					validationErrors.proofObject = [];
 				}
 			} catch {
 				proofObject = undefined;
 			}
 		}
-	}
+	});
 
 	onMount(async () => {
 		busy = false;
@@ -166,7 +171,7 @@
 				<ValidationError validationErrors={validationErrors.proofObject} />
 				<Label>
 					{$i18n('pages.immutableProofProperties.selectExample')}
-					<Select bind:value={selectedType} on:change={handleSelectChange} disabled={busy}>
+					<Select bind:value={selectedType} onchange={handleSelectChange} disabled={busy}>
 						{#each proofObjectExamples as example}
 							<option value={example['@type']}>{example['@type']}</option>
 						{/each}
@@ -188,7 +193,7 @@
 					<Span>{proofId}</Span>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

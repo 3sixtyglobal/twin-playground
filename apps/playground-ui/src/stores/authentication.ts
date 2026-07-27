@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { redirect } from "@sveltejs/kit";
-import { EntityStorageAuthenticationClient } from "@twin.org/api-auth-entity-storage-rest-client";
+import { EntityStorageAuthenticationRestClient } from "@twin.org/api-auth-entity-storage-rest-client";
 import { ErrorHelper, Is } from "@twin.org/core";
 import { persistent } from "@twin.org/ui-components-svelte";
 import { get, writable } from "svelte/store";
@@ -11,7 +11,7 @@ export const authenticationState = writable<"initializing" | "not-authenticated"
 );
 const authenticationExpiry = persistent<number>("auth-expiry", 0);
 
-let authenticationClient: EntityStorageAuthenticationClient | undefined;
+let authenticationClient: EntityStorageAuthenticationRestClient | undefined;
 let intervalId: NodeJS.Timeout | undefined;
 
 /**
@@ -20,7 +20,7 @@ let intervalId: NodeJS.Timeout | undefined;
  */
 export async function init(apiUrl: string): Promise<void> {
 	authenticationState.set("initializing");
-	authenticationClient = new EntityStorageAuthenticationClient({
+	authenticationClient = new EntityStorageAuthenticationRestClient({
 		endpoint: apiUrl
 	});
 

@@ -1,21 +1,24 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type {
-	IAuditableItemStream,
-	IAuditableItemStreamEntry
+import {
+	AuditableItemStreamContexts,
+	AuditableItemStreamTypes,
+	type IAuditableItemStream,
+	type IAuditableItemStreamEntry
 } from "@twin.org/auditable-item-stream-models";
-import { AuditableItemStreamClient } from "@twin.org/auditable-item-stream-rest-client";
+import { AuditableItemStreamRestClient } from "@twin.org/auditable-item-stream-rest-client";
 import { ErrorHelper, Is } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
+import { SchemaOrgContexts } from "@twin.org/standards-schema-org";
 
-let auditableItemStreamClient: AuditableItemStreamClient | undefined;
+let auditableItemStreamClient: AuditableItemStreamRestClient | undefined;
 
 /**
  * Initialise the auditable item streams.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	auditableItemStreamClient = new AuditableItemStreamClient({
+	auditableItemStreamClient = new AuditableItemStreamRestClient({
 		endpoint: apiUrl,
 		pathPrefix: "ais"
 	});
@@ -24,7 +27,7 @@ export async function init(apiUrl: string): Promise<void> {
 /**
  * Create an auditable items stream.
  * @param annotationObject Object for the stream stored as a json ld document.
- * @param immutableInterval The interval for the stream.
+ * @param immutableInterval After how many entries to add immutable checks.
  * @returns The id of the auditable item stream or an error if one occurred.
  */
 export async function auditableItemStreamCreate(
@@ -39,14 +42,16 @@ export async function auditableItemStreamCreate(
 > {
 	if (Is.object(auditableItemStreamClient)) {
 		try {
-			const id = await auditableItemStreamClient.create(
-				{
-					annotationObject
-				},
-				{
-					immutableInterval
-				}
-			);
+			const id = await auditableItemStreamClient.create({
+				"@context": [
+					SchemaOrgContexts.Context,
+					AuditableItemStreamContexts.Context,
+					AuditableItemStreamContexts.ContextCommon
+				],
+				type: AuditableItemStreamTypes.Stream,
+				annotationObject,
+				immutableInterval
+			});
 			return {
 				id
 			};
@@ -75,7 +80,16 @@ export async function auditableItemStreamUpdate(
 > {
 	if (Is.object(auditableItemStreamClient)) {
 		try {
-			await auditableItemStreamClient.update({ id, annotationObject });
+			await auditableItemStreamClient.update({
+				"@context": [
+					SchemaOrgContexts.Context,
+					AuditableItemStreamContexts.Context,
+					AuditableItemStreamContexts.ContextCommon
+				],
+				type: AuditableItemStreamTypes.Stream,
+				id,
+				annotationObject
+			});
 		} catch (err) {
 			return {
 				error: ErrorHelper.formatErrors(err).join("\n")
@@ -107,8 +121,8 @@ export async function auditableItemStreamList(cursor?: string): Promise<
 				cursor
 			);
 			return {
-				items: result.itemListElement,
-				cursor: result.nextItem
+				items: result.entries.itemListElement,
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {
@@ -161,9 +175,12 @@ export async function auditableItemStreamGet(
 > {
 	if (Is.object(auditableItemStreamClient)) {
 		try {
-			const result = await auditableItemStreamClient.get(id, { verifyStream, includeEntries });
+			const result = await auditableItemStreamClient.get(id, undefined, undefined, {
+				verifyStream,
+				includeEntries
+			});
 			return {
-				item: result
+				item: result.stream
 			};
 		} catch (err) {
 			return {
@@ -265,14 +282,14 @@ export async function auditableItemStreamRemoveEntry(
  * Get entries from an auditable item stream.
  * @param id The id of the stream to get entries from.
  * @param options Options for retrieving entries.
- * @param options.pageSize The number of entries to return.
+ * @param options.limit The number of entries to return.
  * @param options.cursor The cursor to use for pagination.
  * @returns The stream entries or an error if one occurred.
  */
 export async function auditableItemStreamGetEntries(
 	id: string,
 	options?: {
-		pageSize?: number;
+		limit?: number;
 		cursor?: string;
 	}
 ): Promise<
@@ -289,15 +306,15 @@ export async function auditableItemStreamGetEntries(
 	if (Is.object(auditableItemStreamClient)) {
 		try {
 			const result = await auditableItemStreamClient.getEntries(id, {
-				pageSize: options?.pageSize,
+				limit: options?.limit,
 				cursor: options?.cursor
 			});
 			return {
-				entries: result.itemListElement.map(entry => ({
+				entries: result.entries.itemListElement.map(entry => ({
 					entryId: entry.id,
 					entryObject: entry.entryObject
 				})),
-				cursor: result.nextItem
+				cursor: result.cursor
 			};
 		} catch (err) {
 			return {

@@ -17,7 +17,7 @@
 		"verifiable-storage": "Verifiable Storage",
 		"immutable-proof": "Immutable Proof",
 		"data-processing": "Data Processing",
-		"rights-management": "Rights Management"
+		"rights-management-pap": "Rights Management PAP"
 	},
 	"components": {
 		"blobViewer": {
@@ -440,7 +440,7 @@
 			"error": "Error",
 			"ts": "Timestamp",
 			"data": "Data",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"timeStart": "From Date",
 			"timeEnd": "To Date"
 		},
@@ -455,7 +455,7 @@
 			"progress": "Searching...",
 			"deleteTitle": "Delete Telemetry Metric",
 			"deleteMessage": "Are you sure you want to delete this metric?",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"timeStart": "From Date",
 			"id": "Id",
 			"label": "Label",
@@ -499,7 +499,7 @@
 		},
 		"telemetryMetricValueList": {
 			"title": "Telemetry Metric Values",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"timeStart": "From Date",
 			"timeEnd": "To Date",
 			"createMetricValue": "Create Metric Value",
@@ -534,7 +534,7 @@
 			"deleteTitle": "Delete Rule Group",
 			"deleteMessage": "Are you sure you want to delete this rule group?",
 			"error": "Error",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"id": "Id",
 			"label": "Label"
 		},
@@ -544,7 +544,7 @@
 			"label": "Label",
 			"message": "Message",
 			"error": "Error",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"actionCreate": "Create",
 			"actionUpdate": "Update",
 			"actionSuccess": "Rule group added correctly",
@@ -687,7 +687,7 @@
 			"createPolicy": "Create Policy",
 			"deleteTitle": "Delete Policy",
 			"deleteMessage": "Are you sure you want to delete this policy?",
-			"pageSize": "Page Size",
+			"limit": "Limit",
 			"policyType": "Policy Type",
 			"search": "Search"
 		},

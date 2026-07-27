@@ -22,22 +22,26 @@
 	import { nftMint } from '$stores/nft';
 	import { nftsEntrySet } from '$stores/nfts';
 
-	export let returnUrl: string;
+	interface Props {
+		returnUrl: string;
+	}
+
+	let { returnUrl }: Props = $props();
 	let validationErrors: {
 		[field in 'issuer' | 'tag' | 'owner']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let signature: string | undefined;
-	let progress: string | undefined;
-	let itemId: string | undefined;
-	let namespace: string | undefined = undefined;
-	let tag: string | undefined = '';
-	let name: string | undefined = '';
-	let description: string | undefined = '';
-	let uri: string | undefined = '';
-	let newMetadataKey: string | undefined = undefined;
-	let newMetadataValue: string | undefined = undefined;
-	let metadata: unknown | undefined = undefined;
+	} = $state({});
+	let busy = $state(false);
+	let signature: string | undefined = $state();
+	let progress: string | undefined = $state();
+	let itemId: string | undefined = $state();
+	let namespace: string | undefined = $state(undefined);
+	let tag: string | undefined = $state('');
+	let name: string | undefined = $state('');
+	let description: string | undefined = $state('');
+	let uri: string | undefined = $state('');
+	let newMetadataKey: string | undefined = $state(undefined);
+	let newMetadataValue: string | undefined = $state(undefined);
+	let metadata: unknown | undefined = $state(undefined);
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.notEmpty(
@@ -208,7 +212,7 @@
 					</Label>
 				</div>
 				<div class="mb-5 text-right">
-					<Button class="w-40" on:click={addMetadata} disabled={busy}>
+					<Button class="w-40" onclick={addMetadata} disabled={busy}>
 						{$i18n('pages.nftProperties.addMetadata')}
 					</Button>
 				</div>
@@ -244,7 +248,7 @@
 					<Span>{signature}</Span>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

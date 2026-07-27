@@ -24,13 +24,17 @@
 	import { createExplorerVerifiableStorageUrl } from '$stores/iota';
 	import { verifiableStorageGet } from '$stores/verifiableStorage';
 
-	export let itemId: string | undefined = undefined;
-	let receipt: IJsonLdNodeObject | undefined;
-	let description: string | undefined;
-	let error: string;
-	let includeText: string | undefined;
-	let busy = true;
-	let exploreUrl: string | undefined = undefined;
+	interface Props {
+		itemId?: string | undefined;
+	}
+
+	let { itemId = undefined }: Props = $props();
+	let receipt: IJsonLdNodeObject | undefined = $state();
+	let description: string | undefined = $state();
+	let error: string | undefined = $state();
+	let includeText: string | undefined = $state();
+	let busy = $state(true);
+	let exploreUrl: string | undefined = $state(undefined);
 
 	onMount(async () => {
 		if (Is.stringValue(itemId)) {
@@ -62,7 +66,7 @@
 		window.open(exploreUrl, '_blank');
 	}
 
-	async function copyData(data?: string): Promise<void> {
+	async function copyData(data: string | undefined = undefined): Promise<void> {
 		if (!data) {
 			return;
 		}
@@ -93,7 +97,7 @@
 					{/if}
 					{#if Is.stringValue(exploreUrl)}
 						<Label>
-							<Button size="xs" on:click={openExplorer} color="plain" class="max-w-32 gap-2"
+							<Button size="xs" onclick={openExplorer} color="plain" class="max-w-32 gap-2"
 								>{$i18n('pages.verifiableStorageView.explore')}<Icons.LinkOutline
 									size="sm"
 								/></Button
@@ -113,7 +117,7 @@
 				<div class="flex flex-row justify-between align-bottom">
 					<Heading tag="h5">{$i18n('pages.verifiableStorageView.content')}</Heading>
 					<div class="flex flex-row gap-3">
-						<Button size="xs" color="plain" on:click={async () => copyData(includeText)}>
+						<Button size="xs" color="plain" onclick={async () => copyData(includeText)}>
 							<Icons.ClipboardListOutline />
 						</Button>
 						<Tooltip>{$i18n('pages.verifiableStorage.copyDataClipboard')}</Tooltip>
@@ -131,6 +135,6 @@
 		<Error {error} />
 	{/if}
 	<div class="flex flex-row gap-2">
-		<Button on:click={() => goto('/secure/verifiable-storage')}>{$i18n('actions.back')}</Button>
+		<Button onclick={() => goto('/secure/verifiable-storage')}>{$i18n('actions.back')}</Button>
 	</div>
 </Card>

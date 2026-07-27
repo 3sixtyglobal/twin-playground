@@ -1,7 +1,10 @@
 <script lang="ts">
 	// Copyright 2024 IOTA Stiftung.
 	// SPDX-License-Identifier: Apache-2.0.
-	import type { IAuditableItemGraphAlias } from '@twin.org/auditable-item-graph-models';
+	import {
+		AuditableItemGraphTypes,
+		type IAuditableItemGraphAlias
+	} from '@twin.org/auditable-item-graph-models';
 	import type { IValidationFailure } from '@twin.org/core';
 	import { Coerce, Is, Validation } from '@twin.org/core';
 	import type { IJsonLdNodeObject } from '@twin.org/data-json-ld';
@@ -26,19 +29,23 @@
 		ValidationError
 	} from '@twin.org/ui-components-svelte';
 
-	export let items: Omit<IAuditableItemGraphAlias, '@context' | 'type'>[];
-	export let busy: boolean;
-	let showModal = false;
+	interface Props {
+		items: Omit<IAuditableItemGraphAlias, '@context'>[];
+		busy: boolean;
+	}
+
+	let { items = $bindable(), busy }: Props = $props();
+	let showModal = $state(false);
 	let progress: string | undefined;
-	let selectedItem: Omit<IAuditableItemGraphAlias, '@context' | 'type'> | undefined;
-	let aliasId: string | undefined;
-	let aliasFormat: string | undefined;
+	let selectedItem: Omit<IAuditableItemGraphAlias, '@context'> | undefined = $state();
+	let aliasId: string | undefined = $state();
+	let aliasFormat: string | undefined = $state();
 	let validationErrors: {
 		[field in 'aliasId' | 'aliasFormat' | 'annotationObject']?: IValidationFailure[] | undefined;
-	} = {};
+	} = $state({});
 
-	let selectedAnnotationObjectType = '';
-	let annotationObjectText = '';
+	let selectedAnnotationObjectType = $state('');
+	let annotationObjectText = $state('');
 	const examples: { id: string; aliasFormat: string; annotationObject: IJsonLdNodeObject }[] = [
 		{
 			id: 'alias1',
@@ -83,7 +90,7 @@
 		items = items.slice();
 	}
 
-	$: {
+	$effect(() => {
 		const example = examples.find(
 			ex => ex.annotationObject['@type'] === selectedAnnotationObjectType
 		);
@@ -92,7 +99,7 @@
 			aliasId = example.id;
 			aliasFormat = example.aliasFormat;
 		}
-	}
+	});
 
 	async function openModal(index: number = -1): Promise<void> {
 		showModal = true;
@@ -118,6 +125,7 @@
 			selectedItem.annotationObject = Coerce.object(annotationObjectText);
 		} else if (Is.stringValue(aliasId)) {
 			items.push({
+				type: AuditableItemGraphTypes.Alias,
 				id: aliasId,
 				aliasFormat,
 				annotationObject: Coerce.object(annotationObjectText)
@@ -135,7 +143,7 @@
 
 <div class="flex flex-row justify-between gap-5">
 	<Heading tag="h5">{$i18n('pages.auditableItemGraphAliasList.title')}</Heading>
-	<Button on:click={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
+	<Button onclick={async () => openModal()} size="sm" class="whitespace-nowrap" disabled={busy}>
 		<Icons.PlusOutline class="mr-2" />
 		{$i18n('pages.auditableItemGraphAliasList.addItem')}
 	</Button>
@@ -158,16 +166,13 @@
 					<TableBodyCell>{item.annotationObject?.['@type'] ?? ''}</TableBodyCell>
 					<TableBodyCell
 						><div class="flex gap-2">
-							<Button
-								size="xs"
-								color="plain"
-								on:click={async () => openModal(index)}
-								disabled={busy}><Icons.EditOutline /></Button
+							<Button size="xs" color="plain" onclick={async () => openModal(index)} disabled={busy}
+								><Icons.EditOutline /></Button
 							>
 							<Button
 								size="xs"
 								color="plain"
-								on:click={async () => removeItem(index)}
+								onclick={async () => removeItem(index)}
 								disabled={busy}><Icons.TrashBinOutline /></Button
 							>
 						</div></TableBodyCell

@@ -24,16 +24,20 @@
 	} from '$stores/identityProfile';
 	import { createExplorerIdentityUrl } from '$stores/iota';
 
-	export let returnUrl: string;
-	let firstName = ObjectHelper.propertyGet<string>($privateProfile, 'givenName') ?? '';
-	let lastName = ObjectHelper.propertyGet<string>($privateProfile, 'familyName') ?? '';
-	let displayName = ObjectHelper.propertyGet<string>($publicProfile, 'name') ?? '';
+	interface Props {
+		returnUrl: string;
+	}
+
+	let { returnUrl }: Props = $props();
+	let firstName = $state(ObjectHelper.propertyGet<string>($privateProfile, 'givenName') ?? '');
+	let lastName = $state(ObjectHelper.propertyGet<string>($privateProfile, 'familyName') ?? '');
+	let displayName = $state(ObjectHelper.propertyGet<string>($publicProfile, 'name') ?? '');
 	let validationErrors: {
 		[field in 'firstName' | 'lastName' | 'displayName']?: IValidationFailure[] | undefined;
-	} = {};
-	let exploreUrl: string | undefined;
+	} = $state({});
+	let exploreUrl: string | undefined = $state();
 
-	let busy = false;
+	let busy = $state(false);
 
 	const urn = Urn.fromValidString($profileIdentity);
 	if (urn.namespaceMethod() === 'iota') {
@@ -92,7 +96,7 @@
 					</Label>
 					{#if Is.stringValue(exploreUrl)}
 						<Label>
-							<Button size="xs" color="plain" on:click={openExplorer} class="gap-2"
+							<Button size="xs" color="plain" onclick={openExplorer} class="gap-2"
 								>{$i18n('pages.identityPublic.explore')}<Icons.CloudArrowUpOutline /></Button
 							>
 						</Label>

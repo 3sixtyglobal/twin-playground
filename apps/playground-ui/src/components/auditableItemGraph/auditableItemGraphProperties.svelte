@@ -35,24 +35,28 @@
 		auditableItemGraphUpdate
 	} from '$stores/auditableItemGraphs';
 
-	export let itemId: string | undefined = undefined;
-	export let returnUrl: string;
+	interface Props {
+		itemId?: string | undefined;
+		returnUrl: string;
+	}
+
+	let { itemId = $bindable(undefined), returnUrl }: Props = $props();
 
 	const isUpdate = Is.stringValue(itemId);
-	let busy = false;
-	let error: string;
-	let progress: string | undefined;
-	let saved: boolean = false;
+	let busy = $state(false);
+	let error: string | undefined = $state();
+	let progress: string | undefined = $state();
+	let saved: boolean = $state(false);
 	let validationErrors: {
 		[field in 'annotationObject']?: IValidationFailure[] | undefined;
-	} = {};
+	} = $state({});
 
-	let aliasList: IAuditableItemGraphAlias[] = [];
-	let resourceList: IAuditableItemGraphResource[] = [];
-	let edgeList: IAuditableItemGraphEdge[] = [];
+	let aliasList: IAuditableItemGraphAlias[] = $state([]);
+	let resourceList: IAuditableItemGraphResource[] = $state([]);
+	let edgeList: IAuditableItemGraphEdge[] = $state([]);
 
-	let selectedAnnotationObjectType = '';
-	let annotationObjectText = '';
+	let selectedAnnotationObjectType = $state('');
+	let annotationObjectText = $state('');
 
 	const annotationObjectExamples: IJsonLdNodeObject[] = [
 		{
@@ -81,14 +85,14 @@
 		}
 	];
 
-	$: {
+	$effect(() => {
 		const example = annotationObjectExamples.find(
 			ex => ex['@type'] === selectedAnnotationObjectType
 		);
 		if (example) {
 			annotationObjectText = JSON.stringify(example, null, 2);
 		}
-	}
+	});
 
 	async function close(): Promise<void> {
 		await goto(returnUrl);
@@ -245,7 +249,7 @@
 					/>
 				</Label>
 			{/if}
-			<Button on:click={async () => close()}>{$i18n('actions.close')}</Button>
+			<Button onclick={async () => close()}>{$i18n('actions.close')}</Button>
 		</Card>
 	{/if}
 </section>

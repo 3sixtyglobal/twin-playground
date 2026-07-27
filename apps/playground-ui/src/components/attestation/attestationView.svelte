@@ -22,12 +22,16 @@
 	import { attestationGet } from '$stores/attestation';
 	import { attestationIdToNftId, createExplorerNftUrl } from '$stores/iota';
 
-	export let itemId: string;
-	export let returnUrl: string | undefined = undefined;
-	let error: string;
-	let busy = true;
-	let item: Partial<IAttestationInformation> | undefined;
-	let exploreUrl: string | undefined;
+	interface Props {
+		itemId: string;
+		returnUrl?: string | undefined;
+	}
+
+	let { itemId, returnUrl = undefined }: Props = $props();
+	let error: string | undefined = $state();
+	let busy = $state(true);
+	let item: Partial<IAttestationInformation> | undefined = $state();
+	let exploreUrl: string | undefined = $state();
 
 	onMount(async () => {
 		error = '';
@@ -60,7 +64,7 @@
 		a.click();
 	}
 
-	function openIdentity(id?: string): void {
+	function openIdentity(id: string | undefined = undefined): void {
 		if (Is.stringValue(id)) {
 			const a = document.createElement('a');
 			a.href = `/public/identity/${id}`;
@@ -88,7 +92,7 @@
 					</Label>
 					{#if Is.stringValue(exploreUrl)}
 						<div>
-							<Button size="xs" on:click={openExplorer} color="plain" class="gap-2"
+							<Button size="xs" onclick={openExplorer} color="plain" class="gap-2"
 								>{$i18n('components.attestationView.exploreNft')}<Icons.LinkOutline
 									size="sm"
 								/></Button
@@ -125,7 +129,7 @@
 					<div class="flex flex-row items-center gap-2">
 						{$i18n('components.attestationView.ownerIdentity')}
 						<Button
-							on:click={() => openIdentity(item?.ownerIdentity)}
+							onclick={() => openIdentity(item?.ownerIdentity)}
 							size="xs"
 							color="plain"
 							class="gap-2"
@@ -143,23 +147,6 @@
 					<Span>{new Date(item.dateTransferred)}</Span>
 				</Label>
 			{/if}
-			{#if Is.stringValue(item?.holderIdentity)}
-				<Label>
-					<div class="flex flex-row items-center gap-2">
-						{$i18n('components.attestationView.holderIdentity')}
-						<Button
-							on:click={() => openIdentity(item?.holderIdentity)}
-							size="xs"
-							color="plain"
-							class="gap-2"
-						>
-							{$i18n('actions.view')}
-							<Icons.ArrowUpRightFromSquareOutline size="sm" />
-						</Button>
-					</div>
-					<Span>{item.holderIdentity}</Span>
-				</Label>
-			{/if}
 			{#if Is.object(item?.attestationObject)}
 				<Label>
 					{$i18n('components.attestationView.attestationObject')}
@@ -170,7 +157,7 @@
 				<Label>
 					<div class="flex flex-row items-center gap-2">
 						{$i18n('components.attestationView.proof')}
-						<Button on:click={openProof} size="xs" color="plain" class="gap-2">
+						<Button onclick={openProof} size="xs" color="plain" class="gap-2">
 							{$i18n('actions.decode')}
 							<Icons.ArrowUpRightFromSquareOutline size="sm" />
 						</Button>
@@ -182,7 +169,7 @@
 	{/if}
 	{#if Is.stringValue(returnUrl)}
 		<div class="flex flex-row gap-2">
-			<Button on:click={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
+			<Button onclick={() => goto(returnUrl)}>{$i18n('actions.back')}</Button>
 		</div>
 	{/if}
 </Card>

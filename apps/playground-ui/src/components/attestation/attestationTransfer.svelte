@@ -30,17 +30,21 @@
 		}
 	};
 
-	export let itemId: string | undefined;
-	export let returnUrl: string;
+	interface Props {
+		itemId: string | undefined;
+		returnUrl: string;
+	}
+
+	let { itemId, returnUrl }: Props = $props();
 
 	let validationErrors: {
 		[field in 'recipientIdentity' | 'recipientAddress']?: IValidationFailure[] | undefined;
-	} = {};
-	let busy = false;
-	let progress: string | undefined;
-	let recipientIdentity: string | undefined = '';
-	let recipientAddress: string | undefined = '';
-	let item: Partial<IAttestationInformation> | undefined;
+	} = $state({});
+	let busy = $state(false);
+	let progress: string | undefined = $state();
+	let recipientIdentity: string | undefined = $state('');
+	let recipientAddress: string | undefined = $state('');
+	let item: Partial<IAttestationInformation> | undefined = $state();
 	let itemEntry: IUserAttestationEntry | undefined;
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
@@ -66,12 +70,11 @@
 	async function action(): Promise<string | undefined> {
 		if (
 			Is.stringValue(itemId) &&
-			Is.stringValue(recipientIdentity) &&
 			Is.stringValue(recipientAddress)
 		) {
 			progress = $i18n('pages.attestationTransfer.progress');
 
-			const result = await attestationTransfer(itemId, recipientIdentity, recipientAddress);
+			const result = await attestationTransfer(itemId, recipientAddress);
 			progress = '';
 
 			if (Is.stringValue(result?.error)) {

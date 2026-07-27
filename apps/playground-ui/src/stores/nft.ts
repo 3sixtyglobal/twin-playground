@@ -1,16 +1,16 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ErrorHelper, Is } from "@twin.org/core";
-import { NftClient } from "@twin.org/nft-rest-client";
+import { NftRestClient } from "@twin.org/nft-rest-client";
 
-let nftClient: NftClient | undefined;
+let nftClient: NftRestClient | undefined;
 
 /**
  * Initialise the nft.
  * @param apiUrl The API url.
  */
 export async function init(apiUrl: string): Promise<void> {
-	nftClient = new NftClient({
+	nftClient = new NftRestClient({
 		endpoint: apiUrl
 	});
 }
@@ -98,20 +98,18 @@ export async function nftBurn(nftId: string): Promise<undefined | { error: strin
 /**
  * Transfer a nft data.
  * @param nftId The id of the nft.
- * @param recipientIdentity The recipient identity.
  * @param recipientAddress The recipient address.
  * @param metadata The metadata of the nft.
  * @returns Undefined or an error if one occurred.
  */
 export async function nftTransfer(
 	nftId: string,
-	recipientIdentity: string,
 	recipientAddress: string,
 	metadata?: unknown
 ): Promise<undefined | { error: string }> {
 	if (Is.object(nftClient)) {
 		try {
-			await nftClient.transfer(nftId, recipientIdentity, recipientAddress, metadata);
+			await nftClient.transfer(nftId, recipientAddress, metadata);
 			return undefined;
 		} catch (err) {
 			return {

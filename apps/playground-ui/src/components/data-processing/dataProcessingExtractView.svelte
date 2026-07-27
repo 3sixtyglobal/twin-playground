@@ -16,17 +16,21 @@
 	import { onMount } from 'svelte';
 	import { extractData, ruleGroupGet } from '$stores/dataProcessing';
 
-	export let itemId: string;
-	export let returnUrl: string;
-	let status: string | undefined;
-	let busy = false;
-	let progress: string | undefined;
-	let ruleGroup: IRuleGroup;
-	let inputContent = '';
-	let extractedData = '';
+	interface Props {
+		itemId: string;
+		returnUrl: string;
+	}
+
+	let { itemId, returnUrl }: Props = $props();
+	let status: string | undefined = $state();
+	let busy = $state(false);
+	let progress: string | undefined = $state();
+	let ruleGroup: IRuleGroup | undefined = $state();
+	let inputContent = $state('');
+	let extractedData = $state('');
 	let validationErrors: {
 		[field in 'inputContent']?: IValidationFailure[] | undefined;
-	} = {};
+	} = $state({});
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.stringValue(

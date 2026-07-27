@@ -4,11 +4,20 @@
 	import { Is, Converter } from '@twin.org/core';
 	import { i18n } from '@twin.org/ui-components-svelte';
 
-	// Props for the component
-	export let encodingFormat: string | undefined = undefined;
-	export let blob: string | undefined = undefined;
-	export let title: string | undefined = undefined;
-	export let maxHeight: string = '30vh';
+	interface Props {
+		// Props for the component
+		encodingFormat?: string | undefined;
+		blob?: string | undefined;
+		title?: string | undefined;
+		maxHeight?: string;
+	}
+
+	let {
+		encodingFormat = undefined,
+		blob = undefined,
+		title = undefined,
+		maxHeight = '30vh'
+	}: Props = $props();
 
 	// Define content type categories for consistent handling
 	const contentTypes = {
@@ -35,11 +44,11 @@
 	}
 
 	// Get content type based on encoding format
-	$: contentType = getContentType(encodingFormat);
+	let contentType = $derived(getContentType(encodingFormat));
 
 	// Convert base64 to text when needed
-	let textContent: string | undefined = undefined;
-	$: {
+	let textContent: string | undefined = $state(undefined);
+	$effect(() => {
 		if (contentType === contentTypes.TEXT && Is.stringValue(blob)) {
 			if (Is.stringBase64(blob)) {
 				try {
@@ -53,13 +62,14 @@
 		} else {
 			textContent = undefined;
 		}
-	}
+	});
 
 	// Construct data URL for binary content (images, PDFs)
-	$: dataUrl =
+	let dataUrl = $derived(
 		Is.stringValue(encodingFormat) && Is.stringValue(blob)
 			? `data:${encodingFormat};base64,${blob}`
-			: undefined;
+			: undefined
+	);
 </script>
 
 <div

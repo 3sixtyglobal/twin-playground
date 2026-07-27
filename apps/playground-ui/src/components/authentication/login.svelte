@@ -13,10 +13,11 @@
 	} from '@twin.org/ui-components-svelte';
 	import { login } from '$stores/authentication';
 
-	let email = '';
-	let password = '';
-	let validationErrors: { [field in 'email' | 'password']?: IValidationFailure[] | undefined } = {};
-	let busy = false;
+	let email = $state('');
+	let password = $state('');
+	let validationErrors: { [field in 'email' | 'password']?: IValidationFailure[] | undefined } =
+		$state({});
+	let busy = $state(false);
 
 	async function validate(validationFailures: IValidationFailure[]): Promise<void> {
 		Validation.email('email', email, validationFailures, $i18n('pages.login.email'));

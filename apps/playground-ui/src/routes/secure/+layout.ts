@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { checkAuth } from "../../stores/authentication";
+import { checkAuth } from "../../stores/authentication.js";
 
 /**
  * Perform a load server side.

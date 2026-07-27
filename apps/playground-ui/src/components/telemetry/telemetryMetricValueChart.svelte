@@ -8,12 +8,16 @@
 	import LineChart from '$components/graph/lineChart.svelte';
 	import { metricValuesQuery } from '$stores/telemetry';
 
-	export let itemId: string;
+	interface Props {
+		itemId: string;
+	}
 
-	let busy = false;
-	let status = '';
-	let isError = false;
-	let stats: { ts: number; value: number }[] = [];
+	let { itemId }: Props = $props();
+
+	let busy = $state(false);
+	let status = $state('');
+	let isError = $state(false);
+	let stats: { ts: number; value: number }[] = $state([]);
 
 	async function loadData(loadId: string): Promise<void> {
 		status = $i18n('pages.telemetryMetricValueChart.loading');
@@ -22,7 +26,6 @@
 		stats = [];
 
 		const values = [];
-		let idx = 0;
 
 		let cursor;
 		do {
@@ -33,15 +36,12 @@
 				status = result.error;
 				break;
 			} else if (Is.arrayValue(result?.entities)) {
-				values.push(...result.entities.map(item => item.value));
+				values.push(...result.entities.map(item => ({ ts: Number(item.ts), value: item.value })));
 			}
 			cursor = result?.cursor;
 		} while (!Is.empty(cursor));
 
-		stats = values.map(value => ({
-			ts: values.length - idx++,
-			value
-		}));
+		stats = values.sort((a, b) => a.ts - b.ts);
 
 		busy = false;
 		status = '';
@@ -70,6 +70,6 @@
 		<LineChart {stats} />
 	{/if}
 	<div class="flex flex-row gap-2">
-		<Button on:click={() => goto('/secure/telemetry/')}>{$i18n('actions.back')}</Button>
+		<Button onclick={() => goto('/secure/telemetry/')}>{$i18n('actions.back')}</Button>
 	</div>
 </section>

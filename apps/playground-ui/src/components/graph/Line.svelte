@@ -1,15 +1,15 @@
-<script>
+<script lang="ts">
 	import * as d3 from 'd3';
 
-	export let stats;
-	export let xAccessorScaled;
-	export let yAccessorScaled;
+	let { stats, xAccessorScaled, yAccessorScaled } = $props();
 
 	const interpolation = d3.curveMonotoneX;
 
-	$: lineGenerator = d3.line().x(xAccessorScaled).y(yAccessorScaled).curve(interpolation);
+	let lineGenerator = $derived(
+		d3.line().x(xAccessorScaled).y(yAccessorScaled).curve(interpolation)
+	);
 
-	$: line = lineGenerator(stats);
+	let line = $derived(lineGenerator(stats));
 </script>
 
 <path class="line" d={line} />

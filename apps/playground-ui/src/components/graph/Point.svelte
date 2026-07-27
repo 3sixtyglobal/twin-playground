@@ -1,7 +1,5 @@
-<script>
-	export let x;
-	export let y;
-	export let color;
+<script lang="ts">
+	let { x, y, color } = $props();
 </script>
 
 <g>

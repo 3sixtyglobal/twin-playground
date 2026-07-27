@@ -1,8 +1,8 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { env } from "$env/dynamic/public";
 import { Coerce, ErrorHelper, Guards } from "@twin.org/core";
-import { init as initApp } from "../stores/app";
+import { init as initApp } from "../stores/app.js";
+import { env } from "$env/dynamic/public";
 
 /**
  * Perform a load and initialise the application.
@@ -51,6 +51,9 @@ export async function load(params: { url: URL }): Promise<void> {
 	} catch (err) {
 		// Nothing else is initialised yet so we need to console log manually
 		// eslint-disable-next-line no-console
-		console.error("Error during initialisation", ErrorHelper.formatErrors(err, true).join("\n"));
+		console.error(
+			"Error during initialisation",
+			ErrorHelper.formatErrors(err, { includeStack: true, includeAdditional: true }).join("\n")
+		);
 	}
 }

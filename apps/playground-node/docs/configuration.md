@@ -1,4 +1,4 @@
-# @twin.org/playground-node - Configuration
+# Configuration
 
 ## Environment Variables
 
