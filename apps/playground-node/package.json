@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/playground-node",
-	"version": "0.0.3",
+	"version": "0.0.3-next.1",
 	"description": "A REST API server that exposes framework package APIs covering authentication, identity, attestation, blob storage, and non-fungible tokens.",
 	"private": true,
 	"repository": {
@@ -32,21 +32,21 @@
 		"start": "node dist/es/index.js"
 	},
 	"dependencies": {
-		"@twin.org/context": "^0.9.1",
-		"@twin.org/core": "^0.9.1",
-		"@twin.org/engine": "^0.9.1",
-		"@twin.org/engine-models": "^0.9.1",
-		"@twin.org/engine-types": "^0.9.1",
-		"@twin.org/node-core": "^0.9.1",
-		"@twin.org/entity": "^0.9.1"
+		"@twin.org/context": "next",
+		"@twin.org/core": "next",
+		"@twin.org/engine": "next",
+		"@twin.org/engine-models": "next",
+		"@twin.org/engine-types": "next",
+		"@twin.org/node-core": "next",
+		"@twin.org/entity": "next"
 	},
 	"devDependencies": {
-		"@twin.org/entity-storage-connector-memory": "^0.9.1",
-		"@twin.org/merge-locales": "^0.9.1",
-		"@twin.org/nameof-transformer": "^0.9.1",
-		"@twin.org/nameof-vitest-plugin": "^0.9.1",
-		"@twin.org/validate-locales": "^0.9.1",
-		"@twin.org/ts-to-openapi": "^0.9.1",
+		"@twin.org/entity-storage-connector-memory": "next",
+		"@twin.org/merge-locales": "next",
+		"@twin.org/nameof-transformer": "next",
+		"@twin.org/nameof-vitest-plugin": "next",
+		"@twin.org/validate-locales": "next",
+		"@twin.org/ts-to-openapi": "next",
 		"@types/node": "25.5.0",
 		"@vitest/coverage-v8": "4.1.1",
 		"concurrently": "9.2.1",
