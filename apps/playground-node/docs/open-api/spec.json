@@ -20,10 +20,6 @@
 			"description": "Information endpoints for the REST server."
 		},
 		{
-			"name": "Health",
-			"description": "Health endpoints for the REST server."
-		},
-		{
 			"name": "Authentication",
 			"description": "Authentication endpoints for the REST server."
 		},
@@ -104,14 +100,6 @@
 			"description": "DSP Transfer Process Protocol endpoints for initiating and managing data transfers."
 		},
 		{
-			"name": "Datasets",
-			"description": "Tenant-scoped CRUD over the datasets the Control Plane reads at start time to populate the federated catalogue."
-		},
-		{
-			"name": "Version Discovery",
-			"description": "RFC 8615 well-known endpoint for advertising the Dataspace Protocol versions supported by this connector."
-		},
-		{
 			"name": "Policy Administration Point",
 			"description": "Endpoints for managing ODRL policies in the Policy Administration Point"
 		},
@@ -127,76 +115,33 @@
 	"paths": {
 		"/": {
 			"get": {
-				"operationId": "serverHealth",
-				"summary": "Get the health for the server",
+				"operationId": "serverRoot",
+				"summary": "Get the root text page",
 				"tags": [
-					"Health"
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
+					"Info"
 				],
 				"responses": {
 					"200": {
-						"description": "The health of the server.",
+						"description": "The root text for the server.",
 						"content": {
-							"application/json": {
+							"text/plain": {
 								"schema": {
-									"$ref": "#/components/schemas/ServerHealthResponse"
+									"$ref": "#/components/schemas/ServerRootResponse"
 								},
 								"examples": {
-									"healthResponseOK": {
-										"summary": "The response for the health request.",
-										"value": {
-											"status": "ok",
-											"components": [
-												{
-													"source": "Database",
-													"status": "ok"
-												},
-												{
-													"source": "Storage",
-													"status": "ok"
-												}
-											]
-										}
-									},
-									"healthResponseWarning": {
-										"summary": "The response for the health request with warnings.",
-										"value": {
-											"status": "warning",
-											"components": [
-												{
-													"source": "Database",
-													"status": "warning",
-													"description": "slowRunning"
-												},
-												{
-													"source": "Storage",
-													"status": "ok"
-												}
-											]
-										}
-									},
-									"healthResponseError": {
-										"summary": "The response for the health request with errors.",
-										"value": {
-											"status": "error",
-											"components": [
-												{
-													"source": "Database",
-													"status": "ok"
-												},
-												{
-													"source": "Storage",
-													"status": "error",
-													"description": "storageFull"
-												}
-											]
-										}
+									"serverRootResponse": {
+										"summary": "The response for the root request.",
+										"value": "API Server - 1.0.0"
 									}
 								}
+							}
+						},
+						"headers": {
+							"content-type": {
+								"schema": {
+									"type": "string"
+								},
+								"description": "e.g. text/plain"
 							}
 						}
 					},
@@ -215,24 +160,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -407,11 +334,11 @@
 								"examples": {
 									"livezResponseOK": {
 										"summary": "The response for the liveness request.",
-										"value": "alive"
+										"value": "ok"
 									},
 									"livezResponseFailure": {
 										"summary": "The response for the liveness request with errors.",
-										"value": "dead"
+										"value": "failed"
 									}
 								}
 							}
@@ -467,39 +394,73 @@
 				}
 			}
 		},
-		"/readyz": {
+		"/health": {
 			"get": {
-				"operationId": "serverReadyz",
-				"summary": "Get the readyz status for the server",
+				"operationId": "serverHealth",
+				"summary": "Get the health for the server",
 				"tags": [
 					"Info"
 				],
 				"responses": {
 					"200": {
-						"description": "The readyz of the server.",
+						"description": "The health of the server.",
 						"content": {
-							"text/plain": {
+							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServerReadyzResponse"
+									"$ref": "#/components/schemas/HealthInfo"
 								},
 								"examples": {
-									"readyzResponseOK": {
-										"summary": "The response for the readiness request.",
-										"value": "ready"
+									"healthResponseOK": {
+										"summary": "The response for the health request.",
+										"value": {
+											"status": "ok",
+											"components": [
+												{
+													"name": "Database",
+													"status": "ok"
+												},
+												{
+													"name": "Storage",
+													"status": "ok"
+												}
+											]
+										}
 									},
-									"readyzResponseFailure": {
-										"summary": "The response for the readiness request with errors.",
-										"value": "not ready"
+									"healthResponseWarning": {
+										"summary": "The response for the health request with warnings.",
+										"value": {
+											"status": "warning",
+											"components": [
+												{
+													"name": "Database",
+													"status": "warning",
+													"details": "The database is running slow."
+												},
+												{
+													"name": "Storage",
+													"status": "ok"
+												}
+											]
+										}
+									},
+									"healthResponseError": {
+										"summary": "The response for the health request with errors.",
+										"value": {
+											"status": "error",
+											"components": [
+												{
+													"name": "Database",
+													"status": "ok"
+												},
+												{
+													"name": "Storage",
+													"status": "error",
+													"details": "The storage is full."
+												}
+											]
+										}
 									}
 								}
-							}
-						},
-						"headers": {
-							"content-type": {
-								"schema": {
-									"type": "string"
-								},
-								"description": "e.g. text/plain"
 							}
 						}
 					},
@@ -722,36 +683,24 @@
 			}
 		},
 		"/authentication/logout": {
-			"post": {
+			"get": {
 				"operationId": "authenticationLogout",
 				"summary": "Logout from the server",
 				"tags": [
 					"Authentication"
 				],
-				"security": [
+				"parameters": [
 					{
-						"jwtBearerAuthScheme": []
+						"name": "token",
+						"description": "The token to logout, if it uses a mechanism with public access.",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"example": "eyJhbGciOiJIU...sw5c"
 					}
 				],
-				"requestBody": {
-					"description": "Perform a logout on the auth token.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/LogoutRequest"
-							},
-							"examples": {
-								"logoutRequestExample": {
-									"summary": "The request to logout from the server.",
-									"value": {
-										"token": "eyJhbGciOiJIU...sw5c"
-									}
-								}
-							}
-						}
-					}
-				},
 				"responses": {
 					"204": {
 						"description": "The rest request ended in success with no data."
@@ -771,24 +720,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -817,36 +748,29 @@
 			}
 		},
 		"/authentication/refresh": {
-			"post": {
+			"get": {
 				"operationId": "authenticationRefreshToken",
 				"summary": "Refresh an authentication token",
 				"tags": [
 					"Authentication"
+				],
+				"parameters": [
+					{
+						"name": "token",
+						"description": "The token to refresh, if it uses a mechanism with public access.",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"example": "eyJhbGciOiJIU...sw5c"
+					}
 				],
 				"security": [
 					{
 						"jwtBearerAuthScheme": []
 					}
 				],
-				"requestBody": {
-					"description": "Perform a refresh of the auth token.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/RefreshTokenRequest"
-							},
-							"examples": {
-								"refreshTokenRequestExample": {
-									"summary": "The request to refresh an auth token.",
-									"value": {
-										"token": "eyJhbGciOiJIU...sw5c"
-									}
-								}
-							}
-						}
-					}
-				},
 				"responses": {
 					"200": {
 						"description": "Response from a refresh on the auth token.",
@@ -1266,7 +1190,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/AuthenticationUser"
+									"$ref": "#/components/schemas/AdminUserGetResponse"
 								},
 								"examples": {
 									"getUserResponseExample": {
@@ -1571,7 +1495,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/AuthenticationUser"
+									"$ref": "#/components/schemas/AdminUserGetResponse"
 								},
 								"examples": {
 									"getUserResponseExample": {
@@ -1952,311 +1876,6 @@
 				}
 			}
 		},
-		"/authentication/audit/{id}": {
-			"get": {
-				"operationId": "authenticationAuditGet",
-				"summary": "Get an authentication audit entry",
-				"tags": [
-					"Authentication Audit"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The audit entry id.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "018f0b53d5d5704fa3a06d6ed2478575"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Response from getting an authentication audit entry.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/AuthenticationAuditEntry"
-								},
-								"examples": {
-									"authenticationAuditGetResponseExample": {
-										"summary": "The response for getting an authentication audit entry.",
-										"value": {
-											"id": "018f0b53d5d5704fa3a06d6ed2478575",
-											"actorId": "user@example.com",
-											"dateCreated": "2026-01-12T09:05:23.123Z",
-											"event": "login-success",
-											"data": {
-												"organizationIdentity": "did:example:org1"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"put": {
-				"operationId": "authenticationAuditUpdate",
-				"summary": "Update an authentication audit entry",
-				"tags": [
-					"Authentication Audit"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The audit entry id.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "018f0b53d5d5704fa3a06d6ed2478575"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "Update an authentication audit entry.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/AuditUpdateRequest"
-							},
-							"examples": {
-								"authenticationAuditUpdateRequestExample": {
-									"summary": "The request to update an authentication audit entry.",
-									"value": {
-										"data": {
-											"organizationIdentity": "did:example:org1"
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "authenticationAuditRemove",
-				"summary": "Remove an authentication audit entry",
-				"tags": [
-					"Authentication Audit"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The audit entry id.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "018f0b53d5d5704fa3a06d6ed2478575"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/identity/{identity}": {
 			"get": {
 				"operationId": "identityResolve",
@@ -2275,11 +1894,6 @@
 						},
 						"style": "simple",
 						"example": "did:iota:tst:0xe3088ba9aa8c28e1d139708a14e8c0fdff11ee8223baac4aa5bcf3321e4bfc6a"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
 					}
 				],
 				"responses": {
@@ -2323,24 +1937,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -3020,213 +2616,6 @@
 				}
 			}
 		},
-		"/identity/{identity}/alias": {
-			"post": {
-				"operationId": "identityAlsoKnownAsCreate",
-				"summary": "Add an alias to the alsoKnownAs property on the document",
-				"tags": [
-					"Identity"
-				],
-				"parameters": [
-					{
-						"name": "identity",
-						"description": "The identity to create the alias for.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "did:iota:tst:0xe3088ba9aa8c28e1d139708a14e8c0fdff11ee8223baac4aa5bcf3321e4bfc6a"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "Request to create an alias for an identity.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/IdentityAlsoKnownAsCreateRequest"
-							},
-							"examples": {
-								"identityAlsoKnownAsCreateRequestExample": {
-									"value": {
-										"alias": "did:example:123"
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/identity/{identity}/alias/{alias}": {
-			"delete": {
-				"operationId": "identityAlsoKnownAsRemove",
-				"summary": "Remove an alias from the alsoKnownAs property on the document",
-				"tags": [
-					"Identity"
-				],
-				"parameters": [
-					{
-						"name": "identity",
-						"description": "The identity to remove the alias from.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "did:iota:tst:0xe3088ba9aa8c28e1d139708a14e8c0fdff11ee8223baac4aa5bcf3321e4bfc6a"
-					},
-					{
-						"name": "alias",
-						"description": "The alias to remove.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "did:example:123"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/identity/{identity}/verifiable-credential/{verificationMethodId}": {
 			"post": {
 				"operationId": "identityVerifiableCredentialCreate",
@@ -3395,11 +2784,6 @@
 				"tags": [
 					"Identity"
 				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
 				"requestBody": {
 					"description": "Request to verify a verifiable credential.",
 					"required": true,
@@ -3498,24 +2882,6 @@
 							}
 						}
 					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
 					"500": {
 						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
 						"content": {
@@ -3554,11 +2920,6 @@
 							"type": "string"
 						},
 						"example": "eyJraWQiOi...D1Z3AQ"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
 					}
 				],
 				"responses": {
@@ -3616,24 +2977,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -4011,161 +3354,6 @@
 				}
 			}
 		},
-		"/identity/verifiable-presentation/verify/document": {
-			"post": {
-				"operationId": "identityVerifiablePresentationVerifyDocument",
-				"summary": "Verify an identity verifiable presentation document",
-				"tags": [
-					"Identity"
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "Request to verify a verifiable presentation.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "https://schema.twindev.org/w3c-did/DidVerifiablePresentation"
-							},
-							"examples": {
-								"identityVerifiablePresentationVerifyDocumentRequestExample": {
-									"value": {
-										"@context": [
-											"https://www.w3.org/2018/credentials/v1",
-											"https://schema.org"
-										],
-										"id": "https://example.com/credentials/3732",
-										"type": [
-											"VerifiableCredential",
-											"Person"
-										],
-										"verifiableCredential": [
-											{
-												"@context": [
-													"https://www.w3.org/2018/credentials/v1",
-													"https://schema.org"
-												],
-												"id": "https://example.com/credentials/3732",
-												"type": [
-													"VerifiableCredential",
-													"Person"
-												],
-												"credentialSubject": {
-													"id": "did:entity-storage:0x4757993355b921a8229bd780f30921b6a0216a72e6c3f37a09d13b8426a17def",
-													"name": "Jane Doe"
-												},
-												"issuer": "did:entity-storage:0x879c31386f992cfa29b77fe31e37256d69f6a57653cee4eb60ad4c4613c5515a",
-												"issuanceDate": "2025-01-24T09:21:51.500Z",
-												"credentialStatus": {
-													"id": "did:entity-storage:0x879c31386f992cfa29b77fe31e37256d69f6a57653cee4eb60ad4c4613c5515a#revocation",
-													"type": "BitstringStatusList",
-													"revocationBitmapIndex": "5"
-												}
-											}
-										]
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Response to verifying a verifiable presentation.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/IdentityVerifiablePresentationVerifyResponse"
-								},
-								"examples": {
-									"identityVerifiablePresentationVerifyResponseExample": {
-										"value": {
-											"revoked": false,
-											"verifiablePresentation": {
-												"@context": [
-													"https://www.w3.org/2018/credentials/v1",
-													"https://schema.org"
-												],
-												"id": "presentationId",
-												"type": [
-													"VerifiablePresentation",
-													"Person"
-												],
-												"verifiableCredential": [
-													"eyJraWQiOi...D1Z3AQ"
-												],
-												"holder": "did:entity-storage:0xcea318e06e89f3fb4048160770effd84d0cfa5801fee13dfa6f9413a00429cec"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/identity/verifiable-presentation/verify": {
 			"get": {
 				"operationId": "identityVerifiablePresentationVerify",
@@ -4185,11 +3373,6 @@
 						"example": "eyJraWQiOi...D1Z3AQ"
 					}
 				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
 				"responses": {
 					"200": {
 						"description": "Response to verifying a verifiable presentation.",
@@ -4238,24 +3421,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -4450,11 +3615,6 @@
 				"tags": [
 					"Identity"
 				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
 				"requestBody": {
 					"description": "Request to verify a proof.",
 					"required": true,
@@ -4533,24 +3693,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -5091,11 +4233,6 @@
 						"example": "role,email,name"
 					}
 				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
 				"responses": {
 					"200": {
 						"description": "Response to get an identity public profile.",
@@ -5140,24 +4277,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -5391,91 +4510,6 @@
 								"description": "e.g. blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70"
 							}
 						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "blobStorageEmpty",
-				"summary": "Remove all entries from blob storage",
-				"tags": [
-					"Blob Storage"
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "Request to remove all entries from blob storage.",
-					"required": true,
-					"content": {
-						"text/plain": {
-							"schema": {
-								"$ref": "https://schema.twindev.org/blob-storage/BlobStorageEmptyRequest"
-							}
-						}
-					}
-				},
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
 					},
 					"400": {
 						"description": "The server cannot process the request, see the content for more details.",
@@ -7138,122 +6172,6 @@
 				}
 			}
 		},
-		"/telemetry/metric/{id}/value/{valueId}": {
-			"get": {
-				"operationId": "telemetryGetMetricValue",
-				"summary": "Get a specific telemetry metric value",
-				"tags": [
-					"Telemetry"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the metric.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "my-counter"
-					},
-					{
-						"name": "valueId",
-						"description": "The id of the metric value.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "aabbccdd11223445566"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Get a telemetry metric value response.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/TelemetryMetricValue"
-								},
-								"examples": {
-									"telemetryGetMetricValueResponseExample": {
-										"value": {
-											"id": "aabbccdd11223445566",
-											"ts": 1715252922273,
-											"value": 10
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/logging": {
 			"post": {
 				"operationId": "loggingEntryCreate",
@@ -7532,7 +6450,7 @@
 					}
 				],
 				"requestBody": {
-					"description": "Request to mint a new NFT.",
+					"description": "Mint the data and return the NFT id.",
 					"required": true,
 					"content": {
 						"application/json": {
@@ -7656,7 +6574,7 @@
 				],
 				"responses": {
 					"200": {
-						"description": "Response returned after resolving an NFT.",
+						"description": "Response to resolving the NFT.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -7837,7 +6755,7 @@
 				"parameters": [
 					{
 						"name": "id",
-						"description": "The id of the NFT to update in urn format.",
+						"description": "The id of the NFT to transfer in urn format.",
 						"in": "path",
 						"required": true,
 						"schema": {
@@ -7853,7 +6771,7 @@
 					}
 				],
 				"requestBody": {
-					"description": "Request to update the mutable metadata of an NFT.",
+					"description": "Update the mutable data for the NFT.",
 					"required": true,
 					"content": {
 						"application/json": {
@@ -7962,7 +6880,7 @@
 					}
 				],
 				"requestBody": {
-					"description": "Request to transfer an NFT to a new owner.",
+					"description": "Transfer the NFT and update the metadata.",
 					"required": true,
 					"content": {
 						"application/json": {
@@ -8183,11 +7101,6 @@
 						"style": "simple"
 					}
 				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
 				"responses": {
 					"200": {
 						"description": "The response to verifying the attestation.",
@@ -8208,6 +7121,7 @@
 											"id": "attestation:iota:aW90YS1uZnQ6dHN0OjB4NzYyYjljNDllYTg2OWUwZWJkYTliYmZhNzY5Mzk0NDdhNDI4ZGNmMTc4YzVkMTVhYjQ0N2UyZDRmYmJiNGViMg==",
 											"dateCreated": "2024-06-18T13:34:51Z",
 											"ownerIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
+											"holderIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
 											"attestationObject": {
 												"@context": "https://schema.org",
 												"type": "DigitalDocument",
@@ -8233,6 +7147,7 @@
 											"id": "attestation:iota:aW90YS1uZnQ6dHN0OjB4NzYyYjljNDllYTg2OWUwZWJkYTliYmZhNzY5Mzk0NDdhNDI4ZGNmMTc4YzVkMTVhYjQ0N2UyZDRmYmJiNGViMg==",
 											"dateCreated": "2024-06-18T13:34:51Z",
 											"ownerIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
+											"holderIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
 											"attestationObject": {
 												"@context": "https://schema.org",
 												"type": "DigitalDocument",
@@ -8266,6 +7181,7 @@
 											"id": "attestation:iota:aW90YS1uZnQ6dHN0OjB4NzYyYjljNDllYTg2OWUwZWJkYTliYmZhNzY5Mzk0NDdhNDI4ZGNmMTc4YzVkMTVhYjQ0N2UyZDRmYmJiNGViMg==",
 											"dateCreated": "2024-06-18T13:34:51Z",
 											"ownerIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
+											"holderIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
 											"attestationObject": {
 												"@context": "https://schema.org",
 												"type": "DigitalDocument",
@@ -8291,6 +7207,7 @@
 											"id": "attestation:iota:aW90YS1uZnQ6dHN0OjB4NzYyYjljNDllYTg2OWUwZWJkYTliYmZhNzY5Mzk0NDdhNDI4ZGNmMTc4YzVkMTVhYjQ0N2UyZDRmYmJiNGViMg==",
 											"dateCreated": "2024-06-18T13:34:51Z",
 											"ownerIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
+											"holderIdentity": "did:iota:tst:0x8992c426116f21b2a4c7a2854300748d3e94a8ce089d5be62e11f105bd2a0f9e",
 											"attestationObject": {
 												"@context": "https://schema.org",
 												"type": "DigitalDocument",
@@ -8325,24 +7242,6 @@
 											"properties": {
 												"foo": "bar"
 											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
 										}
 									}
 								}
@@ -8493,6 +7392,7 @@
 							"examples": {
 								"attestationTransferRequestExample": {
 									"value": {
+										"holderIdentity": "did:iota:tst:0x06ae1034f9f4af1b408a0b54e877bb476259666a14f221400d3746aecefa7105",
 										"holderAddress": "tst1prctjk5ck0dutnsunnje6u90jk5htx03qznjjmkd6843pzltlgz87srjzzv"
 									}
 								}
@@ -9179,7 +8079,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "https://schema.twindev.org/immutable-proof/ImmutableProofCredential"
+									"$ref": "https://schema.twindev.org/w3c-did/DidVerifiableCredential"
 								},
 								"examples": {
 									"immutableProofGetResponseExample": {
@@ -9205,7 +8105,11 @@
 												"proofPurpose": "assertionMethod",
 												"proofValue": "7DdiPPYtxLjCD3wA1po2rv...",
 												"verificationMethod": "did:iota:testnet:0xcb07cabaa2f23b7e53d8cdc4228efb351ebb270554d13bc382e4f94ca8d3136b#immutable-proof-assertion",
-												"notarizationId": "notarization:iota:0xabcdef1234567890"
+												"verifiableStorageId": "verifiable-storage:1234567890",
+												"immutableReceipt": {
+													"id": "immutable-receipt:1234567890",
+													"type": "ImmutableReceipt"
+												}
 											}
 										}
 									}
@@ -9213,7 +8117,7 @@
 							},
 							"application/ld+json": {
 								"schema": {
-									"$ref": "https://schema.twindev.org/immutable-proof/ImmutableProofCredential"
+									"$ref": "https://schema.twindev.org/w3c-did/DidVerifiableCredential"
 								},
 								"examples": {
 									"immutableProofJsonLdGetResponseExample": {
@@ -9239,7 +8143,11 @@
 												"proofPurpose": "assertionMethod",
 												"proofValue": "7DdiPPYtxLjCD3wA1po2rv...",
 												"verificationMethod": "did:iota:testnet:0xcb07cabaa2f23b7e53d8cdc4228efb351ebb270554d13bc382e4f94ca8d3136b#immutable-proof-assertion",
-												"notarizationId": "notarization:iota:0xabcdef1234567890"
+												"verifiableStorageId": "verifiable-storage:1234567890",
+												"immutableReceipt": {
+													"id": "immutable-receipt:1234567890",
+													"type": "ImmutableReceipt"
+												}
 											}
 										}
 									}
@@ -9254,114 +8162,6 @@
 								"description": "e.g. application/ld+json"
 							}
 						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "The resource you tried to access does not exist, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/NotFoundResponse"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "NotFoundError",
-											"message": "errorMessage",
-											"properties": {
-												"notFoundId": "1"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "immutableProofRemove",
-				"summary": "Remove a proof",
-				"tags": [
-					"Immutable Proof"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the immutable proof to remove.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "immutable-proof:1234567890"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
 					},
 					"400": {
 						"description": "The server cannot process the request, see the content for more details.",
@@ -9587,116 +8387,6 @@
 				}
 			}
 		},
-		"/immutable-proof/{id}/notarization": {
-			"delete": {
-				"operationId": "immutableProofRemoveNotarization",
-				"summary": "Remove the notarization for a proof",
-				"tags": [
-					"Immutable Proof"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the immutable proof to remove the notarization from.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "immutable-proof:1234567890"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "The resource you tried to access does not exist, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/NotFoundResponse"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "NotFoundError",
-											"message": "errorMessage",
-											"properties": {
-												"notFoundId": "1"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/data-processing/rule-group/{id}": {
 			"put": {
 				"operationId": "dataProcessingSetRuleGroup",
@@ -9707,7 +8397,7 @@
 				"parameters": [
 					{
 						"name": "id",
-						"description": "The id of the rule group to set.",
+						"description": "The rule id to set.",
 						"in": "path",
 						"required": true,
 						"schema": {
@@ -9819,7 +8509,7 @@
 				"parameters": [
 					{
 						"name": "id",
-						"description": "The id of the rule group to retrieve.",
+						"description": "The rule id to set.",
 						"in": "path",
 						"required": true,
 						"schema": {
@@ -9928,7 +8618,7 @@
 				"parameters": [
 					{
 						"name": "id",
-						"description": "The id of the rule group to remove.",
+						"description": "The rule id to remove.",
 						"in": "path",
 						"required": true,
 						"schema": {
@@ -10350,20 +9040,16 @@
 							"examples": {
 								"DocumentManagementCreateRequestExample": {
 									"value": {
-										"document": {
-											"documentId": "2721000",
-											"documentIdFormat": "bol",
-											"documentCode": "unece:DocumentCodeList#705",
-											"annotationObject": {
-												"@context": "https://schema.org",
-												"@type": "DigitalDocument",
-												"name": "myfile.pdf"
-											}
-										},
+										"documentId": "2721000",
+										"documentIdFormat": "bol",
+										"documentCode": "unece:DocumentCodeList#705",
 										"blob": "SGVsbG8gV29ybGQ=",
-										"options": {
-											"includeAttestation": true
-										}
+										"annotationObject": {
+											"@context": "https://schema.org",
+											"@type": "DigitalDocument",
+											"name": "myfile.pdf"
+										},
+										"createAttestation": true
 									}
 								}
 							}
@@ -10588,9 +9274,9 @@
 			}
 		},
 		"/document-management/{auditableItemGraphDocumentId}": {
-			"patch": {
-				"operationId": "DocumentManagementUpdatePartial",
-				"summary": "Partially update a document in an auditable item graph vertex and add its content to blob storage.",
+			"put": {
+				"operationId": "DocumentManagementUpdate",
+				"summary": "Update a document in an auditable item graph vertex and add its content to blob storage.",
 				"tags": [
 					"Document Management"
 				],
@@ -10613,24 +9299,22 @@
 					}
 				],
 				"requestBody": {
-					"description": "Request to partially update a document as an auditable item graph vertex.",
+					"description": "Request to update a document as an auditable item graph vertex.",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/DocumentManagementUpdatePartialRequest"
+								"$ref": "#/components/schemas/DocumentManagementUpdateRequest"
 							},
 							"examples": {
-								"DocumentManagementUpdatePartialRequestExample": {
+								"DocumentManagementUpdateRequestExample": {
 									"value": {
-										"document": {
-											"annotationObject": {
-												"@context": "https://schema.org",
-												"@type": "DigitalDocument",
-												"name": "myfile.pdf"
-											}
-										},
-										"blob": "SGVsbG8gV29ybGQ="
+										"blob": "SGVsbG8gV29ybGQ=",
+										"annotationObject": {
+											"@context": "https://schema.org",
+											"@type": "DigitalDocument",
+											"name": "myfile.pdf"
+										}
 									}
 								}
 							}
@@ -11432,7 +10116,7 @@
 					},
 					{
 						"name": "conditions",
-						"description": "The conditions to filter the streams, JSON stringified `EntityCondition<IAuditableItemGraphVertex>`.",
+						"description": "The conditions to filter the streams, JSON stringified IComparator[].",
 						"in": "query",
 						"required": false,
 						"schema": {
@@ -11889,7 +10573,7 @@
 					}
 				],
 				"requestBody": {
-					"description": "Update an auditable item graph vertex (PUT — full replacement of vertex state).",
+					"description": "Update an auditable item graph vertex.",
 					"required": true,
 					"content": {
 						"application/json": {
@@ -11986,410 +10670,6 @@
 				"responses": {
 					"204": {
 						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"patch": {
-				"operationId": "auditableItemGraphUpdatePartial",
-				"summary": "Partially update a graph vertex",
-				"tags": [
-					"Auditable Item Graph"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the vertex to update.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "aig:1234567890"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "Partially update an auditable item graph vertex (PATCH — explicit list patches).",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/AuditableItemGraphUpdatePartialRequest"
-							},
-							"examples": {
-								"auditableItemGraphUpdatePartialRequestExample": {
-									"value": {
-										"@context": [
-											"https://schema.twindev.org/aig/",
-											"https://schema.twindev.org/common/"
-										],
-										"edgePatches": {
-											"add": [
-												{
-													"type": "AuditableItemGraphEdge",
-													"targetId": "aig:45678901234",
-													"edgeRelationships": [
-														"document"
-													]
-												}
-											]
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/aig/{id}/versions/{version}": {
-			"get": {
-				"operationId": "auditableItemGraphVersionGet",
-				"summary": "Get a graph vertex at a specific version",
-				"tags": [
-					"Auditable Item Graph"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the vertex.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "aig:1234567890"
-					},
-					{
-						"name": "version",
-						"description": "The version number to get.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "1"
-					},
-					{
-						"name": "accept",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "application/json"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Response to getting an auditable item graph vertex at a specific version.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "https://schema.twindev.org/aig/AuditableItemGraphVertex"
-								},
-								"examples": {
-									"auditableItemGraphVersionGetResponseExample": {
-										"value": {
-											"@context": [
-												"https://schema.twindev.org/aig/",
-												"https://schema.twindev.org/common/",
-												"https://schema.org"
-											],
-											"type": "AuditableItemGraphVertex",
-											"id": "aig:1234567890",
-											"dateCreated": "2024-08-22T11:55:16.271Z",
-											"version": 1
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/aig/{id}/versions": {
-			"get": {
-				"operationId": "auditableItemGraphVersionList",
-				"summary": "Get all versions of a graph vertex",
-				"tags": [
-					"Auditable Item Graph"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the vertex.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "aig:1234567890"
-					},
-					{
-						"name": "after",
-						"description": "Only return versions created after this ISO 8601 timestamp (exclusive).",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "before",
-						"description": "Only return versions created before this ISO 8601 timestamp (exclusive).",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "accept",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "application/json"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Response to getting all versions of an auditable item graph vertex.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "https://schema.twindev.org/aig/AuditableItemGraphVertexVersionList"
-								},
-								"examples": {
-									"auditableItemGraphVersionListResponseExample": {
-										"value": {
-											"@context": [
-												"https://schema.org",
-												"https://schema.twindev.org/aig/",
-												"https://schema.twindev.org/common/"
-											],
-											"type": [
-												"ItemList",
-												"AuditableItemGraphVertexVersionList"
-											],
-											"itemListElement": [
-												{
-													"version": 0,
-													"dateCreated": "2024-08-22T11:55:16.271Z"
-												},
-												{
-													"version": 1,
-													"dateCreated": "2024-08-22T11:56:00.000Z"
-												},
-												{
-													"version": 2,
-													"dateCreated": "2024-08-22T11:57:00.000Z"
-												}
-											]
-										}
-									}
-								}
-							}
-						}
 					},
 					"400": {
 						"description": "The server cannot process the request, see the content for more details.",
@@ -12972,95 +11252,6 @@
 				}
 			}
 		},
-		"/aig/{id}/proof": {
-			"delete": {
-				"operationId": "auditableItemGraphRemoveProof",
-				"summary": "Remove the notarization proof from all changesets of a graph vertex",
-				"tags": [
-					"Auditable Item Graph"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the vertex whose proof should be removed.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "0101010101010101010101010101010101010101010101010101010101010101"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/ais": {
 			"post": {
 				"operationId": "auditableItemStreamCreate",
@@ -13195,7 +11386,7 @@
 				"parameters": [
 					{
 						"name": "conditions",
-						"description": "The conditions to filter the streams, JSON stringified `EntityCondition<IAuditableItemStream>`.",
+						"description": "The conditions to filter the streams, JSON stringified IComparator[].",
 						"in": "query",
 						"required": false,
 						"schema": {
@@ -14223,7 +12414,7 @@
 					},
 					{
 						"name": "conditions",
-						"description": "The conditions to filter the stream, JSON stringified `EntityCondition<IAuditableItemStreamEntry>`.",
+						"description": "The conditions to filter the stream, JSON stringified IComparator[].",
 						"in": "query",
 						"required": false,
 						"schema": {
@@ -14473,7 +12664,7 @@
 				"parameters": [
 					{
 						"name": "id",
-						"description": "The id of the stream to get the entry from.",
+						"description": "The id of the stream to update the get in.",
 						"in": "path",
 						"required": true,
 						"schema": {
@@ -14484,7 +12675,7 @@
 					},
 					{
 						"name": "entryId",
-						"description": "The id of the entry to get.",
+						"description": "The id of the entry to update.",
 						"in": "path",
 						"required": true,
 						"schema": {
@@ -15072,7 +13263,7 @@
 				"parameters": [
 					{
 						"name": "conditions",
-						"description": "The conditions to filter the stream, JSON stringified `EntityCondition<IAuditableItemStreamEntry>`.",
+						"description": "The conditions to filter the stream, JSON stringified IComparator[].",
 						"in": "query",
 						"required": false,
 						"schema": {
@@ -15333,7 +13524,7 @@
 					},
 					{
 						"name": "conditions",
-						"description": "The conditions to filter the stream, JSON stringified `EntityCondition<IAuditableItemStreamEntry>`.",
+						"description": "The conditions to filter the stream, JSON stringified IComparator[].",
 						"in": "query",
 						"required": false,
 						"schema": {
@@ -15516,7 +13707,7 @@
 				"parameters": [
 					{
 						"name": "conditions",
-						"description": "The conditions to filter the stream, JSON stringified `EntityCondition<IAuditableItemStreamEntry>`.",
+						"description": "The conditions to filter the stream, JSON stringified IComparator[].",
 						"in": "query",
 						"required": false,
 						"schema": {
@@ -15607,116 +13798,6 @@
 								}
 							}
 						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "The resource you tried to access does not exist, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/NotFoundResponse"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "NotFoundError",
-											"message": "errorMessage",
-											"properties": {
-												"notFoundId": "1"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/ais/{id}/proof": {
-			"delete": {
-				"operationId": "auditableItemStreamRemoveProof",
-				"summary": "Remove the proof from a stream",
-				"tags": [
-					"Auditable Item Stream"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The id of the stream to remove the proof from.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "ais:1234567890"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
 					},
 					"400": {
 						"description": "The server cannot process the request, see the content for more details.",
@@ -16027,16 +14108,11 @@
 						"schema": {
 							"type": "string"
 						}
-					},
+					}
+				],
+				"security": [
 					{
-						"name": "authorization",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "Bearer <trust-token>"
+						"jwtBearerAuthScheme": []
 					}
 				],
 				"requestBody": {
@@ -16144,6 +14220,24 @@
 							}
 						}
 					},
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnauthorizedError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					},
 					"500": {
 						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
 						"content": {
@@ -16183,16 +14277,11 @@
 						},
 						"style": "simple",
 						"example": "urn:uuid:dataset-123"
-					},
+					}
+				],
+				"security": [
 					{
-						"name": "authorization",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "Bearer <trust-token>"
+						"jwtBearerAuthScheme": []
 					}
 				],
 				"responses": {
@@ -16201,7 +14290,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/DatasetGetResponse"
+									"$ref": "#/components/schemas/GetDatasetResponse"
 								},
 								"examples": {
 									"getDatasetResponseExample": {
@@ -16238,8 +14327,8 @@
 							}
 						}
 					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -16248,71 +14337,8 @@
 								"examples": {
 									"exampleResponse": {
 										"value": {
-											"name": "InternalServerError",
+											"name": "UnauthorizedError",
 											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "removeDataset",
-				"summary": "Remove a dataset from the catalogue by ID",
-				"tags": [
-					"Federated Catalogue"
-				],
-				"parameters": [
-					{
-						"name": "datasetId",
-						"description": "The unique identifier of the dataset.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "urn:uuid:dataset-123"
-					},
-					{
-						"name": "authorization",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "Bearer <trust-token>"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "The response payload for the remove dataset method.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolCatalogError"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
 										}
 									}
 								}
@@ -16340,116 +14366,16 @@
 				}
 			}
 		},
-		"/catalog/datasets": {
-			"post": {
-				"operationId": "setDataset",
-				"summary": "Insert or update a dataset in the catalogue",
-				"tags": [
-					"Federated Catalogue"
-				],
-				"parameters": [
-					{
-						"name": "authorization",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "Bearer <trust-token>"
-					}
-				],
-				"requestBody": {
-					"description": "The request parameters for the set dataset method.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "https://schema.twindev.org/w3c-dcat/DcatDataset"
-							},
-							"examples": {
-								"setDatasetRequestExample": {
-									"value": {
-										"@context": "https://w3id.org/dspace/2025/1/context.jsonld",
-										"@id": "urn:uuid:dataset-123",
-										"@type": "dcat:Dataset",
-										"dcterms:title": "Energy Consumption Data",
-										"dcterms:description": "Historical energy consumption data"
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "The response payload for the set dataset method.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolCatalogError"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/dataspace-data-plane/inbox": {
+		"/dataspace-data-plane/notify": {
 			"post": {
 				"operationId": "activityStreamNotify",
 				"summary": "Notify of a new Activity",
 				"tags": [
 					"Dataspace Data Plane"
 				],
-				"parameters": [
+				"security": [
 					{
-						"name": "authorization",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple"
+						"jwtBearerAuthScheme": []
 					}
 				],
 				"requestBody": {
@@ -16512,6 +14438,42 @@
 							}
 						}
 					},
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnauthorizedError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "The server cannot process the request, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnprocessableError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					},
 					"500": {
 						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
 						"content": {
@@ -16551,20 +14513,16 @@
 						},
 						"style": "simple",
 						"example": "urn:x-activity-log:1234567"
-					},
+					}
+				],
+				"security": [
 					{
-						"name": "authorization",
-						"in": "header",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple"
+						"jwtBearerAuthScheme": []
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Response containing a single activity log entry.",
+						"description": "Service Offering response",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -16606,6 +14564,24 @@
 											"properties": {
 												"foo": "bar"
 											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnauthorizedError",
+											"message": "errorMessage"
 										}
 									}
 								}
@@ -16852,91 +14828,6 @@
 													"@context": "https://vocabulary.uncefact.org/unece-context-D23B.jsonld",
 													"type": "Consignment",
 													"id": "urn:ucr:PL527288386100000"
-												}
-											]
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/.well-known/dspace-version": {
-			"get": {
-				"operationId": "getProtocolVersions",
-				"summary": "Get supported Dataspace Protocol versions (DSP 2025-1)",
-				"tags": [
-					"Version Discovery"
-				],
-				"requestBody": {
-					"description": "A REST request with no input parameters.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/NoContentRequest"
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "API response for the DSP version discovery endpoint.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/DataspaceProtocolVersionResponse"
-								},
-								"examples": {
-									"getProtocolVersionsResponseExample": {
-										"value": {
-											"protocolVersions": [
-												{
-													"version": "2025-1",
-													"path": "/dataspace-control-plane/2025-1",
-													"binding": "HTTPS",
-													"serviceId": "twin-connector"
 												}
 											]
 										}
@@ -17689,559 +15580,6 @@
 				}
 			}
 		},
-		"/dataspace-control-plane/app-datasets": {
-			"post": {
-				"operationId": "datasetCreate",
-				"summary": "Register an app dataset for the calling tenant.",
-				"tags": [
-					"Datasets"
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "API request to register an app dataset.\n\nThe owning `tenantId` is captured automatically from the request's tenant\ncontext — callers do not supply it.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/AppDatasetCreateRequest"
-							},
-							"examples": {
-								"datasetCreateRequestExample": {
-									"value": {
-										"appId": "https://twin.example.org/app1",
-										"dataset": {
-											"@context": "https://w3id.org/dspace/2025/1/context.jsonld",
-											"@type": "Dataset",
-											"@id": "https://twin.example.org/data-service-1",
-											"hasPolicy": [],
-											"distribution": []
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "API response from registering an app dataset.",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/AppDatasetCreateResponse"
-								}
-							}
-						},
-						"headers": {
-							"location": {
-								"schema": {
-									"type": "string"
-								},
-								"description": "e.g. https://twin.example.org/data-service-1"
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"operationId": "datasetList",
-				"summary": "List the app datasets owned by the calling tenant.",
-				"tags": [
-					"Datasets"
-				],
-				"parameters": [
-					{
-						"name": "cursor",
-						"description": "Cursor returned from a previous list call to fetch the next page.",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "limit",
-						"description": "Maximum number of entries to return (string-encoded; parsed on the server).",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "API response listing the app datasets owned by the calling tenant.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/AppDatasetListResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/dataspace-control-plane/app-datasets/{id}": {
-			"get": {
-				"operationId": "datasetGet",
-				"summary": "Retrieve an app dataset owned by the calling tenant.",
-				"tags": [
-					"Datasets"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The stored app dataset id (entity primary key).",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "dataspace-app-dataset-1"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "API response for a single stored app dataset record.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/DataspaceAppDataset"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"put": {
-				"operationId": "datasetUpdate",
-				"summary": "Update an app dataset owned by the calling tenant.",
-				"tags": [
-					"Datasets"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The stored app dataset id.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "dataspace-app-dataset-1"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "API request to update an existing app dataset record.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/AppDatasetUpdateRequest"
-							},
-							"examples": {
-								"datasetUpdateRequestExample": {
-									"value": {
-										"appId": "https://twin.example.org/app1",
-										"dataset": {
-											"@context": "https://w3id.org/dspace/2025/1/context.jsonld",
-											"@type": "Dataset",
-											"hasPolicy": [],
-											"distribution": []
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "The resource you tried to access does not exist, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/NotFoundResponse"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "NotFoundError",
-											"message": "errorMessage",
-											"properties": {
-												"notFoundId": "1"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "datasetDelete",
-				"summary": "Delete an app dataset owned by the calling tenant.",
-				"tags": [
-					"Datasets"
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"description": "The stored dataset id.",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"style": "simple",
-						"example": "dataspace-app-dataset-1"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "The rest request ended in success with no data."
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "The resource you tried to access does not exist, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/NotFoundResponse"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "NotFoundError",
-											"message": "errorMessage",
-											"properties": {
-												"notFoundId": "1"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/rights-management/policy/admin": {
 			"post": {
 				"operationId": "papCreate",
@@ -18258,7 +15596,7 @@
 					"description": "The request structure for creating a policy.",
 					"required": true,
 					"content": {
-						"text/plain": {
+						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/PapCreateRequest"
 							},
@@ -18271,6 +15609,24 @@
 											{
 												"target": "http://example.com/asset/1",
 												"action": "use"
+											}
+										]
+									}
+								},
+								"papCreateEcosystemPolicyRequestExample": {
+									"value": {
+										"@context": [
+											"http://www.w3.org/ns/odrl.jsonld",
+											"https://schema.twindev.org/odrl/v1/"
+										],
+										"@type": "EcosystemPolicy",
+										"profile": "https://schema.twindev.org/odrl/v1/profile",
+										"assigner": "did:example:publisher",
+										"obligation": [
+											{
+												"action": "inform",
+												"assignee": "did:example:border-agency",
+												"target": "urn:twin:asset:consignment:*"
 											}
 										]
 									}
@@ -18358,15 +15714,6 @@
 				],
 				"parameters": [
 					{
-						"name": "type",
-						"description": "The type of policy to filter by.",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
 						"name": "assigner",
 						"description": "The assigner to filter by.",
 						"in": "query",
@@ -18448,17 +15795,9 @@
 									"papQueryResponseExample": {
 										"value": [
 											{
-												"@context": [
-													"http://www.w3.org/ns/odrl.jsonld",
-													{
-														"dateCreated": "https://schema.org/dateCreated",
-														"dateModified": "https://schema.org/dateModified"
-													}
-												],
+												"@context": "http://www.w3.org/ns/odrl.jsonld",
 												"@type": "Set",
 												"@id": "urn:rights-management:abc123def456",
-												"dateCreated": "2025-09-03T00:00:00.000Z",
-												"dateModified": "2025-09-03T00:00:00.000Z",
 												"permission": [
 													{
 														"target": "http://example.com/asset/1",
@@ -18681,17 +16020,9 @@
 								"examples": {
 									"papGetResponseExample": {
 										"value": {
-											"@context": [
-												"http://www.w3.org/ns/odrl.jsonld",
-												{
-													"dateCreated": "https://schema.org/dateCreated",
-													"dateModified": "https://schema.org/dateModified"
-												}
-											],
+											"@context": "http://www.w3.org/ns/odrl.jsonld",
 											"@type": "Set",
 											"@id": "urn:rights-management:abc123def456",
-											"dateCreated": "2025-09-03T00:00:00.000Z",
-											"dateModified": "2025-09-03T00:00:00.000Z",
 											"permission": [
 												{
 													"target": "http://example.com/asset/1",
@@ -18882,22 +16213,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/RightsManagementAgreement"
+									"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolAgreement"
 								},
 								"examples": {
 									"papGetResponseExample": {
 										"value": {
-											"@context": [
-												"http://www.w3.org/ns/odrl.jsonld",
-												{
-													"dateCreated": "https://schema.org/dateCreated",
-													"dateModified": "https://schema.org/dateModified"
-												}
-											],
+											"@context": "http://www.w3.org/ns/odrl.jsonld",
 											"@type": "Agreement",
 											"@id": "urn:rights-management:abc123def456",
-											"dateCreated": "2025-09-03T00:00:00.000Z",
-											"dateModified": "2025-09-03T00:00:00.000Z",
 											"permission": [
 												{
 													"target": "http://example.com/asset/1",
@@ -19003,22 +16326,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/RightsManagementOffer"
+									"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolOffer"
 								},
 								"examples": {
 									"papGetResponseExample": {
 										"value": {
-											"@context": [
-												"http://www.w3.org/ns/odrl.jsonld",
-												{
-													"dateCreated": "https://schema.org/dateCreated",
-													"dateModified": "https://schema.org/dateModified"
-												}
-											],
+											"@context": "http://www.w3.org/ns/odrl.jsonld",
 											"@type": "Offer",
 											"@id": "urn:rights-management:abc123def456",
-											"dateCreated": "2025-09-03T00:00:00.000Z",
-											"dateModified": "2025-09-03T00:00:00.000Z",
 											"permission": [
 												{
 													"target": "http://example.com/asset/1",
@@ -19124,22 +16439,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/RightsManagementSet"
+									"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolSet"
 								},
 								"examples": {
 									"papGetResponseExample": {
 										"value": {
-											"@context": [
-												"http://www.w3.org/ns/odrl.jsonld",
-												{
-													"dateCreated": "https://schema.org/dateCreated",
-													"dateModified": "https://schema.org/dateModified"
-												}
-											],
+											"@context": "http://www.w3.org/ns/odrl.jsonld",
 											"@type": "Set",
 											"@id": "urn:rights-management:abc123def456",
-											"dateCreated": "2025-09-03T00:00:00.000Z",
-											"dateModified": "2025-09-03T00:00:00.000Z",
 											"permission": [
 												{
 													"target": "http://example.com/asset/1",
@@ -19148,6 +16455,123 @@
 											],
 											"assignee": "did:example:receiver",
 											"assigner": "did:example:sender"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The server cannot process the request, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "GeneralError",
+											"message": "errorMessage",
+											"properties": {
+												"foo": "bar"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnauthorizedError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "InternalServerError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/rights-management/policy/admin/ecosystem-policy/{id}": {
+			"get": {
+				"operationId": "papGetEcosystemPolicy",
+				"summary": "Get an ecosystem policy",
+				"tags": [
+					"Policy Administration Point"
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"description": "The ID of the ecosystem policy to get.",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"style": "simple",
+						"example": "urn:rights-management:abc123def456"
+					}
+				],
+				"security": [
+					{
+						"jwtBearerAuthScheme": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The response structure for getting an ecosystem policy.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RightsManagementEcosystemPolicy"
+								},
+								"examples": {
+									"papGetEcosystemPolicyResponseExample": {
+										"value": {
+											"@context": [
+												"http://www.w3.org/ns/odrl.jsonld",
+												"https://schema.twindev.org/odrl/v1/"
+											],
+											"@type": "EcosystemPolicy",
+											"@id": "urn:rights-management:abc123def456",
+											"profile": "https://schema.twindev.org/odrl/v1/profile",
+											"assigner": "did:example:publisher",
+											"obligation": [
+												{
+													"action": "inform",
+													"assignee": "did:example:border-agency",
+													"target": "urn:twin:asset:consignment:abc123"
+												}
+											]
 										}
 									}
 								}
@@ -20248,224 +17672,6 @@
 				}
 			}
 		},
-		"/rights-management/negotiations/admin": {
-			"post": {
-				"operationId": "pnapCreate",
-				"summary": "Pre-register a consumer-side policy negotiation entry",
-				"tags": [
-					"Policy Negotiation Administration Point"
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"requestBody": {
-					"description": "The request structure for creating a policy negotiation entry.",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/PnapCreateRequest"
-							},
-							"examples": {
-								"pnapCreateRequestExample": {
-									"value": {
-										"id": "urn:contract-negotiation:consumer-pid"
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"201": {
-						"description": "The rest request ended in created response.",
-						"headers": {
-							"location": {
-								"schema": {
-									"type": "string"
-								},
-								"description": "e.g. urn:contract-negotiation:01970000-0000-7000-8000-000000000000"
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"operationId": "pnapQuery",
-				"summary": "Query policy negotiations",
-				"tags": [
-					"Policy Negotiation Administration Point"
-				],
-				"parameters": [
-					{
-						"name": "state",
-						"description": "The state of the policy negotiations.",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolContractNegotiationStateType"
-						},
-						"example": "ACCEPTED"
-					},
-					{
-						"name": "cursor",
-						"description": "The cursor for pagination.",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string"
-						},
-						"example": "next-cursor"
-					}
-				],
-				"security": [
-					{
-						"jwtBearerAuthScheme": []
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "The response structure for querying manual policy negotiations.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/PnapQueryResponse"
-								},
-								"examples": {
-									"pnapQueryResponseExample": {
-										"value": [
-											{
-												"id": "pid",
-												"correlationId": "cid",
-												"dateCreated": "2025-09-03T00:00:00.000Z",
-												"state": "REQUESTED",
-												"organizationIdentity": "did:iota:123456789abcdefghi"
-											}
-										]
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "The server cannot process the request, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "GeneralError",
-											"message": "errorMessage",
-											"properties": {
-												"foo": "bar"
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "UnauthorizedError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"examples": {
-									"exampleResponse": {
-										"value": {
-											"name": "InternalServerError",
-											"message": "errorMessage"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/rights-management/negotiations/admin/{policyId}": {
 			"get": {
 				"operationId": "pnapGet",
@@ -20708,6 +17914,124 @@
 				"responses": {
 					"204": {
 						"description": "The rest request ended in success with no data."
+					},
+					"400": {
+						"description": "The server cannot process the request, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "GeneralError",
+											"message": "errorMessage",
+											"properties": {
+												"foo": "bar"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnauthorizedError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "InternalServerError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/rights-management/negotiations/admin": {
+			"get": {
+				"operationId": "pnapQuery",
+				"summary": "Query policy negotiations",
+				"tags": [
+					"Policy Negotiation Administration Point"
+				],
+				"parameters": [
+					{
+						"name": "state",
+						"description": "The state of the policy negotiations.",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolContractNegotiationStateType"
+						},
+						"example": "ACCEPTED"
+					},
+					{
+						"name": "cursor",
+						"description": "The cursor for pagination.",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"example": "next-cursor"
+					}
+				],
+				"security": [
+					{
+						"jwtBearerAuthScheme": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The response structure for querying manual policy negotiations.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PnapQueryResponse"
+								},
+								"examples": {
+									"pnapQueryResponseExample": {
+										"value": [
+											{
+												"id": "pid",
+												"correlationId": "cid",
+												"dateCreated": "2025-09-03T00:00:00.000Z",
+												"state": "REQUESTED",
+												"organizationIdentity": "did:iota:123456789abcdefghi"
+											}
+										]
+									}
+								}
+							}
+						}
 					},
 					"400": {
 						"description": "The server cannot process the request, see the content for more details.",
@@ -21892,21 +19216,71 @@
 				]
 			},
 			"AdminUserCreateRequest": {
+				"description": "The body of the request.",
 				"type": "object",
 				"properties": {
+					"email": {
+						"type": "string",
+						"description": "The user e-mail address."
+					},
 					"password": {
-						"type": "string"
+						"type": "string",
+						"description": "The encrypted password for the user."
+					},
+					"userIdentity": {
+						"type": "string",
+						"description": "The user identity."
+					},
+					"organizationIdentity": {
+						"type": "string",
+						"description": "The users organization."
+					},
+					"scope": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "The scope assigned to the user, comma separated."
 					}
 				},
 				"required": [
-					"password"
-				],
-				"allOf": [
-					{
-						"$ref": "#/components/schemas/AuthenticationUser"
+					"email",
+					"password",
+					"userIdentity",
+					"organizationIdentity",
+					"scope"
+				]
+			},
+			"AdminUserGetResponse": {
+				"description": "The body of the request.",
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"description": "The user e-mail address."
+					},
+					"userIdentity": {
+						"type": "string",
+						"description": "The user identity."
+					},
+					"organizationIdentity": {
+						"type": "string",
+						"description": "The users organization."
+					},
+					"scope": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "The scope assigned to the user, comma separated."
 					}
-				],
-				"description": "The body of the request."
+				},
+				"required": [
+					"email",
+					"userIdentity",
+					"organizationIdentity",
+					"scope"
+				]
 			},
 			"AdminUserUpdatePasswordRequest": {
 				"type": "object",
@@ -21946,65 +19320,6 @@
 					}
 				}
 			},
-			"AppDatasetCreateRequest": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"description": "Optional explicit id for the stored dataset record. If omitted, the\nControl Plane derives the id from `dataset[\"@id\"]` if present, or\ngenerates a UUID otherwise. The resolved id is returned via the\n`Location` response header."
-					},
-					"appId": {
-						"type": "string",
-						"description": "The dataspace app this dataset belongs to. Matches the app's\nregistered name in `DataspaceAppFactory` (typically the app's URI)."
-					},
-					"dataset": {
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolDataset"
-					}
-				},
-				"required": [
-					"appId",
-					"dataset"
-				],
-				"description": "The body of the request."
-			},
-			"AppDatasetCreateResponse": {},
-			"AppDatasetListResponse": {
-				"type": "object",
-				"properties": {
-					"entities": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/DataspaceAppDataset"
-						},
-						"description": "The stored datasets."
-					},
-					"cursor": {
-						"type": "string",
-						"description": "Cursor to fetch the next page if more entries exist."
-					}
-				},
-				"required": [
-					"entities"
-				],
-				"description": "The body of the response."
-			},
-			"AppDatasetUpdateRequest": {
-				"type": "object",
-				"properties": {
-					"appId": {
-						"type": "string",
-						"description": "The dataspace app this dataset belongs to. May change appId on\nupdate if the tenant wants to retarget the dataset."
-					},
-					"dataset": {
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolDataset"
-					}
-				},
-				"required": [
-					"appId",
-					"dataset"
-				],
-				"description": "The body of the request."
-			},
 			"AttestationCreateRequest": {
 				"type": "object",
 				"properties": {
@@ -22024,12 +19339,17 @@
 			"AttestationTransferRequest": {
 				"type": "object",
 				"properties": {
+					"holderIdentity": {
+						"type": "string",
+						"description": "The new holder identity."
+					},
 					"holderAddress": {
 						"type": "string",
 						"description": "The new holder address."
 					}
 				},
 				"required": [
+					"holderIdentity",
 					"holderAddress"
 				],
 				"description": "The parameters to be used in the transfer."
@@ -22108,57 +19428,6 @@
 				],
 				"description": "The response body."
 			},
-			"AuditUpdateRequest": {
-				"description": "The body of the request.",
-				"type": "object",
-				"properties": {
-					"event": {
-						"anyOf": [
-							{
-								"$ref": "#/components/schemas/AuthAuditEvent"
-							},
-							{
-								"type": "string"
-							}
-						],
-						"description": "The audit event that occurred."
-					},
-					"actorId": {
-						"type": "string",
-						"description": "The actor identifier, could be e-mail, username, or other unique identifier."
-					},
-					"nodeId": {
-						"type": "string",
-						"description": "The node identifier associated with the audit entry, if applicable."
-					},
-					"organizationId": {
-						"type": "string",
-						"description": "The organization identifier associated with the audit entry, if applicable."
-					},
-					"tenantId": {
-						"type": "string",
-						"description": "The tenant identifier associated with the audit entry, if applicable."
-					},
-					"ipAddressHashes": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						},
-						"description": "The hashed IP addresses of the client."
-					},
-					"userAgent": {
-						"type": "string",
-						"description": "The user agent string of the client."
-					},
-					"correlationId": {
-						"type": "string",
-						"description": "The correlation ID for request tracing."
-					},
-					"data": {
-						"description": "Additional data related to the audit entry, such as IP address, user agent, etc."
-					}
-				}
-			},
 			"AuditableItemGraphCreateRequest": {
 				"description": "The data to be used in the vertex.",
 				"type": "object",
@@ -22226,10 +19495,6 @@
 					"verified": {
 						"type": "boolean",
 						"description": "Is the vertex verified, will only be populated when verification is requested."
-					},
-					"version": {
-						"type": "number",
-						"description": "The version of the vertex, populated only when getting a specific version.\nMaps to https://schema.org/version."
 					}
 				},
 				"required": [
@@ -22237,73 +19502,8 @@
 					"type"
 				]
 			},
-			"AuditableItemGraphUpdatePartialRequest": {
-				"description": "Partial vertex data; only defined properties are applied.\nSub-lists use `{ add, remove }` patch objects.",
-				"type": "object",
-				"properties": {
-					"dateCreated": {
-						"type": "string",
-						"description": "The date/time of when the element was created."
-					},
-					"dateModified": {
-						"type": "string",
-						"description": "The date/time of when the element was modified."
-					},
-					"dateDeleted": {
-						"type": "string",
-						"description": "The date/time of when the element was deleted, as we never actually remove items."
-					},
-					"@context": {
-						"type": "array",
-						"prefixItems": [
-							{
-								"const": "https://schema.twindev.org/aig/"
-							},
-							{
-								"const": "https://schema.twindev.org/common/"
-							}
-						],
-						"items": {
-							"$ref": "https://schema.twindev.org/json-ld/JsonLdContextDefinitionElement"
-						},
-						"minItems": 2,
-						"description": "JSON-LD Context."
-					},
-					"organizationIdentity": {
-						"type": "string",
-						"description": "The identity of the organization which controls the vertex."
-					},
-					"annotationObject": {
-						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
-					},
-					"verified": {
-						"type": "boolean",
-						"description": "Is the vertex verified, will only be populated when verification is requested."
-					},
-					"version": {
-						"type": "number",
-						"description": "The version of the vertex, populated only when getting a specific version.\nMaps to https://schema.org/version."
-					},
-					"type": {
-						"const": "AuditableItemGraphVertex",
-						"description": "JSON-LD Type."
-					},
-					"aliasPatches": {
-						"$ref": "https://schema.twindev.org/aig/AuditableItemGraphListPatch"
-					},
-					"resourcePatches": {
-						"$ref": "https://schema.twindev.org/aig/AuditableItemGraphListPatch"
-					},
-					"edgePatches": {
-						"$ref": "https://schema.twindev.org/aig/AuditableItemGraphListPatch"
-					}
-				},
-				"required": [
-					"@context"
-				]
-			},
 			"AuditableItemGraphUpdateRequest": {
-				"description": "The full vertex payload. Replaces annotation and active sub-lists; omitted collections are cleared.",
+				"description": "The data to be used in the vertex.",
 				"type": "object",
 				"properties": {
 					"dateCreated": {
@@ -22369,10 +19569,6 @@
 					"verified": {
 						"type": "boolean",
 						"description": "Is the vertex verified, will only be populated when verification is requested."
-					},
-					"version": {
-						"type": "number",
-						"description": "The version of the vertex, populated only when getting a specific version.\nMaps to https://schema.org/version."
 					}
 				},
 				"required": [
@@ -22549,37 +19745,6 @@
 					"dateCreated"
 				]
 			},
-			"AuthenticationUser": {
-				"description": "Contract definition for authentication user.",
-				"type": "object",
-				"properties": {
-					"email": {
-						"type": "string",
-						"description": "The user e-mail address."
-					},
-					"userIdentity": {
-						"type": "string",
-						"description": "The user identity."
-					},
-					"organizationIdentity": {
-						"type": "string",
-						"description": "The users organization."
-					},
-					"scope": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						},
-						"description": "The scope assigned to the user, comma separated."
-					}
-				},
-				"required": [
-					"email",
-					"userIdentity",
-					"organizationIdentity",
-					"scope"
-				]
-			},
 			"BlobStorageCreateRequest": {
 				"type": "object",
 				"properties": {
@@ -22691,10 +19856,6 @@
 					{
 						"const": "uint8array",
 						"description": "Uint8Array."
-					},
-					{
-						"const": "duration",
-						"description": "Duration in seconds."
 					}
 				]
 			},
@@ -22767,7 +19928,7 @@
 				"required": [
 					"data"
 				],
-				"description": "The request body containing the data to convert."
+				"description": "The params for the convert."
 			},
 			"DataProcessingConvertResponse": {
 				"description": "The converted data as an object."
@@ -22796,10 +19957,10 @@
 					"ruleGroupId",
 					"data"
 				],
-				"description": "The request body containing the data and rule group to use for extraction."
+				"description": "The params for the extract."
 			},
 			"DataProcessingExtractResponse": {
-				"description": "The extracted data in extended JSON format, preserving types such as bigint, dates, and Uint8Array."
+				"description": "The extracted data in extended JSON format which keeps types like bigint, dates and uint8array intact.\nUse ObjectHelper.fromExtended to get the object with original types."
 			},
 			"DataProcessingRuleGroupListResponse": {
 				"type": "object",
@@ -22819,7 +19980,7 @@
 				"required": [
 					"entities"
 				],
-				"description": "The response body containing the list of rule groups and optional pagination cursor."
+				"description": "The response payload."
 			},
 			"DataProcessingRuleGroupSetRequest": {
 				"type": "object",
@@ -22840,152 +20001,100 @@
 					"label",
 					"rules"
 				],
-				"description": "The rule group data to store."
+				"description": "The data to be used in the store."
 			},
-			"DatasetGetResponse": {
-				"anyOf": [
-					{
-						"$ref": "https://schema.twindev.org/w3c-dcat/DcatDataset"
-					},
-					{
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolCatalogError"
-					}
-				],
-				"description": "The response payload containing the dataset or error."
-			},
-			"DataspaceAppDataset": {
-				"description": "Stored dataset record returned by the Control Plane's dataset CRUD surface.",
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"description": "The stored dataset id (matches the dataset's JSON-LD `@id`)."
-					},
-					"appId": {
-						"type": "string",
-						"description": "The dataspace app this dataset belongs to."
-					},
-					"dataset": {
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolDataset"
-					},
-					"dateCreated": {
-						"type": "string",
-						"description": "Creation timestamp (ISO string)."
-					},
-					"dateModified": {
-						"type": "string",
-						"description": "Last-modified timestamp (ISO string)."
-					}
-				},
-				"required": [
-					"id",
-					"appId",
-					"dataset",
-					"dateCreated",
-					"dateModified"
-				]
-			},
-			"DataspaceProtocolVersionResponse": {},
 			"DocumentManagementCreateRequest": {
 				"type": "object",
 				"properties": {
-					"document": {
-						"$ref": "https://schema.twindev.org/documents/DocumentBase"
+					"documentId": {
+						"type": "string",
+						"description": "The document id to create."
+					},
+					"documentIdFormat": {
+						"type": "string",
+						"description": "The format of the document identifier."
+					},
+					"documentCode": {
+						"$ref": "https://schema.twindev.org/unece/UneceDocumentCodeList"
 					},
 					"blob": {
 						"type": "string",
-						"description": "The data to create the document with, either as base64-encoded content or an existing blob storage entry id."
+						"description": "The data to create the document with, in base64."
+					},
+					"annotationObject": {
+						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
 					},
 					"auditableItemGraphEdges": {
 						"type": "array",
 						"items": {
-							"$ref": "https://schema.twindev.org/documents/DocumentManagementEdgeEntry"
+							"type": "object",
+							"properties": {
+								"targetId": {
+									"type": "string"
+								},
+								"addAlias": {
+									"type": "boolean"
+								},
+								"aliasAnnotationObject": {
+									"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
+								}
+							},
+							"required": [
+								"targetId"
+							]
 						},
 						"description": "The auditable item graph vertices to connect the document to."
 					},
-					"options": {
-						"type": "object",
-						"properties": {
-							"includeAttestation": {
-								"type": "boolean",
-								"description": "Flag to create an attestation for the document, defaults to false."
-							},
-							"includeAlias": {
-								"type": "boolean",
-								"description": "Flag to add the document id as an alias to the aig vertex, defaults to true."
-							},
-							"aliasAnnotationObject": {
-								"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
-							}
-						},
-						"description": "Additional options for the create operation."
+					"createAttestation": {
+						"type": "boolean",
+						"description": "Flag to create an attestation for the document, defaults to false."
+					},
+					"addAlias": {
+						"type": "boolean",
+						"description": "Flag to add the document id as an alias to the aig vertex, defaults to true."
+					},
+					"aliasAnnotationObject": {
+						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
 					}
 				},
 				"required": [
-					"document",
+					"documentId",
+					"documentIdFormat",
+					"documentCode",
 					"blob"
 				],
 				"description": "The body parameters."
 			},
-			"DocumentManagementUpdatePartialRequest": {
+			"DocumentManagementUpdateRequest": {
 				"type": "object",
 				"properties": {
-					"document": {
-						"description": "The document base properties to update. annotationObject, documentIdFormat and documentCode are applied in-place to the current revision.",
-						"type": "object",
-						"properties": {
-							"documentIdFormat": {
-								"type": "string",
-								"description": "The format of the document id."
-							},
-							"documentCode": {
-								"$ref": "https://schema.twindev.org/unece/UneceDocumentCodeList"
-							},
-							"annotationObject": {
-								"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
-							}
-						}
-					},
 					"blob": {
 						"type": "string",
-						"description": "The data to update the document with, either as base64-encoded content or an existing blob storage entry id."
+						"description": "The data to create the document with, in base64."
+					},
+					"annotationObject": {
+						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
 					},
 					"auditableItemGraphEdges": {
-						"type": "object",
-						"properties": {
-							"add": {
-								"type": "array",
-								"items": {
-									"$ref": "https://schema.twindev.org/documents/DocumentManagementEdgeEntry"
-								},
-								"description": "Connections to add; each entry creates a back-edge on the connected vertex."
-							},
-							"remove": {
-								"type": "array",
-								"items": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"targetId": {
 									"type": "string"
 								},
-								"description": "Target vertex IDs to disconnect; their back-edges are removed."
-							}
-						},
-						"description": "Explicit edge delta to apply. Use `add` to create new connections and `remove` to\ndisconnect existing ones by their target vertex id."
-					},
-					"options": {
-						"type": "object",
-						"properties": {
-							"includeAttestation": {
-								"type": "boolean",
-								"description": "Set to true to start attesting the document (even if originally created without attestation), or false to remove the existing attestation. Omit to leave attestation state unchanged."
+								"addAlias": {
+									"type": "boolean"
+								},
+								"aliasAnnotationObject": {
+									"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
+								}
 							},
-							"includeAlias": {
-								"type": "boolean",
-								"description": "Set to true to add the document id as an alias on the aig vertex, or false to remove it. Omit to leave alias state unchanged."
-							},
-							"aliasAnnotationObject": {
-								"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
-							}
+							"required": [
+								"targetId"
+							]
 						},
-						"description": "Additional options for the update operation."
+						"description": "The auditable item graph vertices to connect the document to."
 					}
 				},
 				"description": "The body parameters."
@@ -23000,7 +20109,7 @@
 					},
 					"message": {
 						"type": "string",
-						"description": "The message for the error as an i18n key."
+						"description": "The message for the error."
 					},
 					"source": {
 						"type": "string",
@@ -23033,7 +20142,7 @@
 						"description": "The query type."
 					},
 					"q": {
-						"description": "The representation of the query, optional depending on the query type."
+						"description": "The representation of the query."
 					},
 					"jsonLdContext": {
 						"type": "array",
@@ -23044,8 +20153,20 @@
 					}
 				},
 				"required": [
-					"type"
+					"type",
+					"q"
 				]
+			},
+			"GetDatasetResponse": {
+				"anyOf": [
+					{
+						"$ref": "https://schema.twindev.org/w3c-dcat/DcatDataset"
+					},
+					{
+						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolCatalogError"
+					}
+				],
+				"description": "The response payload containing the dataset or error."
 			},
 			"GetTransferProcessResponse": {
 				"oneOf": [
@@ -23058,40 +20179,43 @@
 				],
 				"description": "Transfer Process (DSP compliant) with current state, or error."
 			},
-			"Health": {
-				"description": "Provides health information for a component.",
+			"HealthComponentInfo": {
+				"description": "The health component information.",
 				"type": "object",
 				"properties": {
-					"source": {
+					"name": {
 						"type": "string",
-						"description": "The source of the health information."
-					},
-					"description": {
-						"type": "string",
-						"description": "The description of the component as an i18n key."
+						"description": "The name of the component."
 					},
 					"status": {
 						"$ref": "#/components/schemas/HealthStatus"
 					},
-					"message": {
+					"details": {
 						"type": "string",
-						"description": "The message for the status if there are further details to provide as an i18n key."
-					},
-					"data": {
-						"type": "object",
-						"additionalProperties": {},
-						"description": "Data to substitute in the i18n key for the message."
-					},
-					"grouped": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/Health"
-						},
-						"description": "The grouped child components, if any."
+						"description": "The details for the status."
 					}
 				},
 				"required": [
-					"source",
+					"name",
+					"status"
+				]
+			},
+			"HealthInfo": {
+				"description": "The status of the server.",
+				"type": "object",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/HealthStatus"
+					},
+					"components": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/HealthComponentInfo"
+						},
+						"description": "The status of the components."
+					}
+				},
+				"required": [
 					"status"
 				]
 			},
@@ -23111,19 +20235,6 @@
 						"description": "Error."
 					}
 				]
-			},
-			"IdentityAlsoKnownAsCreateRequest": {
-				"type": "object",
-				"properties": {
-					"alias": {
-						"type": "string",
-						"description": "The alias to create for the identity."
-					}
-				},
-				"required": [
-					"alias"
-				],
-				"description": "The data for the request."
 			},
 			"IdentityCreateRequest": {
 				"type": "object",
@@ -23306,20 +20417,6 @@
 					"expirationDate": {
 						"type": "string",
 						"description": "The date the verifiable credential is valid until."
-					},
-					"jwtHeaderFields": {
-						"type": "object",
-						"additionalProperties": {
-							"type": "string"
-						},
-						"description": "Additional fields to include in the JWT when creating the verifiable credential in jwt format."
-					},
-					"jwtPayloadFields": {
-						"type": "object",
-						"additionalProperties": {
-							"type": "string"
-						},
-						"description": "Additional fields to include in the JWT payload when creating the verifiable credential in jwt format."
 					}
 				},
 				"required": [
@@ -23401,20 +20498,6 @@
 					"expirationDate": {
 						"type": "string",
 						"description": "The expiration date/time for the presentation."
-					},
-					"jwtHeaderFields": {
-						"type": "object",
-						"additionalProperties": {
-							"type": "string"
-						},
-						"description": "Additional fields to include in the JWT header when creating the verifiable presentation in jwt format."
-					},
-					"jwtPayloadFields": {
-						"type": "object",
-						"additionalProperties": {
-							"type": "string"
-						},
-						"description": "Additional fields to include in the JWT payload when creating the verifiable presentation in jwt format."
 					}
 				},
 				"required": [
@@ -23483,16 +20566,6 @@
 				"properties": {
 					"document": {
 						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
-					},
-					"options": {
-						"type": "object",
-						"properties": {
-							"deleteLock": {
-								"type": "string",
-								"description": "An ISO 8601 date-time string specifying when the notarization lock expires.\nIf omitted, no deletion lock is applied."
-							}
-						},
-						"description": "Optional settings for the proof."
 					}
 				},
 				"required": [
@@ -23610,29 +20683,6 @@
 				],
 				"description": "The login response details."
 			},
-			"LogoutRequest": {
-				"type": "object",
-				"properties": {
-					"token": {
-						"type": "string",
-						"description": "The token to logout, if it uses a mechanism with public access."
-					}
-				},
-				"description": "The logout token details."
-			},
-			"MetricCounterOperation": {
-				"description": "The types of metric counter operations.",
-				"anyOf": [
-					{
-						"const": "inc",
-						"description": "Increment Counter."
-					},
-					{
-						"const": "dec",
-						"description": "Decrement Counter."
-					}
-				]
-			},
 			"MetricType": {
 				"description": "The types of metrics.",
 				"anyOf": [
@@ -23671,7 +20721,7 @@
 				"required": [
 					"tag"
 				],
-				"description": "The request body containing minting parameters."
+				"description": "The data to be used in the minting."
 			},
 			"NftResolveResponse": {
 				"type": "object",
@@ -23700,7 +20750,7 @@
 					"issuerIdentityId",
 					"tag"
 				],
-				"description": "The resolved NFT data."
+				"description": "The data that was resolved."
 			},
 			"NftTransferRequest": {
 				"type": "object",
@@ -23716,7 +20766,7 @@
 				"required": [
 					"recipientAddress"
 				],
-				"description": "The request body containing transfer parameters."
+				"description": "The data to be used in the transfer."
 			},
 			"NftUpdateRequest": {
 				"type": "object",
@@ -23725,11 +20775,7 @@
 						"description": "The metadata for the NFT."
 					}
 				},
-				"description": "The request body containing update parameters."
-			},
-			"NoContentRequest": {
-				"not": {},
-				"description": "Data to return send as the body."
+				"description": "The data to be used in the update."
 			},
 			"NotFoundResponse": {
 				"type": "object",
@@ -23747,8 +20793,217 @@
 				"description": "The body which contains the error."
 			},
 			"PapCreateRequest": {
-				"description": "The request structure for creating a policy.",
-				"type": "object"
+				"description": "The body of the request - the policy to create (id will be auto-generated if not provided).",
+				"type": "object",
+				"properties": {
+					"@context": {
+						"$ref": "https://schema.twindev.org/w3c-odrl/OdrlContextType"
+					},
+					"profile": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						],
+						"description": "The profile(s) this policy conforms to.\nIRIs identifying the ODRL Profile(s)."
+					},
+					"assigner": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The assigner of the policy.\nApplies to all rules unless overridden at rule level."
+					},
+					"assignee": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The assignee of the policy.\nApplies to all rules unless overridden at rule level."
+					},
+					"target": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAsset"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAssetCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAsset"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAssetCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The target asset for the rule."
+					},
+					"action": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlActionType"
+							},
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAction"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlActionType"
+										},
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAction"
+										}
+									]
+								}
+							}
+						],
+						"description": "The action associated with the rule."
+					},
+					"inheritFrom": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						],
+						"description": "The parent policy(ies) this policy inherits from.\nIRIs identifying the parent Policy(ies)."
+					},
+					"conflict": {
+						"$ref": "https://schema.twindev.org/w3c-odrl/OdrlConflictStrategyType"
+					},
+					"permission": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPermission"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPermission"
+								}
+							}
+						],
+						"description": "The permissions in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"prohibition": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlProhibition"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlProhibition"
+								}
+							}
+						],
+						"description": "The prohibitions in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"obligation": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlDuty"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlDuty"
+								}
+							}
+						],
+						"description": "The obligations in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"@type": {
+						"$ref": "#/components/schemas/RightsManagementPolicyType"
+					},
+					"@id": {
+						"type": "string",
+						"description": "Unique identifier for the policy."
+					}
+				},
+				"required": [
+					"@context",
+					"@type"
+				]
 			},
 			"PapQueryResponse": {
 				"type": "array",
@@ -23756,19 +21011,6 @@
 					"$ref": "#/components/schemas/RightsManagementPolicy"
 				},
 				"description": "The body of the response."
-			},
-			"PnapCreateRequest": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"description": "The consumer-side negotiation identifier (DSP consumerPid)."
-					}
-				},
-				"required": [
-					"id"
-				],
-				"description": "The partial negotiation to pre-register."
 			},
 			"PnapQueryResponse": {
 				"type": "array",
@@ -23825,7 +21067,7 @@
 					},
 					"organizationIdentity": {
 						"type": "string",
-						"description": "Organization identity."
+						"description": "Organization identity to be used when sending trust payloads."
 					},
 					"offer": {
 						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolOffer"
@@ -23896,16 +21138,6 @@
 					"organizationIdentity"
 				]
 			},
-			"RefreshTokenRequest": {
-				"type": "object",
-				"properties": {
-					"token": {
-						"type": "string",
-						"description": "The token to refresh, if it uses a mechanism with public access."
-					}
-				},
-				"description": "The refresh token details."
-			},
 			"RefreshTokenResponse": {
 				"type": "object",
 				"properties": {
@@ -23930,90 +21162,453 @@
 				],
 				"description": "Transfer Process (DSP compliant) with state REQUESTED, or error."
 			},
-			"RightsManagementAgreement": {
-				"description": "Agreement policy returned by PAP, including optional PAP-managed lifecycle metadata.",
+			"RightsManagementEcosystemPolicy": {
+				"description": "TWIN EcosystemPolicy in DSP storage shape.\n\nCombines the DSP wire-format requirements (mandatory `@id`, no `uid`) from\n`IDataspaceProtocolPolicy` with a narrowed `@type` discriminant so that callers\ncan rely on the type at compile time without any `as unknown as` cast.\n\nDefined as an intersection type (rather than `extends IDataspaceProtocolPolicy`)\nso that the narrowed `\"@type\": \"EcosystemPolicy\"` can override the base\n`\"@type\": OdrlPolicyType` without a TS2430 extends-incompatibility error.\n`\"EcosystemPolicy\"` is a TWIN extension — not in the W3C ODRL `OdrlPolicyType`\nenum — so the interface hierarchy cannot express this narrowing directly.\n\nLives in `rights-management-models` (not `standards-dataspace-protocol`) because\nEcosystemPolicy is a TWIN platform extension — not a DSP specification concept —\nand `standards-dataspace-protocol` should remain a pure standards mirror.",
 				"type": "object",
-				"allOf": [
-					{
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolAgreement"
+				"properties": {
+					"@context": {
+						"$ref": "https://schema.twindev.org/w3c-odrl/OdrlContextType"
 					},
-					{
-						"$ref": "#/components/schemas/RightsManagementPolicyMetadata"
+					"profile": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						],
+						"description": "The profile(s) this policy conforms to.\nIRIs identifying the ODRL Profile(s)."
 					},
-					{
-						"$ref": "#/components/schemas/RightsManagementPolicyTrust"
+					"assigner": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The assigner of the policy.\nApplies to all rules unless overridden at rule level."
+					},
+					"assignee": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The assignee of the policy.\nApplies to all rules unless overridden at rule level."
+					},
+					"target": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAsset"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAssetCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAsset"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAssetCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The target asset for the rule."
+					},
+					"action": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlActionType"
+							},
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAction"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlActionType"
+										},
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAction"
+										}
+									]
+								}
+							}
+						],
+						"description": "The action associated with the rule."
+					},
+					"inheritFrom": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						],
+						"description": "The parent policy(ies) this policy inherits from.\nIRIs identifying the parent Policy(ies)."
+					},
+					"conflict": {
+						"$ref": "https://schema.twindev.org/w3c-odrl/OdrlConflictStrategyType"
+					},
+					"permission": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPermission"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPermission"
+								}
+							}
+						],
+						"description": "The permissions in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"prohibition": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlProhibition"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlProhibition"
+								}
+							}
+						],
+						"description": "The prohibitions in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"obligation": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlDuty"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlDuty"
+								}
+							}
+						],
+						"description": "The obligations in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"@id": {
+						"type": "string",
+						"description": "Unique identifier for the policy."
+					},
+					"@type": {
+						"const": "EcosystemPolicy",
+						"description": "The type must be \"EcosystemPolicy\"."
 					}
-				]
-			},
-			"RightsManagementOffer": {
-				"description": "Offer policy returned by PAP, including optional PAP-managed lifecycle metadata.",
-				"type": "object",
-				"allOf": [
-					{
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolOffer"
-					},
-					{
-						"$ref": "#/components/schemas/RightsManagementPolicyMetadata"
-					},
-					{
-						"$ref": "#/components/schemas/RightsManagementPolicyTrust"
-					}
+				},
+				"required": [
+					"@context",
+					"@id",
+					"@type"
 				]
 			},
 			"RightsManagementPolicy": {
-				"description": "Base type for any ODRL policy stored and managed by the TWIN rights-management PAP.",
+				"description": "Base type for any ODRL policy stored and managed by the TWIN rights-management PAP.\n\nDefined as an intersection type (rather than `extends IDataspaceProtocolPolicy`)\nbecause `IDataspaceProtocolPolicy[\"@type\"]` is constrained to `OdrlPolicyType`\n(the closed W3C ODRL enum). TWIN adds `\"EcosystemPolicy\"` as a platform extension\nvia `RightsManagementPolicyType`, which is a superset of `OdrlPolicyType`.\n\nAll standard DSP policy types (`IDataspaceProtocolAgreement`, `IDataspaceProtocolOffer`,\n`IDataspaceProtocolSet`) remain structurally assignable to this type because their\n`\"@type\"` literals are all members of `RightsManagementPolicyType`.\n\nUse this type wherever the PAP needs to accept or return any policy regardless of\nits specific subtype. Use the narrower `IRightsManagementEcosystemPolicy`,\n`IDataspaceProtocolAgreement`, etc. when the specific subtype is known.",
 				"type": "object",
-				"allOf": [
-					{
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolPolicy"
+				"properties": {
+					"@context": {
+						"$ref": "https://schema.twindev.org/w3c-odrl/OdrlContextType"
 					},
-					{
-						"$ref": "#/components/schemas/RightsManagementPolicyMetadata"
+					"profile": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						],
+						"description": "The profile(s) this policy conforms to.\nIRIs identifying the ODRL Profile(s)."
 					},
-					{
-						"$ref": "#/components/schemas/RightsManagementPolicyTrust"
+					"assigner": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The assigner of the policy.\nApplies to all rules unless overridden at rule level."
+					},
+					"assignee": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlParty"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPartyCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The assignee of the policy.\nApplies to all rules unless overridden at rule level."
+					},
+					"target": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAsset"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAssetCollection"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAsset"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAssetCollection"
+										}
+									]
+								}
+							}
+						],
+						"description": "The target asset for the rule."
+					},
+					"action": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlActionType"
+							},
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAction"
+							},
+							{
+								"type": "array",
+								"items": {
+									"anyOf": [
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlActionType"
+										},
+										{
+											"type": "string"
+										},
+										{
+											"$ref": "https://schema.twindev.org/w3c-odrl/OdrlAction"
+										}
+									]
+								}
+							}
+						],
+						"description": "The action associated with the rule."
+					},
+					"inheritFrom": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						],
+						"description": "The parent policy(ies) this policy inherits from.\nIRIs identifying the parent Policy(ies)."
+					},
+					"conflict": {
+						"$ref": "https://schema.twindev.org/w3c-odrl/OdrlConflictStrategyType"
+					},
+					"permission": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPermission"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlPermission"
+								}
+							}
+						],
+						"description": "The permissions in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"prohibition": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlProhibition"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlProhibition"
+								}
+							}
+						],
+						"description": "The prohibitions in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"obligation": {
+						"anyOf": [
+							{
+								"$ref": "https://schema.twindev.org/w3c-odrl/OdrlDuty"
+							},
+							{
+								"type": "array",
+								"items": {
+									"$ref": "https://schema.twindev.org/w3c-odrl/OdrlDuty"
+								}
+							}
+						],
+						"description": "The obligations in the policy.\nAt least one of permission, prohibition, or obligation must be present."
+					},
+					"@id": {
+						"type": "string",
+						"description": "Unique identifier for the policy."
+					},
+					"@type": {
+						"$ref": "#/components/schemas/RightsManagementPolicyType"
 					}
+				},
+				"required": [
+					"@context",
+					"@id",
+					"@type"
 				]
 			},
-			"RightsManagementPolicyMetadata": {
-				"description": "PAP-managed metadata attached to stored and returned ODRL policies.",
-				"type": "object",
-				"properties": {
-					"dateCreated": {
-						"type": "string",
-						"description": "schema.org dateCreated — ISO 8601 date-time set by PAP on create."
-					},
-					"dateModified": {
-						"type": "string",
-						"description": "schema.org dateModified — ISO 8601 date-time set by PAP on create and update."
-					}
-				}
-			},
-			"RightsManagementPolicyTrust": {
-				"description": "PAP-managed trust data attached to stored and returned ODRL policies.",
-				"type": "object",
-				"properties": {
-					"trustData": {
-						"type": "object",
-						"additionalProperties": {
-							"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
-						},
-						"description": "Trust verification data captured at the beginning of the negotiation."
-					}
-				}
-			},
-			"RightsManagementSet": {
-				"description": "Set policy returned by PAP, including optional PAP-managed lifecycle metadata.",
-				"type": "object",
-				"allOf": [
+			"RightsManagementPolicyType": {
+				"description": "TWIN rights-management policy types.",
+				"anyOf": [
 					{
-						"$ref": "https://schema.twindev.org/dataspace-protocol/DataspaceProtocolSet"
+						"const": "EcosystemPolicy",
+						"description": "EcosystemPolicy type.\nA TWIN platform-level governance policy that carries obligations for data events.\nNot a bilateral contract — does not participate in DSP negotiation."
 					},
 					{
-						"$ref": "#/components/schemas/RightsManagementPolicyMetadata"
+						"const": "Policy"
 					},
 					{
-						"$ref": "#/components/schemas/RightsManagementPolicyTrust"
+						"const": "Set"
+					},
+					{
+						"const": "Offer"
+					},
+					{
+						"const": "Agreement"
 					}
 				]
 			},
@@ -24023,11 +21618,11 @@
 				"properties": {
 					"source": {
 						"type": "string",
-						"description": "The JSONPath expression identifying the data to extract from the document."
+						"description": "The path to the data in the document to extract.\nshould be in JSONPath format https://www.rfc-editor.org/rfc/rfc9535.html."
 					},
 					"target": {
 						"type": "string",
-						"description": "The target path of where to store the extracted data, using dotted or numeric index notation."
+						"description": "The target path of where to store the extracted data.\nSupports simple dotted path notation, and numeric index notation."
 					},
 					"retainPathDepth": {
 						"type": "number",
@@ -24075,25 +21670,6 @@
 				},
 				"description": "The favicon for the server."
 			},
-			"ServerHealthResponse": {
-				"type": "object",
-				"properties": {
-					"status": {
-						"$ref": "#/components/schemas/HealthStatus"
-					},
-					"components": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/Health"
-						}
-					}
-				},
-				"required": [
-					"status",
-					"components"
-				],
-				"description": "The health for the server."
-			},
 			"ServerInfo": {
 				"description": "The information about the server.",
 				"type": "object",
@@ -24115,24 +21691,17 @@
 			"ServerLivezResponse": {
 				"anyOf": [
 					{
-						"const": "alive"
+						"const": "ok"
 					},
 					{
-						"const": "dead"
+						"const": "failed"
 					}
 				],
 				"description": "The livez information for the server."
 			},
-			"ServerReadyzResponse": {
-				"anyOf": [
-					{
-						"const": "ready"
-					},
-					{
-						"const": "not ready"
-					}
-				],
-				"description": "The readyz information for the server."
+			"ServerRootResponse": {
+				"type": "string",
+				"description": "The root text for the server."
 			},
 			"ServerSpecResponse": {
 				"description": "The spec for the server."
@@ -24288,7 +21857,10 @@
 					"value": {
 						"anyOf": [
 							{
-								"$ref": "#/components/schemas/MetricCounterOperation"
+								"const": "inc"
+							},
+							{
+								"const": "dec"
 							},
 							{
 								"type": "number"
@@ -24365,10 +21937,6 @@
 					"unit": {
 						"type": "string",
 						"description": "The unit the metric describes."
-					},
-					"maxHistory": {
-						"type": "number",
-						"description": "The maximum number of values to retain; oldest are trimmed on each addMetricValue call.\nUnlimited when absent."
 					}
 				},
 				"required": [
@@ -24467,7 +22035,7 @@
 				"properties": {
 					"identity": {
 						"type": "string",
-						"description": "The organization identity associated with the payload."
+						"description": "The identity associated with the payload."
 					},
 					"data": {
 						"type": "object",
@@ -24543,7 +22111,7 @@
 					"receipt",
 					"id"
 				],
-				"description": "The created verifiable storage item details."
+				"description": "The data that was stored."
 			},
 			"VerifiableStorageGetRequest": {
 				"type": "object",
@@ -24582,7 +22150,7 @@
 				"required": [
 					"receipt"
 				],
-				"description": "The retrieved verifiable storage item contents."
+				"description": "The data that was obtained."
 			},
 			"VerifiableStorageUpdateRequest": {
 				"type": "object",
