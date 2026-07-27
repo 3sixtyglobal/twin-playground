@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.3](https://github.com/iotaledger/twin-playground/compare/playground-ui-v0.0.3...playground-ui-v0.0.3) (2026-07-27)
+
+
+### Features
+
+* initial commit ([1ce5fae](https://github.com/iotaledger/twin-playground/commit/1ce5faeedfa7b2711f376f622f18083919f983d8))
+* release to production ([742e4bd](https://github.com/iotaledger/twin-playground/commit/742e4bdf6fe659b6a8de3a52ab722c393ad0a328))
+* release to production ([282bdc6](https://github.com/iotaledger/twin-playground/commit/282bdc64ef2591bad82da25b282fb23cf971124b))
+* release to production ([#16](https://github.com/iotaledger/twin-playground/issues/16)) ([206e04b](https://github.com/iotaledger/twin-playground/commit/206e04b28b1e1e5b1338a37e5fe2454117b81eef))
+* release to production ([#17](https://github.com/iotaledger/twin-playground/issues/17)) ([aed24f4](https://github.com/iotaledger/twin-playground/commit/aed24f430af42ad1f2d0e09eadc758b98de69ca5))
+* release to production ([#22](https://github.com/iotaledger/twin-playground/issues/22)) ([698dc64](https://github.com/iotaledger/twin-playground/commit/698dc64d8b20c9e82d83515126a4774f8b10b2f4))
+* release to production ([#27](https://github.com/iotaledger/twin-playground/issues/27)) ([dcbcf5c](https://github.com/iotaledger/twin-playground/commit/dcbcf5cc66a4f6eff0f8c674614c37173fb51ea9))
+
 ## [0.0.3-next.1](https://github.com/iotaledger/twin-playground/compare/playground-ui-v0.0.3-next.0...playground-ui-v0.0.3-next.1) (2026-04-23)
 
 ### Features
