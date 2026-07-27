@@ -1,4 +1,4 @@
 {
-	"apps/playground-node": "0.0.1",
-	"apps/playground-ui": "0.0.1"
+	"apps/playground-node": "0.0.3",
+	"apps/playground-ui": "0.0.3"
 }
