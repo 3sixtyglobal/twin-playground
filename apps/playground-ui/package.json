@@ -16,6 +16,7 @@
 		"docs:clean": "echo Nothing to clean",
 		"docs": "npm run docs:clean",
 		"dist": "npm run build && npm run check && npm run merge-locales && npm run test && npm run docs",
+		"dist:no-test": "npm run build && npm run check && npm run merge-locales && npm run docs",
 		"postinstall": "npx playwright install"
 	},
 	"dependencies": {

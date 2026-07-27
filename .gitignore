@@ -16,3 +16,4 @@ vitest.config.ts.timestamp*
 .env
 .env.prod
 working
+.eslintcache
