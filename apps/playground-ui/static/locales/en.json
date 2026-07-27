@@ -93,6 +93,8 @@
 			"uint8Array": "Property \"{property}\" must be a Uint8Array, it is \"{value}\"",
 			"function": "Property \"{property}\" must be a function, it is \"{value}\"",
 			"urn": "Property \"{property}\" must be a URN formatted string, it is \"{value}\"",
+			"urnNamespaceIdentifier": "Property \"{property}\" must be a URN with namespace identifier \"{options}\", it is \"{value}\"",
+			"urnNamespaceSpecific": "Property \"{property}\" must be a URN with namespace specific \"{options}\", it is \"{value}\"",
 			"url": "Property \"{property}\" must be a URL formatted string, it is \"{value}\"",
 			"email": "Property \"{property}\" must be string in e-mail format, it is \"{value}\"",
 			"uuidV7": "Property \"{property}\" must be a UUIDv7 formatted string, it is \"{value}\"",
@@ -214,6 +216,10 @@
 			"decodingFailed": "Decoding JSON failed for route \"{route}\"",
 			"failureStatusText": "The request to the API failed: \"{statusText}\""
 		},
+		"httpHeaderHelper": {
+			"locationMissing": "The Location response header is missing or empty",
+			"idNotFound": "The resource ID could not be extracted from the Location header"
+		},
 		"contextIdHelper": {
 			"contextIdMissing": "The context ID \"{key}\" is missing from the provided context IDs",
 			"contextIdSplitMismatch": "The context ID split parts length \"{actual}\" does not match the provided keys length \"{expected}\""
@@ -268,7 +274,10 @@
 		},
 		"entityStorageHelper": {
 			"sortNotIndexed": "The property \"{property}\" is not indexed and cannot be used for sorting",
-			"propertyNotInSchema": "The property \"{property}\" does not exist in the schema and cannot be used for projection"
+			"propertyNotInSchema": "The property \"{property}\" does not exist in the schema and cannot be used for projection",
+			"unknownPropertyInConditionProperty": "The property \"{property}\" is not a recognised schema property and cannot be used as a condition property",
+			"unknownPropertyInConditions": "The property \"{property}\" is not a recognised schema property and cannot be used in conditions",
+			"invalidConditionPropertyPath": "The property \"{property}\" has an invalid path: the root must be an object or array type, segments must not exceed 128 characters, and must not contain SQL metacharacters or control characters"
 		},
 		"migrationHelper": {
 			"migrateSchemaFailed": "Migration failed for schema \"{schemaName}\".",
@@ -357,7 +366,8 @@
 		"entityStorageAuthenticationService": {
 			"loginFailed": "Login failed",
 			"userNotFound": "The user with the specified e-mail could not be found",
-			"passwordMismatch": "The password does not match the user's password"
+			"passwordMismatch": "The password does not match the user's password",
+			"nodeIdNotSet": "The node ID has not been set"
 		},
 		"entityStorageAuthenticationAdminService": {
 			"userExists": "The user with the specified e-mail already exists",
@@ -368,8 +378,17 @@
 			"updatePasswordFailed": "Updating the user's password failed",
 			"userNotFound": "The user with the specified e-mail could not be found \"{notFoundId}\""
 		},
+		"authHeaderProcessor": {
+			"nodeIdNotSet": "The node ID has not been set"
+		},
 		"passwordHelper": {
 			"currentPasswordMismatch": "The current password is incorrect"
+		},
+		"entityStorageAuthenticationAuditService": {
+			"auditEntryNotFound": "The audit entry with the specified identifier could not be found \"{notFoundId}\"",
+			"getAuditEntryFailed": "Getting the audit entry failed",
+			"updateAuditEntryFailed": "Updating the audit entry failed",
+			"removeAuditEntryFailed": "Removing the audit entry failed"
 		},
 		"entityStorageAuthenticationRateService": {
 			"actionConfigMissing": "No rate-limit configuration exists for action \"{action}\".",
@@ -377,6 +396,8 @@
 		},
 		"tokenHelper": {
 			"missing": "The JSON Web token could not be found in the authorization header",
+			"headerKeyIdMismatch": "The JSON Web token key identifier does not match the expected signing key",
+			"payloadIssuerMismatch": "The JSON Web token issuer does not match the expected signing key",
 			"payloadMissingSubject": "The JSON Web token payload does not contain a subject",
 			"payloadMissingOrganization": "The JSON Web token payload does not contain an organization",
 			"expired": "The JSON Web token has expired",
@@ -761,6 +782,7 @@
 		},
 		"entityStorageTelemetryConnector": {
 			"metricNotFound": "The metric could not be found \"{notFoundId}\"",
+			"metricValueNotFound": "The metric value could not be found \"{notFoundId}\"",
 			"metricAlreadyExists": "The metric already exists \"{existingId}\"",
 			"counterIncOnly": "A counter metric can only be incremented, or added to with an integer",
 			"upDownCounterIncOrDecOnly": "An up/down counter metric can only be incremented, decremented or adjusted with an integer",
@@ -16316,6 +16338,9 @@
 	"warn": {
 		"common": {
 			"devOnlyTool": "This tool is intended to be used for development purposes, it is not recommended for use in production scenarios."
+		},
+		"immutableProofService": {
+			"taskRecordRemoveFailed": "Removing the completed task record for proof \"{proofId}\" failed, the record will be removed when its retention expires"
 		}
 	},
 	"cli": {
