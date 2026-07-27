@@ -17,7 +17,7 @@ import { UserVerifiableStorageEntry } from "./entities/userVerifiableStorageEntr
 await run(
 	{
 		serverName: "Playground Node",
-		serverVersion: "0.0.3-next.1-0", // x-release-please-version
+		serverVersion: "0.0.4-next.0-0", // x-release-please-version
 		envPrefix: "PLAYGROUND_",
 		localesDirectory: path.resolve("dist/locales"),
 		openApiSpecFile: path.resolve("docs/open-api/spec.json"),
