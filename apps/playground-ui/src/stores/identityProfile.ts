@@ -72,10 +72,10 @@ export async function profileUpdate(
 ): Promise<string | undefined> {
 	if (Is.object(identityProfileClient)) {
 		try {
-			const publicProf = get(publicProfile);
+			const publicProf = get(publicProfile) ?? ({} as WithContext<Person>);
 			ObjectHelper.propertySet(publicProf, "name", updatedPublicProfile.name);
 
-			const privateProf = get(privateProfile);
+			const privateProf = get(privateProfile) ?? ({} as WithContext<Person>);
 			ObjectHelper.propertySet(privateProf, "givenName", updatedPrivateProfile.givenName);
 			ObjectHelper.propertySet(privateProf, "familyName", updatedPrivateProfile.familyName);
 
