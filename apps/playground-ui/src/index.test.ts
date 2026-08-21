@@ -1,5 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { describe, expect, it } from "vitest";
 
 describe("sum test", () => {

@@ -12,6 +12,7 @@ export interface IAsyncHookCallbacks {
 	 * @param triggerAsyncId - Identifier of the resource that triggered this instance.
 	 * @param resource - Optional resource reference.
 	 */
+	// eslint-disable-next-line no-restricted-syntax
 	init?(asyncId: number, type: string, triggerAsyncId: number, resource?: object): void;
 
 	/**

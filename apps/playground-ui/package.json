@@ -59,13 +59,13 @@
 		"@twin.org/ui-components-svelte": "next",
 		"@twin.org/web": "next",
 		"d3": "7.9.0",
-		"schema-dts": "2.0.0"
+		"schema-dts": "2.0.0",
+		"@sveltejs/kit": "2.55.0",
+		"svelte": "5.55.0"
 	},
 	"devDependencies": {
 		"@playwright/test": "1.58.2",
 		"@sveltejs/adapter-auto": "7.0.1",
-		"@sveltejs/kit": "2.55.0",
-		"svelte": "5.55.0",
 		"@sveltejs/vite-plugin-svelte": "7.0.0",
 		"@twin.org/merge-locales": "next",
 		"@types/d3": "7.4.3",
