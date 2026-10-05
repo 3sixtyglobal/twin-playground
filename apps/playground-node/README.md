@@ -19,3 +19,7 @@ Examples of how to deploy the app can be found in [docs/deployment.md](docs/depl
 ## Changelog
 
 The changes between each version can be found in [docs/changelog.md](docs/changelog.md)
+
+## Origin
+
+This package is derived from the original [iotaledger/twin-playground](https://github.com/iotaledger/twin-playground/tree/next/apps/playground-node) repository.

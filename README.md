@@ -12,3 +12,7 @@ The environment is composed of a backend REST API server and a companion web int
 ## Contributing
 
 To contribute to this package see the guidelines for building and publishing in [CONTRIBUTING](./CONTRIBUTING.md)
+
+## Origin
+
+This repository is derived from the original [iotaledger/twin-playground](https://github.com/iotaledger/twin-playground) repository.

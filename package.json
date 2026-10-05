@@ -4,7 +4,7 @@
 	"description": "Playground applications demonstrating the capabilities of the ecosystem framework.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-playground.git"
+		"url": "git+https://github.com/3sixtyglobal/twin-playground.git"
 	},
 	"author": "martyn.janes@iota.org",
 	"license": "Apache-2.0",
@@ -63,7 +63,7 @@
 	],
 	"type": "module",
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-playground/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-playground/issues"
 	},
 	"homepage": "https://twindev.org"
 }
